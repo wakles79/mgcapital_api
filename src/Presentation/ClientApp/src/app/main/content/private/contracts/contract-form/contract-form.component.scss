@@ -1,0 +1,60 @@
+@import "src/@fuse/scss/fuse";
+
+.contracts-form-dialog {
+  @include media-breakpoint('xs') {
+    width: 100%;
+  }
+  @include media-breakpoint('lt-xs') {
+    width: 60%;
+  }
+
+  .mat-dialog-container {
+    padding: 0;
+    overflow: hidden;
+
+    .mat-toolbar {
+      min-height: initial;
+      background: #049546 !important;
+    }
+
+    .toolbar-bottom {
+      height: auto;
+    }
+
+    .subtitle-row{
+      min-height: 23px;
+      background-color: #EFEFEF;
+      color: #333333;
+    }
+
+    .rate-text {
+      font-size: 17px;
+      font-weight: 300;
+      color: rgba(0, 0, 0, 0.85);
+    }
+
+    .accordion-headers-align .mat-expansion-panel-header-title,
+    .accordion-headers-align .mat-expansion-panel-header-description {
+      flex-basis: 0;
+    }
+
+    .accordion-headers-align .mat-expansion-panel-header-description {
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mat-expansion-panel-body{
+      padding: 0 8px;
+    }
+
+    .rounded-100{
+      border-radius: 50%;
+    }
+  }
+
+  .dialog-content-wrapper {
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+  }
+}

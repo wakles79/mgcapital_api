@@ -1,0 +1,8 @@
+<div [innerHTML]="html | safeHtml"></div>
+<button *ngIf="showMoreButton" id="mat-menu-item" mat-menu-item aria-label="activity log" (click)="hideBlockquote()" >
+    <span>{{moreButtonText}}</span>
+</button>
+<div *ngIf="showBlockquote" [innerHTML]="blockquote | safeHtml"></div>
+<button *ngIf="showBlockquote" id="mat-menu-item" mat-menu-item aria-label="activity log" (click)="hideBlockquote()" >
+    <span>{{moreButtonText}}</span>
+</button>

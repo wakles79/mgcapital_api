@@ -1,0 +1,145 @@
+<!-- LOADER -->
+<div class="spinner-container" *ngIf="loading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+<!-- END LOADER -->
+
+
+<!--SEARCH-->
+<div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="end center">
+  <label for="search" class="mr-8">
+    <mat-icon>search</mat-icon>
+  </label>
+  <mat-form-field floatLabel="never">
+    <input matInput [formControl]="searchInput" placeholder="Search for anything">
+  </mat-form-field>
+</div>
+<!--END SEARCH-->
+
+<!--TABLE-->
+<mat-table #table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+
+  <!-- Checkbox Column -->
+  <ng-container cdkColumnDef="checkbox">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <mat-checkbox [(ngModel)]="checkboxes[row.id]" (ngModelChange)="onSelectedChange(row.id)"
+        (click)="$event.stopPropagation()" *ngIf="!readOnly">
+      </mat-checkbox>
+    </mat-cell>
+  </ng-container>
+
+  <!--CONTRACT-->
+  <ng-container cdkColumnDef="transactionNumber">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="transactionNumber">Transaction Number</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <div fxLayout="column" fxFlex="100">
+        {{ row.transactionNumber }}
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--END CONTRACT-->
+
+  <!--CONTRACT-->
+  <ng-container cdkColumnDef="contract">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="contractId">Contract Number</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <div fxLayout="column" fxFlex="100">
+        {{ row.contractNumber }}
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--END CONTRACT-->
+
+  <!--BUILDING-->
+  <ng-container cdkColumnDef="building">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="buildingName">Building Name</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <div fxLayout="column" fxFlex="100">
+        {{ row.buildingName }}
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--END BUILDING-->
+
+  <!--CUSTOMER-->
+  <ng-container cdkColumnDef="customer">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="customerName">Customer Name</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <div fxLayout="column" fxFlex="100">
+        {{ row.customerName }}
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--END CUSTOMER-->
+
+  <!--DESCRIPTION-->
+  <ng-container cdkColumnDef="description">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="description">Description</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      {{ row.description }}
+    </mat-cell>
+  </ng-container>
+  <!--END DESCRIPTION-->
+
+  <!--DATE-->
+  <ng-container cdkColumnDef="date">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="date">Date</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      {{ row.date | date: 'MM/dd/yyyy' }}
+    </mat-cell>
+  </ng-container>
+  <!--END DATE-->
+
+  <!--AMOUNT-->
+  <ng-container cdkColumnDef="amount">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="amount">Amount</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <div fxLayout="column" fxFlex="100">
+        <span class="green-fg">
+          {{ row.amount | currency:'USD':'symbol' }}
+        </span>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--END AMOUNT-->
+
+  <!-- Buttons Column -->
+  <ng-container cdkColumnDef="buttons">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let expense">
+      <div fxFlex="row" fxLayoutAlign="end center">
+
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="editExpense(expense)">
+            <!-- <mat-icon>edit</mat-icon> -->
+            <span>Edit</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="deleteExpense(expense)" *ngIf="!readOnly">
+            <!-- <mat-icon>delete</mat-icon> -->
+            <span>Remove</span>
+          </button>
+
+        </mat-menu>
+
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!-- End Buttons Column -->
+
+  <mat-header-row *cdkHeaderRowDef="columnsToDisplay"></mat-header-row>
+  <mat-row *cdkRowDef="let expense; columns: columnsToDisplay;" class="expense" matRipple
+    [@animate]="{value:'*',params:{y:'100%'}}">
+  </mat-row>
+</mat-table>
+<!--END TABLE-->
+
+<!--PAGINATOR-->
+<mat-paginator [length]="expensesCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]"></mat-paginator>
+<!--END PAGINATOR-->

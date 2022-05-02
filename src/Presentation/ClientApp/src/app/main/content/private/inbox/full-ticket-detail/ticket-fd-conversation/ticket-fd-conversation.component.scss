@@ -1,0 +1,24 @@
+button{
+    background-color: #FFFFFF;
+    border: none;
+    color: black;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 16px;
+}
+
+a {
+    text-decoration: none;
+    cursor: pointer;
+    color: #039be5;
+  }
+
+  a:hover{
+      text-decoration: underline;
+      cursor: pointer;
+      color: #039be5;
+    }

@@ -1,0 +1,73 @@
+<div class="spinner-container" *ngIf="loading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+
+<!--SEARCH-->
+<div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="end center">
+  <label for="search" class="mr-8">
+    <mat-icon>search</mat-icon>
+  </label>
+  <mat-form-field floatLabel="never">
+    <input matInput [formControl]="searchInput" id="search" placeholder="Search for anything">
+  </mat-form-field>
+</div>
+<!--END SEARCH-->
+
+<mat-table #table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+
+  <!-- Created Date -->
+  <ng-container cdkColumnDef="created_date">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="CreatedDate" fxFlex="150px">Created Date</mat-header-cell>
+    <mat-cell *cdkCellDef="let department" fxFlex="130px">
+      <span *ngIf="department.epochCreatedDate > 0">
+        {{department.epochCreatedDate | fromEpoch | date:'shortDate'}}
+      </span>
+    </mat-cell>
+  </ng-container>
+  <!-- End Create Date -->
+
+  <!-- Name Column -->
+  <ng-container cdkColumnDef="name">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header>Name</mat-header-cell>
+    <mat-cell *cdkCellDef="let department">
+      <p class="text-truncate">{{department.name}}</p>
+    </mat-cell>
+  </ng-container>
+  <!-- End Name Column -->
+
+  <!-- Buttons Column -->
+  <ng-container cdkColumnDef="buttons">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let department">
+      <div fxFlex="row" fxLayoutAlign="end center">
+
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="editDepartment(department)">
+            <!-- <mat-icon>edit</mat-icon> -->
+            <span>Edit</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="deleteDepartment(department)">
+            <!-- <mat-icon>delete</mat-icon> -->
+            <span>Remove</span>
+          </button>
+
+        </mat-menu>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!-- End Buttons Column -->
+
+
+  <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *cdkRowDef="let department; columns: displayedColumns;" class="department"
+    (click)="editDepartment(department)" matRipple [@animate]="{value:'*',params:{y:'100%'}}">
+  </mat-row>
+</mat-table>
+
+<mat-paginator [length]="deparmentsCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]"></mat-paginator>

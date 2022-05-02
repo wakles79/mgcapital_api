@@ -1,0 +1,33 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/custom-theme";
+
+#work-orders {
+
+  .content {
+      overflow: hidden;
+  }
+  .breadcrumb {
+    margin-top:10px;
+    margin-bottom: 20px;
+  }
+  mat-sidenav-container .sidenav {
+    min-width: 250px !important;
+  }
+
+}
+
+#add-work-order-button {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}
+
+.section {
+  border-bottom: none !important;
+}
+
+#addNoteButton {
+  background-color: #049546;
+}

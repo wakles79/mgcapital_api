@@ -1,0 +1,143 @@
+<div class="dialog-content-wrapper">
+  <!--TITLE-->
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END TITLE-->
+
+  <!--CONTENT-->
+  <div mat-dialog-content class="p-16 m-0" fusePerfectScrollbar>
+    <!--FORM-->
+    <form [formGroup]="proposalServiceForm">
+
+      <!--NAME-->
+      <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">account_circle</mat-icon>
+          <input matInput name="description" placeholder="Requester Name" formControlName="requesterName"
+            maxlength="128">
+        </mat-form-field>
+      </div>
+      <!--END NAME-->
+
+      <!--BUILDING-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">business</mat-icon>
+          <mat-select placeholder="Building" formControlName="buildingId">
+            <mat-option>
+              <ngx-mat-select-search formControlName="buildingFilter" placeholderLabel="Search"
+                noEntriesFoundLabel="No results"></ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let building of filteredBuildings | async" [value]="building.id">
+              {{ building.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <!--END BUILDING-->
+
+      <!--BUILDING NAME-->
+      <div fxLayout="row" fxLayoutAlign="start start" *ngIf="proposalServiceForm.value.buildingId < 0">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4">business</mat-icon>
+          <input maxlength="80" formControlName="buildingName" placeholder="Building Name" matInput required>
+        </mat-form-field>
+      </div>
+      <!--END BUILDING NAME-->
+
+      <!--LOCATION-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4">location_on</mat-icon>
+          <input maxlength="80" formControlName="location" placeholder="Suite/Location" matInput required>
+        </mat-form-field>
+      </div>
+      <!--END LOCATION-->
+
+      <!--OFFICE SERVICE TYPE-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-4 mt-12 s-20 secondary-text" style="cursor:pointer;" matTooltip="New Office Service Type"
+          (click)="newOfficeServiceType()" *ngIf="!readOnly">add</mat-icon>
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">apps</mat-icon>
+          <mat-select #osType placeholder="Item Type" formControlName="officeServiceTypeId"
+            (selectionChange)="officeServiceTypeChange(osType.value)">
+            <mat-option>
+              <ngx-mat-select-search formControlName="officeServiceTypeFilter" placeholderLabel="Search"
+                noEntriesFoundLabel="No results"></ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let officeType of filteredOfficeServiceTypes | async" [value]="officeType.id">
+              {{ officeType.name }}
+            </mat-option>
+          </mat-select>
+          <mat-hint align="end"> Type: {{ selectedOfficeServiceType?.rateTypeName }}</mat-hint>
+        </mat-form-field>
+      </div>
+      <!--END OFFICE SERVICE TYPE-->
+
+      <!--RATE-->
+      <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+        <mat-form-field fxFlex="20" class="pr-4">
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">equalizer</mat-icon>
+          <input matInput name="quantity" placeholder="Qty." formControlName="quantity" required
+            (keyup)="onQuantityKeyUp($event)">
+        </mat-form-field>
+        <mat-form-field fxFlex="40" class="pr-4">
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">attach_money</mat-icon>
+          <input matInput name="quantity" placeholder="Rate" formControlName="rate" required
+            (keyup)="onRateKeyUp($event)">
+        </mat-form-field>
+        <mat-form-field fxFlex="40" class="pl-4">
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">attach_money</mat-icon>
+          <input matInput name="description" placeholder="Total" formControlName="total" required
+            (keyup)="onTotalKeyUp($event)">
+        </mat-form-field>
+      </div>
+      <!--END RATE-->
+
+      <!--FINISH DATE-->
+      <div fxLayout="row">
+        <mat-form-field fxFlex>
+          <input matInput formControlName="dateToDelivery" [matDatepicker]="picker" placeholder="Date to be delivered">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+      <!--END FINISH DATE-->
+
+      <!--DESCRIPTION-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 secondary-text">chat</mat-icon>
+          <input maxlength="80" formControlName="description" placeholder="Description" matInput>
+        </mat-form-field>
+      </div>
+      <!--END DESCRIPTION-->
+
+    </form>
+    <!--END FORM-->
+  </div>
+  <!--END CONTENT-->
+
+  <!--ACTIONS-->
+  <div mat-dialog-actions class="m-0 pl-16 pr-16" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="!readOnly">
+
+    <button *ngIf="action !=='edit'" mat-raised-button (click)="dialogRef.close(proposalServiceForm)" color="accent"
+      [disabled]="proposalServiceForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+
+    <button *ngIf="action ==='edit'" mat-raised-button (click)="dialogRef.close(proposalServiceForm)" color="accent"
+      [disabled]="proposalServiceForm.invalid" aria-label="UPDATE">
+      SAVE
+    </button>
+
+  </div>
+  <!--END ACTIONS-->
+</div>

@@ -1,0 +1,79 @@
+@import "src/@fuse/scss/fuse";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  height: 100%;
+
+  .sidenav-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    // padding-right: 24px !important;
+
+    @include media-breakpoint(gt-sm) {
+      padding: 12px;
+    }
+
+    .content {
+      padding-top: 0px !important;
+
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      flex: 0 1 auto;
+      padding: 0;
+      font-weight: 500;
+
+
+      @include media-breakpoint(gt-sm) {
+        @include mat-elevation(4);
+      }
+
+      .header {
+        flex: 0 1 auto;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        margin-bottom: 10px;
+        margin-top: 0px;
+        background: #2D323E !important;
+        font-weight: 500;
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.87);
+        margin-bottom: 5px !important;
+      }
+
+      .mat-form-field {
+        max-width: 210px;
+      }
+
+      .dates {
+        input {
+          max-width: 150px !important;
+        }
+        .mat-form-field-infix {
+          display: block;
+          position: relative;
+          flex: auto;
+          min-width: 0;
+          max-width: 150px !important;
+        }
+
+        .mat-input-flex {
+          &.mat-form-field-flex {
+            display: inline-flex;
+            align-items: baseline;
+            max-width: 150px !important;
+          }
+        }
+      }
+
+      >.content {
+        flex: 0 1 auto;
+      }
+    }
+
+  }
+}

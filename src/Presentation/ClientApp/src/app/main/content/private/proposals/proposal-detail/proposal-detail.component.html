@@ -1,0 +1,274 @@
+<div id="proposal-detail" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayoutAlign="space-between center" fxLayout.gt-xs="row"
+    fxLayoutAlign.gt-xs="space-between center">
+
+    <!-- APP TITLE -->
+    <div fxLayout="column" fxLayoutAlign="center start">
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Proposal Detail</span>
+      </div>
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <button class="mr-0 mr-sm-16" mat-icon-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+          <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Proposal
+            Details</span>
+        </div>
+      </div>
+
+    </div>
+    <!-- / APP TITLE -->
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!--LOADER-->
+    <div class="spinner-container" *ngIf="loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
+    <!--END LOADER-->
+
+    <!-- CENTER -->
+    <div class="center p-24 pb-56 pr-sm-92" fusePerfectScrollbar>
+
+      <!-- CONTENT -->
+      <div class="content p-40 fuse-white-bg mat-elevation-z4">
+        <div class="report">
+
+          <!--TITLE-->
+          <div class="title-document" fxLayoutAlign="center center">
+            <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="center center">
+              <span class="mat-headline black-fg">MG Capital Proposal Detail</span>
+            </div>
+          </div>
+          <!--END TITLE-->
+
+          <!--HEADER-->
+          <div class="ml-8 m-sm-0 " fxLayoutAlign="space-between stretch">
+            <div class="invoice-number pt-24" fxLayout="row" fxFlex="50" fxLayoutAlign="start center">
+              <div fxLayout="column">
+
+                <div fxLayout="row">
+                  <span class="title"> TO </span>
+                  <span class="number number-date"> {{proposalDetail.customerName}}
+                    ({{ proposalDetail.customerEmail }})</span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> FROM </span>
+                  <span class="number number-date"> {{proposalDetail.contactName}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> LOCATION </span>
+                  <span class="number number-date"> {{proposalDetail.location}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> DATE FROM </span>
+                  <span class="number number-date"> {{proposalDetail.createdDate | date: 'MM/dd/yyyy'}} </span>
+                </div>
+
+                <div fxLayout="row" *ngIf="proposalDetail.status > 0">
+                  <span class="title"> STATUS </span>
+                  <span class="number number-date">
+                    {{ status }} - {{proposalDetail.statusChangedDate | date}} </span>
+                </div>
+
+                <div fxLayout="row" *ngIf="proposalDetail.status === 1">
+                  <span class="title"> BILL TO </span>
+                  <span class="number number-date">
+                    {{ billTo }} - {{proposalDetail.billToName}} ({{proposalDetail.billToEmail}})</span>
+                </div>
+
+                <!--<div fxLayout="row">
+                  <span class="title"> TOTAL </span>
+                  <span class="number number-date font-weight-600"> {{ total | currency:'USD':'symbol'}} </span>
+                </div>-->
+
+              </div>
+            </div>
+
+            <div class="invoice-number pl-24 pt-24 " fxLayout="row" fxFlex="50" fxLayoutAlign="start center">
+              <div class="issuer" fxLayout="row" fxLayoutAlign="start center">
+                <div class="logo">
+                  <img src="assets/images/logos/MG Logo Black Text.png">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--END HEADER-->
+
+          <!--SERVICES-->
+          <div class="mat-elevation-z2 mt-24">
+            <!--TITLE-->
+            <div class="sub-title-document green-400-bg" fxLayoutAlign="center center">
+              <div class="pt-16" fxFill fxLayout="row" fxLayoutAlign="space-between center">
+                <span class="mat-headline pl-16">Service Items</span>
+                <div class="white-fg breadcrumb pr-16" fxFlex="0 1 auto">
+                  <button mat-icon-button matTooltip="Add Items" (click)="newProposalService()" *ngIf="!readOnly">
+                    <mat-icon>add_box</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!--END TITLE-->
+
+            <!--TABLE-->
+            <mat-table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+
+              <!-- Quantity Column -->
+              <ng-container cdkColumnDef="quantity">
+                <mat-header-cell *cdkHeaderCellDef mat-sort-header="quantity">Quantity</mat-header-cell>
+                <mat-cell *cdkCellDef="let row">
+                  <div fxLayout="column" fxFlex="100">
+                    {{ row.quantity }}
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Quantity Column -->
+
+              <!-- Description Column -->
+              <ng-container cdkColumnDef="description">
+                <mat-header-cell *cdkHeaderCellDef mat-sort-header="description">Description</mat-header-cell>
+                <mat-cell *cdkCellDef="let row">
+                  <div fxLayout="column" fxFlex="100">
+                    <p class="m-0 font-weight-500">
+                      {{ row.officeServiceTypeName }}
+                    </p>
+                    <p class="m-0">
+                      {{ row.description }}
+                    </p>
+                    <p class="m-0">
+                      {{ row.dateToDelivery | date }}
+                    </p>
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Description Column -->
+
+              <!-- Building Column -->
+              <ng-container cdkColumnDef="building">
+                <mat-header-cell *cdkHeaderCellDef mat-sort-header="building">Building</mat-header-cell>
+                <mat-cell *cdkCellDef="let row">
+                  <div fxLayout="column" fxFlex="100">
+                    {{ row.buildingName }}
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Building Column -->
+
+              <!-- Location Column -->
+              <ng-container cdkColumnDef="location">
+                <mat-header-cell *cdkHeaderCellDef mat-sort-header="location">Location</mat-header-cell>
+                <mat-cell *cdkCellDef="let row">
+                  <div fxLayout="column" fxFlex="100">
+                    {{ row.location }}
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Location Column -->
+
+              <!-- Rate Column -->
+              <ng-container cdkColumnDef="rate">
+                <mat-header-cell *cdkHeaderCellDef mat-sort-header="rate">Rate</mat-header-cell>
+                <mat-cell *cdkCellDef="let row">
+                  <div fxLayout="column" fxFlex="100">
+                    {{ row.rate | currency:'USD':'symbol' }}
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Rate Column -->
+
+              <!-- Total Column -->
+              <ng-container cdkColumnDef="total">
+                <mat-header-cell *cdkHeaderCellDef mat-sort-header="total">Total</mat-header-cell>
+                <mat-cell *cdkCellDef="let row">
+                  <div fxLayout="column" fxFlex="100">
+                    {{ row.rate * row.quantity | currency:'USD':'symbol' }}
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Total Column -->
+
+              <!-- Buttons Column -->
+              <ng-container cdkColumnDef="buttons">
+                <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+                <mat-cell *cdkCellDef="let proposal">
+                  <div fxFlex="row" fxLayoutAlign="end center">
+                    <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                      (click)="$event.stopPropagation();">
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                      <button mat-menu-item aria-label="edit" (click)="editProposalService(proposal.id)">
+                        <!-- <mat-icon>edit</mat-icon> -->
+                        <span>Edit</span>
+                      </button>
+
+                    </mat-menu>
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Buttons Column -->
+
+              <mat-header-row *cdkHeaderRowDef="columnsToDisplay"></mat-header-row>
+              <mat-row *cdkRowDef="let proposal; columns: columnsToDisplay;" class="proposal"
+                [@animate]="{value:'*',params:{y:'100%'}}">
+              </mat-row>
+            </mat-table>
+            <div fxLayout="row" fxLayoutAlign="end center" class="p-8">
+              <span class="pr-8">Total</span>
+              <span class="font-weight-600 font-size-16 pr-88"> {{ total | currency:'USD':'symbol'}} </span>
+            </div>
+            <!--END TABLE-->
+          </div>
+          <!--END SERVICES-->
+
+        </div>
+      </div>
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CENTER -->
+
+    <!-- SEND BY EMAIL DOCUMENT BUTTON -->
+    <button mat-fab class="mg-accent-bg" id="btn-send-by-email"
+      aria-label="send by email the link of public document view" *fuseIfOnDom
+      matTooltip="Send by email the document url" matTooltipPosition="left" (click)="sendByEmailProposalLink()"
+      [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+      <mat-icon>email</mat-icon>
+    </button>
+    <!-- / SEND BY EMAIL DOCUMENT BUTTON -->
+
+    <!--SHARE DOCUMENT BUTTON-->
+    <button mat-fab class="mg-accent-bg" id="btn-copy-url" (click)="shareProposalDocument()" *fuseIfOnDom
+      matTooltip="Shared document url" matTooltipPosition="left"
+      [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+      <mat-icon>insert_link</mat-icon>
+    </button>
+    <!--END SHARE DOCUMENT BUTTON-->
+
+    <!--OPEN REPORT VIEW BUTTON-->
+    <button mat-fab class="mg-accent-bg" id="btn-show-shared-view" (click)="openPublicProposalViewNewTab()" *fuseIfOnDom
+      matTooltip="Show shared document view" matTooltipPosition="left"
+      [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+      <mat-icon>pageview</mat-icon>
+    </button>
+    <!--END OPEN REPORT VIEW BUTTON-->
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

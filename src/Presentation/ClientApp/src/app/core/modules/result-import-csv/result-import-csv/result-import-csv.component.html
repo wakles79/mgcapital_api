@@ -1,0 +1,78 @@
+<div class="dialog-content-wrapper">
+  <!--HEADER-->
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">Import Result </span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END HEADER-->
+  <div class="mat-dialog-container p-16">
+    <div fxLayout="row" fxLayoutAlign="space-around center" class="items-summary">
+      <mat-card class="text-center item-summary-box estimated mb-8" fxFlex='31'>
+        <div>
+          <strong> New Items </strong>
+        </div>
+        <div>
+          <span class="mat-display-2">{{SaveItems | json}}</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="text-center item-summary-box estimated  mb-8" fxFlex='31'>
+        <div>
+          <strong> Updated Items </strong>
+        </div>
+        <div>
+          <span class="mat-display-2">{{RepeatedItems | json}}</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="text-center item-summary-box estimated  mb-8" fxFlex='31'>
+        <div>
+          <strong>Error</strong>
+        </div>
+        <div>
+          <span class="mat-display-2">{{Error | json}}</span>
+        </div>
+      </mat-card>
+    </div>
+    <div fxLayout="row" fxLayoutAlign="space-around center" class="items-summary">
+      <mat-card class="text-center item-summary-box estimated" fxFlex='31'>
+        <div>
+          <strong> Contract Codes not found </strong>
+        </div>
+        <div>
+          <span class="mat-display-2">{{ContractCodeNotFound | json}}</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="text-center item-summary-box estimated" fxFlex='31'>
+        <div>
+          <strong>Building Codes not found </strong>
+        </div>
+        <div>
+          <span class="mat-display-2">{{BuildingCodeNotFound | json}}</span>
+        </div>
+      </mat-card>
+
+      <mat-card class="text-center item-summary-box estimated" fxFlex='31'>
+        <div>
+          <strong>Customer Code not found </strong>
+        </div>
+        <div>
+          <span class="mat-display-2">{{CustomerCodeNotFound | json}}</span>
+        </div>
+      </mat-card>
+    </div>
+    <div fxLayout="row" fxLayoutAling="space-around center" class="items-sumary">
+      <mat-card class="text-center item-summary-box-down estimated" fxFlex='100'>
+        <button mat-button class="add-attachment-button" aria-label="add Document CSV" (click)="downloadCSV()">
+          <mat-icon class="s-20">cloud_download</mat-icon>
+          <span>Download import error file in csv format</span>
+        </button>
+      </mat-card>
+    </div>
+  </div>
+</div>

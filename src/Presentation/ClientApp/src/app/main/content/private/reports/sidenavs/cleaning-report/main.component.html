@@ -1,0 +1,70 @@
+<div class="sidenav-content">
+
+  <div class="card fuse-white-bg">
+    <!-- SIDENAV CONTENT -->
+    <div class="content py-16" fusePerfectScrollbar>
+
+      <div class="nav" fxLayout="column" fxLayoutAlign="start start">
+
+        <!-- SIDENAV HEADER -->
+        <div class="header p-24 title" fxFlexFill fxLayout="row" fxLayoutAlign="start center">
+          <span class="h5">FILTERS</span>
+        </div>
+        <!-- / SIDENAV HEADER -->
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('all')" [ngClass]="{'active mg-accent-bg':filterActive ==='all'}">
+            <span class="title">All Reports</span>
+          </a>
+
+          <a class="nav-link" matRipple (click)="changeFilter('draft')" [ngClass]="{'active mg-accent-bg':filterActive ==='draft'}">
+            <span class="title">Draft</span>
+          </a>
+
+          <a class="nav-link" matRipple (click)="changeFilter('sent')" [ngClass]="{'active mg-accent-bg':filterActive ==='sent'}">
+            <span class="title">Sent</span>
+          </a>
+
+          <div class="filterByDatesRange mt-4"></div>
+
+          <div class="nav-item pt-12 filterByBuilding" aria-label="inbox">
+            <span class="pl-24 title">By Dates Range</span>
+            <!-- Date From -->
+            <mat-form-field fxLayout="row" fxLayoutAlign="start start" class="dates pl-24">
+              <input matInput [matDatepicker]="dateFrom" placeholder="From" [formControl]="dateFromCtrl"
+                (dateChange)="changeDates($event)">
+              <mat-datepicker-toggle matSuffix [for]="dateFrom"></mat-datepicker-toggle>
+              <mat-datepicker #dateFrom></mat-datepicker>
+            </mat-form-field>
+
+            <!-- Date To -->
+            <mat-form-field fxLayout="row" fxLayoutAlign="start start" class="dates pl-24">
+              <input matInput [matDatepicker]="dateTo" placeholder="To" [formControl]="dateToCtrl"
+                (dateChange)="changeDates($event)">
+              <mat-datepicker-toggle matSuffix [for]="dateTo"></mat-datepicker-toggle>
+              <mat-datepicker #dateTo></mat-datepicker>
+            </mat-form-field>
+          </div>
+
+          <div class="filterByDatesRange"></div>
+
+          <div class="nav-item pt-12 filterByBuilding" aria-label="inbox">
+            <span class="pl-24 title">By Comment</span>
+            <div fxLayout="row">
+              <mat-form-field fxFlex class="pl-24 pr-12">
+                <mat-select placeholder="Status" #commentStatusFilter
+                  (selectionChange)="changeCommentsFilter(commentStatusFilter.value)">
+                  <mat-option value="null">All</mat-option>
+                  <mat-option value="1">Replied</mat-option>
+                  <mat-option value="-1">Pending Reply</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- / SIDENAV CONTENT -->

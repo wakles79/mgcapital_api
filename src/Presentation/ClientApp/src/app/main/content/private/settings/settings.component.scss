@@ -1,0 +1,131 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/custom-theme";
+@import "../../../../../../node_modules/@progress/kendo-theme-material/dist/all.scss";
+
+#settings-page {
+  .header {
+    height: 120px;
+    min-height: 120px;
+    max-height: 120px;
+    position: relative;
+    color: #fff;
+
+    .header-content {
+      height: 100%;
+    }
+  }
+
+  .logo-container {
+    height: 100%;
+
+    .logo-image {
+      max-width: 250px;
+      max-height: 110px;
+    }
+
+    .logo-upload-button {
+      height: 30px;
+      margin-top: 8px;
+
+      &.mat-raised-button {
+        line-height: 0px;
+      }
+    }
+  }
+
+  .setting-box {
+    border-radius: 4px;
+
+    .box-header {
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      padding: 16px;
+      font-size: 17px;
+      background-color: #66bb6a !important;
+      color: #ffffff;
+    }
+
+    .box-content {
+      padding: 16px;
+      color: rgba(0, 0, 0, 0.87);
+
+      .info-line {
+        margin-bottom: 8px;
+
+        .title {
+          font-size: 14px;
+          color: rgba(0, 0, 0, 0.54);
+          font-weight: 500;
+        }
+
+        .info {
+          font-size: 16px;
+          font-weight: 400;
+        }
+      }
+
+      .mat-list {
+        .mat-list-item {
+          height: 38px;
+
+          &.active {
+            background-color: green;
+            color: #ffffff;
+          }
+        }
+      }
+
+      .mat-selection-list {
+        .mat-list-option {
+          height: 38px;
+
+          &.active {
+            background-color: green;
+            color: #ffffff;
+          }
+        }
+      }
+
+      .mat-icon {
+        &.rounded {
+          color: #e3e3e3;
+          border-radius: 17px;
+          padding: 5px;
+          width: 34px !important;
+          height: 34px;
+          cursor: pointer;
+        }
+
+        &.active {
+          color: #66bb6a;
+        }
+      }
+    }
+  }
+
+  /* Absolute Center Spinner */
+  .spinner-container {
+    position: fixed;
+    z-index: 999;
+    height: 2em;
+    width: 2em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  /* Transparent Overlay */
+  .spinner-container:before {
+    content: "";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+}

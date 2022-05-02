@@ -1,0 +1,104 @@
+<div class="spinner-container" *ngIf="loading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+
+<!--SEARCH-->
+<div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="end center">
+  <label for="search" class="mr-8">
+    <mat-icon>search</mat-icon>
+  </label>
+  <mat-form-field floatLabel="never">
+    <input matInput [formControl]="searchInput" id="search" placeholder="Search for anything">
+  </mat-form-field>
+</div>
+<!--END SEARCH-->
+
+<mat-table #table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+
+  <!-- Name Column -->
+  <ng-container cdkColumnDef="name">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="Name">Name</mat-header-cell>
+    <mat-cell *cdkCellDef="let officeType">
+      <p class="text-truncate">{{officeType.name}}</p>
+    </mat-cell>
+  </ng-container>
+  <!-- End Name Column -->
+
+  <!--Type Column-->
+  <ng-container cdkColumnDef="type">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="RateType">Type</mat-header-cell>
+    <mat-cell *cdkCellDef="let officeType">
+      <div fxLayout="column" fxFlex="100">
+        <p class="text-truncate m-0">{{officeType.rateTypeName}}</p>
+        <p *ngIf="officeType.rateType === 3" class="text-truncate m-0 secondary-text mat-caption">Supply Factor: ${{officeType.supplyFactor}}</p>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--End Type Column-->
+
+  <!-- Rate Column -->
+  <ng-container cdkColumnDef="rate">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="Rate">Rate</mat-header-cell>
+    <mat-cell *cdkCellDef="let officeType">
+      <p class="text-truncate">{{officeType.rate| currency:'USD':'symbol'}}</p>
+    </mat-cell>
+  </ng-container>
+  <!-- End Rate Column -->
+
+  <!-- Frequency Column -->
+  <ng-container cdkColumnDef="periodicity">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="Periodicity">Periodicity</mat-header-cell>
+    <mat-cell *cdkCellDef="let officeType">
+      <p class="text-truncate">{{officeType.periodicity}}</p>
+    </mat-cell>
+  </ng-container>
+  <!-- End Frequency Column -->
+
+  <ng-container cdkColumnDef="status">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="Status">Status</mat-header-cell>
+    <mat-cell *cdkCellDef="let officeType">
+      <p [className]="officeType.status ? 'badge available' : 'badge not-available'">
+        {{ activeStatus(officeType.status) | uppercase }}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Buttons Column -->
+  <ng-container cdkColumnDef="buttons">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let officeType">
+      <div fxFlex="row" fxLayoutAlign="end center">
+
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="editOfficeType(officeType)">
+            <!-- <mat-icon>edit</mat-icon> -->
+            <span>Edit</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="updateStatusOfficeType(officeType.id)" *ngIf="!readOnly && (officeType.isUsed || !officeType.isUsed)">
+            <!-- <mat-icon>autorenew</mat-icon> -->
+            <span>{{ activeOptions(officeType.status) }}</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="deleteOfficeType(officeType)" *ngIf="!readOnly && !officeType.isUsed">
+            <!-- <mat-icon>delete</mat-icon> -->
+            <span>Delete</span>
+          </button>
+
+        </mat-menu>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!-- End Buttons Column -->
+
+  <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *cdkRowDef="let officeType; columns: displayedColumns;" class="officeType"
+    (click)="editOfficeType(officeType)" matRipple [@animate]="{value:'*',params:{y:'100%'}}">
+  </mat-row>
+</mat-table>
+<mat-paginator [length]="officeTypesCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]"></mat-paginator>

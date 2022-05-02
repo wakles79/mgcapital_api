@@ -1,0 +1,96 @@
+<mat-table #table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+  <!-- Checkbox Column -->
+  <ng-container cdkColumnDef="checkbox">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let user">
+      <mat-checkbox [(ngModel)]="checkboxes[user.guid]" (ngModelChange)="onSelectedChange(user.guid)"
+        (click)="$event.stopPropagation()" *ngIf="!readOnly">
+      </mat-checkbox>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container cdkColumnDef="fullName">
+    <mat-header-cell *cdkHeaderCellDef fxHide fxShow.gt-sm>Full Name</mat-header-cell>
+    <mat-cell *cdkCellDef="let user">
+      <p class="text-truncate font-weight-600">{{user.fullName}}</p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Email Column -->
+  <ng-container cdkColumnDef="email">
+    <mat-header-cell *cdkHeaderCellDef fxHide fxShow.gt-sm>Email</mat-header-cell>
+    <mat-cell *cdkCellDef="let user" fxHide fxShow.gt-sm>
+      <p class="email text-truncate">
+        {{user.email}}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Phone Column -->
+  <ng-container cdkColumnDef="phone">
+    <mat-header-cell *cdkHeaderCellDef fxHide fxShow.gt-sm>Phone</mat-header-cell>
+    <mat-cell *cdkCellDef="let user" fxHide fxShow.gt-sm>
+      <p class="phone text-truncate">
+        {{user.phone}}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Role Name Column -->
+  <ng-container cdkColumnDef="roleName">
+    <mat-header-cell *cdkHeaderCellDef fxHide fxShow.gt-sm>Role</mat-header-cell>
+    <mat-cell *cdkCellDef="let user" fxHide fxShow.gt-sm>
+      <p class="department text-truncate">
+        {{user.roleName}}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Buttons Column -->
+  <ng-container cdkColumnDef="buttons">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let user">
+      <div fxFlex="row" fxLayoutAlign="end center" *ngIf="!readOnly">
+
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+          <button id="mat-menu-item" mat-menu-item aria-label="send_credentials" (click)="sendCredentials(user)">
+            <!-- <mat-icon>email</mat-icon> -->
+            <span>Send Credentials</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="deleteElement(user)">
+            <!-- <mat-icon>delete</mat-icon> -->
+            <span>Remove</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="shareBuildingByOp(user.id)"
+            *ngIf="roleLevelLoggedUser===30 && user.roleName==='Operation Manager'">
+            <!-- <mat-icon>share</mat-icon> -->
+            <span>Share Buildings</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="shareBuilding(user.id)"
+            *ngIf="roleLevelLoggedUser<30 && user.roleName==='Operation Manager'">
+            <!-- <mat-icon>share</mat-icon> -->
+            <span>Share Buildings</span>
+          </button>
+
+        </mat-menu>
+      </div>
+
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *cdkRowDef="let user; columns: displayedColumns;" class="user" (click)="editUser(user)"
+    [ngClass]="{'mat-light-blue-50-bg':checkboxes[user.guid]}" matRipple [@animate]="{value:'*',params:{y:'100%'}}">
+  </mat-row>
+</mat-table>
+
+<mat-paginator [length]="usersCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]"></mat-paginator>

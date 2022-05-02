@@ -1,0 +1,68 @@
+<!-- SIDEBAR HEADER -->
+<div fxLayout="column" fxLayoutAlign="space-between start" class="header p-24 pb-4">
+
+
+  <div class="fuse-white-fg" fxFlex fxLayout="row" fxLayoutAlign="start center">
+    <mat-icon class="mr-16 s-32" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">
+      mail
+    </mat-icon>
+    <span class="font-size-24" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">INBOX</span>
+  </div>
+
+</div>
+<!-- SIDEBAR HEADER -->
+
+<!-- SIDEBAR CONTENT -->
+<div class="content" fusePerfectScrollbar [@animate]="{value:'*',params:{y:'50px'}}">
+
+  <div class="px-24 pt-20 pb-12">
+    <button mat-raised-button class="mat-accent compose-dialog-button w-100-p" (click)="addTicket()"
+      aria-label="Compose">
+      NEW TICKET
+    </button>
+  </div>
+
+  <div class="nav">
+
+    <div class="nav-subheader"> FOLDERS </div>
+
+    <div class="nav-item" *ngFor="let folder of folders">
+      <a class="nav-link" matRipple [routerLink]="'/app/inbox/' + folder.handle"
+        [routerLinkActive]="['active', 'accent']">
+        <mat-icon class="nav-link-icon" *ngIf="folder.icon">{{folder.icon}}</mat-icon>
+        <span>{{folder.title}}</span>
+      </a>
+    </div>
+
+    <div class="nav-subheader"> FILTERS </div>
+
+
+    <div class="nav-item px-16">
+      <!-- BUILDING -->
+      <mat-form-field class="w-100-p">
+        <mat-select [formControl]="buildingFormControl" placeholder="Building">
+          <mat-option>
+            <ngx-mat-select-search [formControl]="buildingSearchFormControl" placeholderLabel="Search"
+            noEntriesFoundLabel="No results"></ngx-mat-select-search>
+          </mat-option>
+          <mat-option value="0">All</mat-option>
+          <mat-option *ngFor="let building of filteredBuildings" [value]="building.id">
+            {{building.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <!-- BUILDING -->
+    </div>
+
+    <div class="nav-item px-16">
+      <mat-form-field class="w-100-p">
+        <mat-select placeholder="Tags" [(ngModel)]="selectedTags" [formControl]="selectedTagsFormControl" (selectionChange)="tagsChanged($event)" multiple>
+          <mat-option *ngFor="let tag of tags" [value]="tag.id">
+            {{tag.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+</div>
+<!-- SIDEBAR CONTENT -->

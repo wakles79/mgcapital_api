@@ -1,0 +1,145 @@
+<div class="dialog-content-wrapper">
+  <!--TITLE-->
+  <mat-toolbar matDialogTitle class="accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END TITLE-->
+
+  <!--CONTENT-->
+  <div mat-dialog-content class="p-12 m-0" fusePerfectScrollbar>
+    <!--FORM-->
+    <form [formGroup]="inspectionForm">
+
+      <div fxLayout="row" fxLayoutAlign="start center" fxFill>
+        <!--BUILDING-->
+        <div fxLayout="row" fxLayoutAlign="start start" fxFlex="50" class="pr-8">
+          <mat-form-field fxFlex>
+            <mat-icon matPrefix class="mr-8 s-20 secondary-text">business</mat-icon>
+            <mat-select #sBuilding placeholder="Building" formControlName="buildingId"
+              (selectionChange)="buildingChanged(sBuilding.value)" required>
+              <ngx-mat-select-search formControlName="buildingFilter" placeholderLabel="Search"
+                noEntriesFoundLabel="No results"></ngx-mat-select-search>
+              <mat-option *ngFor="let building of filteredBuildings | async" [value]="building.id">
+                {{building.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!--END BUILDING-->
+
+        <!--EMPLOYEE-->
+        <div fxLayout="row" fxLayoutAlign="start start" fxFlex="50" class="pl-8">
+          <mat-form-field fxFlex>
+            <mat-icon matPrefix class="mr-8 s-20 secondary-text">business</mat-icon>
+            <mat-select placeholder="Employee" formControlName="employeeId" required>
+              <ngx-mat-select-search formControlName="employeeFilter" placeholderLabel="Search"
+                noEntriesFoundLabel="No results"></ngx-mat-select-search>
+              <mat-option *ngFor="let employee of filteredEmployees | async" [value]="employee.id">
+                {{employee.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!--END EMPLOYEE-->
+      </div>
+
+      <!--BEGIN NOTES-->
+      <div fxLayout="row" fxLayoutAlign="start center" fxFill>
+        <mat-form-field fxFlex>
+          <textarea matInput placeholder="Starting notes" rows="2" formControlName="beginNotes"></textarea>
+        </mat-form-field>
+      </div>
+      <!--END BEGIN NOTES-->
+
+      <div fxLayout="row" fxLayoutAlign="start center" fxFill>
+        <!--SNOOZE DATE-->
+        <!-- <mat-form-field floatLabel="always" fxFlex="33">
+          <input matInput formControlName="snoozeDate" [matDatepicker]="pickerSnoozeDate" placeholder="Snooze date">
+          <mat-datepicker-toggle matSuffix [for]="pickerSnoozeDate"></mat-datepicker-toggle>
+          <mat-datepicker #pickerSnoozeDate></mat-datepicker>
+        </mat-form-field> -->
+        <!-- <div fxFlex="33" class="" fxLayout="row" fxLayoutAlign="start center" fxFlexFill>
+          <label class="example-input-wrapper">
+            SnoozeDate
+            <input matInput placeholder="SnoozeDate" formControlName="snoozeDate" [owlDateTimeTrigger]="dt"
+              [owlDateTime]="dt">
+            <owl-date-time #dt></owl-date-time>
+          </label>
+        </div> -->
+
+        <mat-form-field *ngIf="roleLevelLoggedUser <= 45" floatLabel="always" class="pl-8 pr-8" fxFlex="33">
+          <input matInput placeholder="SnoozeDate" formControlName="snoozeDate" [owlDateTimeTrigger]="dt"
+            [owlDateTime]="dt">
+          <owl-date-time hour12Timer="true" #dt></owl-date-time>
+        </mat-form-field>
+        <!--END DATE-->
+
+        <!--DUE DATE-->
+        <mat-form-field *ngIf="roleLevelLoggedUser <= 45" floatLabel="always" class="pl-8 pr-8" fxFlex="33">
+          <input matInput formControlName="dueDate" [matDatepicker]="pickerDueDate" placeholder="Due date"
+            (dateChange)="dueDateChanged('changed')">
+          <mat-datepicker-toggle matSuffix [for]="pickerDueDate"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDueDate></mat-datepicker>
+        </mat-form-field>
+        <!--END DATE-->
+
+        <!--CLOSE DATE-->
+        <mat-form-field *ngIf="action === 'edit' && isClosed" floatLabel="always" fxFlex="33">
+          <input matInput formControlName="closeDate" [matDatepicker]="pickerCloseDate" placeholder="Close date"
+            (dateChange)="closeDateChanged('changed')">
+          <mat-datepicker-toggle matSuffix [for]="pickerCloseDate"></mat-datepicker-toggle>
+          <mat-datepicker #pickerCloseDate></mat-datepicker>
+        </mat-form-field>
+        <!--END DATE-->
+      </div>
+
+      <!--CLOSING NOTES-->
+      <div fxLayout="row" fxLayoutAlign="start center" fxFill *ngIf="action === 'edit' && isClosed">
+        <mat-form-field fxFlex appearance="outline">
+          <textarea matInput placeholder="Closing notes" rows="2" formControlName="closingNotes"></textarea>
+        </mat-form-field>
+      </div>
+      <!--END CLOSING NOTES-->
+
+      <!--STARS-->
+      <div fxLayout="row" fxLayoutAlign="space-between center" fxFill *ngIf="action === 'edit' &&  isClosed"
+        class="pl-8 pr-8 pt-16 pb-16 primary-50-bg">
+        <span class="text-muted h3"> Stars</span>
+        <ul style="display: inline-block" class="rating-list m-0 pl-8">
+          <li *ngFor="let star of stars" class="p-0">
+            <mat-icon (click)="selectStar(star)" class="yellow-600-fg font-size-24 pt-4">
+              {{ star <= selectedStars ? "star" : "star_border" }}</mat-icon>
+          </li>
+        </ul>
+      </div>
+      <!--END STARS-->
+
+      <!--PUBLIC VIEW-->
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="py-16">
+        <mat-checkbox formControlName="allowPublicView">Allow Public View</mat-checkbox>
+      </div>
+      <!--END PUBLIC VIEW-->
+
+    </form>
+    <!--END FORM-->
+  </div>
+  <!--END CONTENT-->
+
+  <!--ACTION BUTTONS-->
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between end">
+    <button mat-raised-button *ngIf="action !=='edit'" color="accent" aria-label="SAVE"
+      [disabled]="inspectionForm.invalid || buttonSaveDisabled"  (click)="dialogRef.close(inspectionForm)">
+      SAVE
+    </button>
+    <button mat-raised-button *ngIf="action ==='edit' && currentInspectionStatus != 5 && !readOnly" color="accent"
+      aria-label="SAVE" [disabled]="inspectionForm.invalid" (click)="dialogRef.close(inspectionForm)">
+      SAVE
+    </button>
+  </div>
+  <!--END ACTION BUTTONS-->
+</div>

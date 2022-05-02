@@ -1,0 +1,168 @@
+<div id="Building profile Detail" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <div class="spinner-container" *ngIf="loading$ | async">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayoutAlign="space-between center" fxLayout.gt-xs="row"
+    fxLayoutAlign.gt-xs="space-between center">
+
+    <!-- APP TITLE -->
+    <div fxLayout="column" fxLayoutAlign="center start">
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Building Detail</span>
+      </div>
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <button class="mr-0 mr-sm-16" mat-icon-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+          <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">
+            Building Details
+          </span>
+        </div>
+      </div>
+
+    </div>
+    <!-- / APP TITLE -->
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- SIDEBAR -->
+
+    <!-- / SIDEBAR -->
+
+    <!-- CENTER -->
+    <div class="center p-24" fusePerfectScrollbar>
+
+      <!-- CONTENT -->
+      <div class="content p-24">
+        <!-- #container -->
+        <mat-tab-group mat-align-tabs="center" animationDuration="2000ms">
+
+          <!--Tab Informacion General-->
+          <mat-tab style="text-decoration-color: white">
+            <ng-template mat-tab-label>
+              <mat-icon class="example-tab-icon">local_convenience_store</mat-icon>
+              Information
+            </ng-template>
+            <div class="container" fxLayout fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="10px"
+              fxLayoutGap.xs="0">
+              <!--Div General Information-->
+              <div class="item item-1" fxFlex="100%" style="padding: 15px">
+                <div fxLayout="row" class="mg-accent-bg p-8">
+                  <span> General information </span>
+                </div>
+                <mat-card fxLayout="row" fxLayoutAlign="center start">
+
+                  <div class="item item-1" fxFlex="50%" fxLayout="column">
+                    <div fxFlex="100%">
+                      <mat-icon matPrefix class="mr-12 s-20 secondary-text">account_circle</mat-icon>
+                      <span class="title" style="font-weight: bold;">name* :</span>
+                      <span class="number number-date">&nbsp; {{building.name}} </span>
+                    </div>
+
+                    <div fxFlex="100%">
+                      <mat-icon matPrefix class="mr-12 s-20 secondary-text">edit_location</mat-icon>
+                      <span class="title" style="font-weight: bold;">Address :</span>
+                      <span class="number number-date">&nbsp; {{buildingAddress}} </span>
+                    </div>
+
+
+                    <div fxFlex="100%">
+                      <mat-icon matPrefix class="mr-12 s-20 secondary-text">domain</mat-icon>
+                      <span class="title" style="font-weight: bold;">Managment Co. * :</span>
+                      <span class="number number-date">&nbsp;{{customer.name}}</span>
+                    </div>
+                  </div>
+
+                  <div class="item item-1" fxFlex=50% fxLayout="column">
+                    <div fxFlex="100%">
+                      <mat-icon matPrefix class="mr-12 s-20 secondary-text">settings_phone</mat-icon>
+                      <span class="title" style="font-weight: bold;">Emergency Phone Ext :</span>
+                      <span class="number number-date">&nbsp; {{building.emergencyPhoneExt}} </span>
+                    </div>
+
+                    <div fxFill>
+                      <mat-icon matPrefix class="mr-12 s-20 secondary-text">phone</mat-icon>
+                      <span class="title" style="font-weight: bold;">Emergency Phone :</span>
+                      <span class="number number-date">&nbsp; {{building.emergencyPhone}} </span>
+                    </div>
+                  </div>
+
+                </mat-card>
+              </div>
+              <!--Div Data Phone-->
+
+            </div>
+
+            <!--Panel Supervisors-->
+            <div class="container" fxLyout fxLayou.xs="column" xLayoutAlign="center" fxLayoutGap="10px"
+              fxlayoutGap.xs="0">
+              <div class="item item-1" fxFlex="50%" style="padding: 15px">
+                <div fxLayout="row" class="mg-accent-bg p-8">
+                  <span> assigned employees </span>
+                </div>
+                <mat-card fxLayout="column" fxLayoutAlign="center start">
+
+                  <!--Panel de Operation Manager-->
+                  <div fxFill class="mt-15" fxFlex="100%">
+                    <mat-icon matPrefix class="mr-12 s-20 secondary-text">account_circle</mat-icon>
+                    <span class="title" style="font-weight: bold;">Operation Manager * :</span>
+                    <span class="number number-date">&nbsp; {{filteredManager[0].name}} </span>
+                  </div>
+
+                  <!--Panel explansion Supervisor-->
+                  <div fxFill class="mt-16" fxFlex="100%">
+                    <table style="margin: 10px" fxLayoutAlign="start center" style="border-block-color: initial">
+                      <tr>
+                        <th>Supervisors</th>
+                      </tr>
+                      <tr *ngFor="let item of filteredSupervisors">
+                        <td> {{item.name}}</td>
+                      </tr>
+                    </table>
+                  </div>
+
+                </mat-card>
+              </div>
+              <div class="item item-2" fxFlex="50%" style="padding: 15px">
+
+                <div fxLayout="row" class="mg-accent-bg p-8">
+                  <span> Contact </span>
+                </div>
+                <mat-card fxLayout="column" fxLayoutAlign="center start">
+
+                  <!--Panel explansion phone-->
+                  <div fxFill class="mt-15">
+                    <table>
+                      <tr *ngFor="let item of contacts">
+                        <td>{{item.type}} | {{item.fullName}}</td>
+                      </tr>
+                    </table>
+                  </div>
+                </mat-card>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+        <!-- #endregion -->
+      </div>
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CENTER -->
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

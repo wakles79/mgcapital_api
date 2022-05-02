@@ -1,0 +1,75 @@
+<div class="dialog-content-wrapper">
+  <!--TITLE-->
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END TITLE-->
+
+  <!--CONTENT-->
+  <div mat-dialog-content class="p-12 m-0" fusePerfectScrollbar>
+    <form [formGroup]="serviceForm">
+      <div fxLayout="column" fxLayoutAlign="space-between none">
+        <!-- Category -->
+        <mat-form-field>
+          <mat-select placeholder="Category" formControlName="workOrderServiceCategoryId">
+            <mat-option *ngFor="let element of categories" [value]="element.id">
+              {{ element.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- Category -->
+
+        <!-- Name -->
+        <mat-form-field>
+          <input matInput placeholder="Name" formControlName="name">
+        </mat-form-field>
+        <!-- Name -->
+
+        <!-- Frequency -->
+        <mat-form-field>
+          <mat-select placeholder="Frequency" formControlName="frequency">
+            <mat-option *ngFor="let element of frequencies" [value]="element.id">
+              {{ element.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- Frequency -->
+
+        <!-- Unit Factor -->
+        <mat-form-field>
+          <input matInput placeholder="Unit Factor" formControlName="unitFactor">
+        </mat-form-field>
+        <!-- Unit Factor -->
+
+        <!-- Rate -->
+        <mat-form-field>
+          <input matInput placeholder="Rate" formControlName="rate">
+        </mat-form-field>
+        <!-- Rate -->
+
+        <mat-checkbox formControlName="requiresScheduling">Require Scheduling</mat-checkbox>
+
+        <h3 class="m-0 mt-12 secondary-text">At close</h3>
+
+        <mat-checkbox formControlName="quantityRequiredAtClose">Quantity Required</mat-checkbox>
+        <!-- <mat-checkbox formControlName="hoursRequiredAtClose">Hours Required</mat-checkbox> -->
+
+      </div>
+    </form>
+  </div>
+  <!-- CONTENT -->
+
+  <!--ACTION BUTTONS-->
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between end">
+    <button mat-raised-button color="accent" aria-label="SAVE" [disabled]="serviceForm.invalid "
+      (click)="dialogRef.close(serviceForm)" *ngIf="!readOnly">
+      SAVE
+    </button>
+  </div>
+  <!--END ACTION BUTTONS-->
+</div>

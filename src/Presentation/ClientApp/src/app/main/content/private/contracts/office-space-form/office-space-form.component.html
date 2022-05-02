@@ -1,0 +1,45 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div mat-dialog-content class="p-16 m-0" fusePerfectScrollbar>
+    <form [formGroup]="officeSpaceForm">
+      <!--TYPE-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">apps</mat-icon>
+          <mat-select #osType placeholder="Contract Services" formControlName="officeTypeId"
+            (selectionChange)="typeChanged(osType.value)">
+            <mat-option *ngFor="let officeType of officeServiceTypes" [value]="officeType.id">
+              {{ officeType.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <!--END TYPE-->
+
+      <!--SQUARE FEET-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">equalizer</mat-icon>
+          <input matInput type="number" name="squareFeet" placeholder="Square Feet" formControlName="squareFeet"
+            required>
+        </mat-form-field>
+      </div>
+      <!--END SQUARE FEET-->
+    </form>
+  </div>
+
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between end">
+    <button mat-raised-button color="accent" (click)="dialogRef.close(officeSpaceForm)"
+      [disabled]="officeSpaceForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+  </div>
+</div>

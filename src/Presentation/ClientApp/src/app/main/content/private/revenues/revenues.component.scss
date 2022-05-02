@@ -1,0 +1,23 @@
+@import "src/app/core/scss/custom/custom-theme";
+
+#revenues {
+  .content {
+    overflow: hidden;
+  }
+
+  .breadcrumb {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+  mat-sidenav-container .sidenav {
+    min-width: 290px !important;
+  }
+}
+
+#sidenav-buttons {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}

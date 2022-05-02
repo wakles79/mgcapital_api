@@ -1,0 +1,75 @@
+<div id="inspections" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayoutAlign="space-between center" fxLayout.gt-xs="row"
+    fxLayoutAlign.gt-xs="space-between center">
+
+    <!--TITLE-->
+    <div fxLayout="column" fxLayoutAlign="center start">
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Inspections</span>
+      </div>
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+
+        <button mat-button class="sidebar-toggle mr-8" (click)="toggleSidebar('simple-left-sidebar-4')">
+          <mat-icon>filter_list</mat-icon>
+          <span class="logo-text">FILTER</span>
+        </button>
+
+        <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+          <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Inspections
+            List</span>
+        </div>
+      </div>
+
+    </div>
+    <!--END TITLE-->
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- SIDEBAR -->
+    <fuse-sidebar class="sidebar" name="simple-left-sidebar-4" position="left">
+
+      <!-- SIDEBAR CONTENT -->
+      <!-- <div class="content p-24" fusePerfectScrollbar> -->
+        <app-main *fuseIfOnDom [@animate]="{value:'*'}" [roleLevelLoggedUser]="roleLevelLoggedUser"></app-main>
+      <!-- </div> -->
+      <!-- / SIDEBAR CONTENT -->
+
+    </fuse-sidebar>
+    <!-- / SIDEBAR -->
+
+    <!-- CENTER -->
+    <div class="center p-24 pb-56 pr-sm-92" fusePerfectScrollbar>
+
+      <!-- CONTENT -->
+      <div class="content fuse-white-bg mat-elevation-z4">
+        <app-inspection-list [roleLevelLoggedUser]="roleLevelLoggedUser" [loggedUserId]="loggedUserId">
+        </app-inspection-list>
+      </div>
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CENTER -->
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>
+
+<!-- ADD INSPECTION BUTTON -->
+<div *ngIf="!readonly">
+  <button mat-fab class="mg-accent-bg" id="add-inspection-button" (click)="newInspection()" aria-label="add inspection"
+    [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+    <mat-icon>note_add</mat-icon>
+  </button>
+</div>
+<!-- / ADD INSPECTION BUTTON -->

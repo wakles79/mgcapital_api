@@ -1,0 +1,88 @@
+<div class="dialog-content-wrapper">
+
+  <!--HEADER-->
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title"> {{dialogTitle}} </span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+
+    <mat-toolbar-row class="toolbar-bottom py-8 py-sm-16" fxLayout="column" fxLayoutAlign="center center">
+
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END HEADER-->
+
+  <!--CONTENT-->
+  <div mat-dialog-content class="p-24 m-0" fusePerfectScrollbar>
+    <form [formGroup]="subcategoryForm">
+      <!--NAME-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-8 s-20 secondary-text">account_circle</mat-icon>
+          <input matInput type="text" formControlName="name" placeholder="Name">
+        </mat-form-field>
+      </div>
+      <!--END NAME-->
+
+      <!--RATE-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">attach_money</mat-icon>
+          <input matInput type="number" formControlName="rate" placeholder="Rate">
+        </mat-form-field>
+      </div>
+      <!--END RATE-->
+
+      <!--TYPE-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">apps</mat-icon>
+          <mat-select formControlName="rateType" placeholder="Type">
+            <mat-option *ngFor="let item of types" [value]="item.id">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <!--END TYPE-->
+
+      <!--PERIODICITY-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">calendar_today</mat-icon>
+          <mat-select formControlName="periodicity" placeholder="Frequency">
+            <mat-option *ngFor="let item of periodicities" [value]="item.name">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <!--END PERIODICITY-->
+
+      <!--STATUS-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-checkbox fxFlex name="status" formControlName="status" class="pt-12">Active</mat-checkbox>
+      </div>
+      <!--End STATUS-->
+    </form>
+  </div>
+  <!--END CONTENT-->
+
+  <!--FOOTER-->
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center">
+    <button *ngIf="action !=='edit'" mat-raised-button (click)="dialogRef.close(subcategoryForm)" color="accent"
+      [disabled]="subcategoryForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+
+    <button *ngIf="action ==='edit'" mat-raised-button (click)="dialogRef.close(subcategoryForm)" color="accent"
+      [disabled]="subcategoryForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+  </div>
+  <!--END FOOTER-->
+
+</div>

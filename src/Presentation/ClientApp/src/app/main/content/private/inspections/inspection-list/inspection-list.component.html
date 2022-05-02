@@ -1,0 +1,222 @@
+<!-- LOADER -->
+<div class="spinner-container" *ngIf="loading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+<!-- END LOADER -->
+
+<!--SEARCH-->
+<div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="end center">
+  <label for="search" class="mr-8">
+    <mat-icon>search</mat-icon>
+  </label>
+  <mat-form-field floatLabel="never">
+    <input matInput [formControl]="searchInput" id="search" placeholder="Search for anything">
+  </mat-form-field>
+</div>
+<!--END SEARCH-->
+<mat-table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+
+  <!---->
+  <!--END -->
+
+  <!--NUMBER-->
+  <ng-container cdkColumnDef="number">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="number">#</mat-header-cell>
+    <mat-cell *cdkCellDef="let row" class="m-0 p-0">
+        <span class="m-0 p-0">
+          {{row.number}}
+        </span>
+    </mat-cell>
+  </ng-container>
+  <!--END NUMBER-->
+
+  <!--BUILDING-->
+  <ng-container cdkColumnDef="building">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="buildingName">Building</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+        <span class="text-truncate">
+          {{row.buildingName}}
+        </span>
+    </mat-cell>
+  </ng-container>
+  <!--END BUILDING-->
+
+  <!--EMPLOYEE-->
+  <ng-container cdkColumnDef="employee">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="employeeName">Employee</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <span class="text-truncate">
+        {{row.employeeName}}
+      </span>
+    </mat-cell>
+  </ng-container>
+  <!--END EMPLOYEE-->
+
+  <!--STARTING NOTES-->
+  <ng-container cdkColumnDef="beginNotes">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="beginNotes">Starting Notes</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <span class="text-truncate">
+        {{row.beginNotes}}
+      </span>
+    </mat-cell>
+  </ng-container>
+  <!--END STARTING NOTES-->
+
+  <!--CLOSING NOTES-->
+  <ng-container cdkColumnDef="closingNotes">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="closingNotes">Closing Notes</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <span class="text-truncate">
+        {{row.closingNotes}}
+      </span>
+    </mat-cell>
+  </ng-container>
+  <!--END CLOSING NOTES-->
+
+  <!--CREATED ON-->
+  <ng-container cdkColumnDef="createdOn">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="createdDate">Created On</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      {{ row.createdDate | date: 'MM/dd/yyyy' }}
+    </mat-cell>
+  </ng-container>
+  <!--END CREATED ON-->
+
+  <!--CLOSED ON-->
+  <ng-container cdkColumnDef="closedOn">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="closeDate">Closed On</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <span *ngIf="row.epochCloseDate>0">
+        {{ row.epochCloseDate | fromEpoch | date: 'MM/dd/yyyy'}}
+      </span>
+    </mat-cell>
+  </ng-container>
+  <!--END CLOSED ON-->
+
+  <!--ITEMS--
+  <ng-container cdkColumnDef="items">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="status">Items</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <span>
+        {{row.closedItems | number:'2.0'}} / {{row.items | number:'2.0'}}
+      </span>
+    </mat-cell>
+  </ng-container>
+  --END ITEMS-->
+
+  <!--STATUS-->
+  <ng-container cdkColumnDef="status">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="status">Status</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <div fxLayout="column">
+        <ul style="display: inline-block; margin: 0; padding: 0;" *ngIf="row.stars > 0">
+          <li *ngFor="let star of [1,2,3,4,5]" style="display: inline-block; list-style: none;">
+            <mat-icon class="yellow-600-fg font-size-16 w-16">
+              {{ star <= row.stars ? "star" : "star_border" }}</mat-icon>
+          </li>
+        </ul>
+        <span class="badge status-{{row.status}}">
+          {{row.statusName}}
+        </span>
+        <div fxLayout="row">
+          <span matTooltip="Completed Items" class="badge-text items">
+            {{row.closedItems | number:'2.0'}}/{{row.items | number:'2.0'}}
+          </span>
+          <span matTooltip="Completed Tasks" class="badge-text tasks">
+            {{row.completedTasks | number:'2.0'}}/{{row.tasks | number:'2.0'}}
+          </span>
+
+          <span matTooltip="{{ row.notesCount }} Notes" matTooltip="Active Comments"
+            class="badge-icon {{ row.notesCount===0 ? 'disabled' : 'enabled' }}">
+            <mat-icon class="s-16 white-fg">comment</mat-icon>
+          </span>
+          <span matTooltip="Public View {{ row.allowPublicView ? 'Allowed' : 'Disabled' }}"
+            class="badge-icon {{ row.allowPublicView ? 'enabled' : 'disabled' }}">
+            <mat-icon class="s-16 white-fg">public</mat-icon>
+          </span>
+        </div>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--END STATUS-->
+
+  <!-- Buttons Column -->
+  <ng-container cdkColumnDef="buttons">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let inspection">
+      <div fxFlex="row" fxLayoutAlign="end center">
+
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="editInspection(inspection.id)"
+            *ngIf="roleLevelLoggedUser <= 20">
+            <!-- <mat-icon>edit</mat-icon> -->
+            <span>Edit</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="view" [routerLink]="'/app/inspections/detail/' + inspection.id">
+            <!-- <mat-icon>pageview</mat-icon> -->
+            <span>View</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="deleteInspection(inspection.id)" *ngIf="roleLevelLoggedUser <= 20 && inspection.statusName == 'Pending'">
+            <!-- <mat-icon>delete</mat-icon> -->
+            <span>Remove</span>
+          </button>
+
+        </mat-menu>
+
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!-- End Buttons Column -->
+
+  <!---->
+  <ng-container cdkColumnDef="DueDate">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="DueDate">DueDate</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <span>
+        {{row.statusName}}
+      </span>
+    </mat-cell>
+  </ng-container>
+  <!--END -->
+
+  <!---->
+  <ng-container cdkColumnDef="CloseDate">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="CloseDate">CloseDate</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <span>
+        {{row.statusName}}
+      </span>
+    </mat-cell>
+  </ng-container>
+  <!--END -->
+
+  <!---->
+  <ng-container cdkColumnDef="Score">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="Score">Score</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <span>
+        {{row.statusName}}
+      </span>
+    </mat-cell>
+  </ng-container>
+  <!--END -->
+
+  <mat-header-row *cdkHeaderRowDef="columnsToDisplay"></mat-header-row>
+  <mat-row *cdkRowDef="let inspection; columns: columnsToDisplay;" class="inspection" matRipple
+    [@animate]="{value:'*',params:{y:'100%'}}" [routerLink]="'/app/inspections/detail/' + inspection.id">
+  </mat-row>
+
+</mat-table>
+
+<!--PAGINATOR-->
+<mat-paginator [length]="getInspectionsCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]">
+</mat-paginator>
+<!--END PAGINATOR-->

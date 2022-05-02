@@ -1,0 +1,43 @@
+@import "src/@fuse/scss/fuse";
+
+.reply-ticket-dialog {
+  @include media-breakpoint('xs') {
+    width: 100%;
+  }
+
+  @include media-breakpoint('lt-xs') {
+    width: 550px;
+  }
+
+  .mat-dialog-container {
+    padding: 0;
+    overflow: hidden;
+    .mat-toolbar {
+      min-height: initial;
+      background: #049546 !important;
+    }
+
+    .mat-dialog-content {
+      .cc-table {
+        .email-box-input {
+          border: 1px solid #cfd7df;
+          height: 26px;
+          border-radius: 4px;
+          padding: 0px 6px;
+        }
+
+        .add-email-cc-btn {
+          height: 26px;
+          padding: 0;
+          line-height: 0;
+        }
+      }
+
+      .attachments {
+        .attachment-summary {
+          padding-left: 12px;
+        }
+      }
+    }
+  }
+}

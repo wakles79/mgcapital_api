@@ -1,0 +1,52 @@
+<div fxLayout="column" class="container">
+  <div fxLayout="column" fxLayoutAlign="start start" class="py-8" *ngIf="displayDetails">
+    <div>
+      <span class="font-weight-500">Contract Number</span>
+      <span class=""> {{contractSummary.contractNumber}} </span>
+    </div>
+
+    <div>
+      <span class="font-weight-500">Description</span>
+      <span class=""> {{contractSummary.description}} </span>
+    </div>
+  </div>
+
+  <div fxLayout.xs="column" fxLayout.sm="row" fxLayoutAlign.xs="space-evenly none"
+    fxLayoutAlign.sm="space-between center">
+
+    <div fxLayout="column" class="mt-8" fxFlex="50">
+      <div fxLayout="row" fxLayoutAlign="center center" class="pb-4">
+        <span class="font-size-16 font-weight-500">Estimated</span>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-around center" class="items-summary">
+        <mat-card class="text-center item-summary-box estimated">
+          <p class="mat-title"> {{contractSummary.totalEstimatedRevenue}} </p>
+          <span class="secondary-text">Revenue</span>
+        </mat-card>
+
+        <mat-card class="text-center item-summary-box estimated">
+          <p class="mat-title"> {{contractSummary.totalEstimatedExpenses}} </p>
+          <span class="secondary-text">Expenses</span>
+        </mat-card>
+      </div>
+    </div>
+
+    <div fxLayout="column" class="mt-8" fxFlex="50">
+      <div fxLayout="row" fxLayoutAlign="center center" class="pb-4">
+        <span class="font-size-16 font-weight-500">Real</span>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="space-around center" class="items-summary">
+        <mat-card class="text-center item-summary-box real">
+          <p class="mat-title"> {{contractSummary.totalRealRevenue}} </p>
+          <span class="secondary-text">Revenue</span>
+        </mat-card>
+
+        <mat-card class="text-center item-summary-box real">
+          <p class="mat-title"> {{contractSummary.totalRealExpenses}} </p>
+          <span class="secondary-text">Expenses</span>
+        </mat-card>
+      </div>
+    </div>
+
+  </div>
+</div>

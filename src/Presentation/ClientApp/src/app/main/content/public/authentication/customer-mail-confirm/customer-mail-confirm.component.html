@@ -1,0 +1,34 @@
+<div id="reset-password" fxLayout="column" fusePerfectScrollbar>
+
+  <div id="reset-password-form-wrapper" fxLayout="column" fxLayoutAlign="center center" *fuseIfOnDom
+    [@animate]="{value:'*',params:{duration:'300ms',y:'100px'}}">
+
+    <div id="reset-password-form">
+
+      <div class="logo">
+        <img src="assets/images/logos/MGCapitalIcon.svg">
+      </div>
+
+
+      <div class="title" *ngIf="!(badRequest$ | async)">Your Email is Confirmed
+        <br>
+        <br>
+        <small> Now open the MG Client App and Sign In</small>
+      </div>
+      <div class="title" *ngIf="(badRequest$ | async)">
+        <mat-error>
+          Invalid or expired link
+        </mat-error>
+        <br>
+        <small>Please contact your System Administrator</small>
+      </div>
+
+      <div class="spinner-container" *ngIf="isLoading$ | async">
+        <mat-spinner></mat-spinner>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,0 +1,324 @@
+<div id="wo-billable-report" class="page-layout simple left-sidenav inner-sidenav inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header mat-accent-bg p-16 p-sm-24" fxLayout="column" fxLayoutAlign="space-between center"
+    fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="space-between center">
+
+    <!-- APP TITLE -->
+    <div fxLayout="column" fxLayoutAlign="center start">
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Work Order Billable Report</span>
+      </div>
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <button mat-button class="sidenav-toggle mr-8" fuseMatSidenavToggler="wo-billable-report-sidenav">
+          <mat-icon>filter_list</mat-icon>
+          <span class="logo-text">FILTER</span>
+        </button>
+
+        <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+          <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Work Order
+            Billable Report</span>
+        </div>
+      </div>
+
+    </div>
+    <!-- / APP TITLE -->
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- SELECTED BAR -->
+
+  <!-- / SELECTED BAR -->
+
+  <mat-sidenav-container>
+
+    <!-- SIDENAV -->
+    <mat-sidenav class="sidenav" align="start" opened="side" mode="side"
+      fuseMatSidenavHelper="wo-billable-report-sidenav">
+
+      <app-wo-billable-report-sidenav *fuseIfOnDom [@animate]="{value:'*'}"></app-wo-billable-report-sidenav>
+
+    </mat-sidenav>
+    <!-- / SIDENAV -->
+
+    <div class="spinner-container" *ngIf="loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <!-- CENTER -->
+    <div class="center p-24 pb-56 pr-sm-92" fusePerfectScrollbar>
+
+      <!-- CONTENT -->
+      <div class="content fuse-white-bg mat-elevation-z4">
+
+        <div class="report-list">
+
+          <div class="">
+            <div class="">
+
+              <!-- SEARCH -->
+              <div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="end center">
+                <label for="search" class="mr-8">
+                  <mat-icon>search</mat-icon>
+                </label>
+                <mat-form-field floatLabel="never">
+                  <input matInput [formControl]="searchInput" id="search" placeholder="Search for anything">
+                </mat-form-field>
+
+              </div>
+              <!-- / SEARCH -->
+              <mat-table #table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+
+                <!-- WO Number -->
+                <ng-container cdkColumnDef="number">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">No.</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask">
+                    <div fxLayout="column" fxFlex="100">
+                      <p *ngIf="workOrderTask.originWorkOrderId" class="font-weight-600">
+                        {{workOrderTask.clonePath}}
+                      </p>
+                      <p *ngIf="! workOrderTask.originWorkOrderId" class="font-weight-600">
+                        {{workOrderTask.number}}
+                      </p>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Building Name -->
+                <ng-container cdkColumnDef="buildingName">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600" fxFlex="120px">Building</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" fxFlex="120px">
+                    <div fxLayout="column" fxFlex="120">
+                      <p class="">
+                        {{workOrderTask.buildingName}}
+                        <br /> {{workOrderTask.location}}
+                      </p>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Building Billing Info -->
+                <ng-container cdkColumnDef="buildingBillingInfo">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600" fxFlex="120px">Billing Info
+                  </mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" fxFlex="120px">
+                    <p class="">
+                      {{workOrderTask.buildingBillingFullName}}
+                      <br /> {{workOrderTask.buildingBillingEmail}}
+                    </p>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Building Note To Billing Column -->
+                <ng-container cdkColumnDef="buildingNoteToBilling">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Note To Billing</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask">
+                    <p class="">
+                      {{workOrderTask.buildingNoteToBilling}}
+                    </p>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Task Name Column -->
+                <ng-container cdkColumnDef="taskName">
+                  <mat-header-cell *cdkHeaderCellDef fxFlex="200px" class="font-weight-600 text-center">Task
+                  </mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" fxFlex="200px">
+                    <!-- <mat-icon *ngIf="workOrderTask.isTaskChecked">check_box</mat-icon>
+                    <mat-icon *ngIf="!workOrderTask.isTaskChecked">check_box_outline_blank</mat-icon> -->
+                    <span class="pl-4">
+                      {{workOrderTask.taskName}}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Work Order Requested Date Column -->
+                <ng-container cdkColumnDef="workOrderRequestedDate">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600 text-center">WO Created Date
+                  </mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" class="text-center">
+                    <span class="text-center">
+                      {{ workOrderTask.epochWorkOrderCreatedDate | fromEpoch | date: 'MM/dd/yyyy hh:mm' }}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Task Requested Date Column -->
+                <!-- <ng-container cdkColumnDef="taskRequestedDate">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600 text-center">Task Completed Date
+                  </mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" class="text-center">
+                    <span class="text-center">
+                      <ng-container *ngIf="workOrderTask.isTaskChecked; then isChecked; else isNotChecked">
+                      </ng-container>
+
+                      <ng-template #isChecked>
+                        {{ workOrderTask.epochTaskCompletedDate | fromEpoch }}
+                      </ng-template>
+
+                      <ng-template #isNotChecked>
+                        -
+                      </ng-template>
+                    </span>
+                  </mat-cell>
+                </ng-container> -->
+
+                <!-- WO Completed Date Column -->
+                <ng-container cdkColumnDef="workOrderCompletedDate">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600 text-center">WO Completed Date
+                  </mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" class="text-center">
+                    <span class="text-center">
+                      {{ workOrderTask.epochWorkOrderCompletedDate | fromEpoch | date: 'MM/dd/yyyy hh:mm' }}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Note Column -->
+                <ng-container cdkColumnDef="taskNote">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600 text-center">Task Note</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" class="">
+                    <span class="text-center">
+                      {{workOrderTask.taskNote}}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Billing Note Column -->
+                <ng-container cdkColumnDef="billingNote">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600 text-center">Billing Note</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" class="">
+                    <span class="text-center">
+                      {{workOrderTask.billingNote}}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Closing Notes Column -->
+                <ng-container cdkColumnDef="closingNotes">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600 text-center">Closing Notes</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" class="">
+                    <span class="text-center">
+                      {{workOrderTask.closingNotes}}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Service Name Column -->
+                <ng-container cdkColumnDef="serviceName">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600 text-center">Service</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" class="text-center">
+                    <span [ngClass]="{'text-center':true, 'amber-900-fg':workOrderTask.oldVersion}">
+                      {{workOrderTask.serviceName}}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Service Price Column -->
+                <!-- <ng-container cdkColumnDef="servicePrice">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600 text-center">Unit Price</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" class="text-center">
+                    <span class="text-center">
+                      {{workOrderTask.servicePrice | currency: 'USD'}}
+                    </span>
+                  </mat-cell>
+                </ng-container> -->
+
+                <!-- Service Quantity Column -->
+                <!-- <ng-container cdkColumnDef="serviceQuantity">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600 text-center">Quantity</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" class="text-center">
+                    <span class="text-center">
+                      {{workOrderTask.serviceQuantity}}
+                    </span>
+                  </mat-cell>
+                </ng-container> -->
+
+                <!-- Service Total Column -->
+                <ng-container cdkColumnDef="serviceTotal">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600 text-center">Total</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask" class="text-center">
+                    <span class="text-center">
+                      {{workOrderTask.taskUnitPrice | currency: 'USD'}}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Buttons Column -->
+                <ng-container cdkColumnDef="buttons">
+                  <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrderTask">
+                    <div fxFlex="row" fxLayoutAlign="end center">
+
+                      <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                        (click)="$event.stopPropagation();">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+
+                      <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="show public view"
+                          (click)="openNewTapPublicworkOrder(workOrderTask)">
+                          <!-- <mat-icon>pageview</mat-icon> -->
+                          <span>View</span>
+                        </button>
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="edit billing information"
+                          (click)="editWorkOrderTask(workOrderTask.id)">
+                          <!-- <mat-icon>monetization_on</mat-icon> -->
+                          <span>Edit</span>
+                        </button>
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="view ticket information"
+                          (click)="viewTicket(workOrderTask.ticketId)" *ngIf="workOrderTask.ticketId>0">
+                          <!-- <mat-icon>pageview</mat-icon> -->
+                          <span>View Ticket</span>
+                        </button>
+
+                      </mat-menu>
+                    </div>
+
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *cdkRowDef="let workOrderTask; columns: displayedColumns;" class="workOrderTask" matRipple
+                  [@animate]="{value:'*',params:{y:'100%'}}" (click)="editWorkOrderTask(workOrderTask.id)">
+                </mat-row>
+              </mat-table>
+              <mat-paginator [length]="workOrderTaskCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]">
+              </mat-paginator>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CENTER -->
+
+  </mat-sidenav-container>
+
+</div>
+
+<!--DOWNLOAD REPORT BUTTON-->
+<a mat-fab class="mg-accent-bg" id="export-to-pdf-button" aria-label="export the report to format PDF" *fuseIfOnDom
+  matTooltip="Download the report to format PDF" matTooltipPosition="left"
+  [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}" (click)="exportReportToPDF()">
+  <mat-icon>picture_as_pdf</mat-icon>
+</a>
+<!--END DOWNLOAD REPORT BUTTON-->
+
+<!-- EXPORT TO CSV BUTTON -->
+<button mat-fab class="mg-accent-bg" id="export-to-csv-button" aria-label="export the report to format CSV" *fuseIfOnDom
+  matTooltip="Export the report to format CSV" matTooltipPosition="left" (click)="exportReportToCsv()"
+  [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+  <mat-icon>open_in_browser</mat-icon>
+</button>
+<!-- / EXPORT TO CSV BUTTON -->

@@ -1,0 +1,114 @@
+<div id="contracts" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent p-24" fxLayout="column" fxLayoutAlign="space-between none">
+
+    <!--APP TITLE-->
+
+    <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+      <mat-icon class="secondary-text s-16">home</mat-icon>
+      <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+      <span class="secondary-text">Budgets</span>
+      <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+      <span class="secondary-text">Budgets List</span>
+    </div>
+
+    <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="space-between center">
+      <div fxLayout="row" fxLayoutAlign="start center">
+
+        <button mat-icon-button class="sidebar-toggle mr-8" (click)="toggleSidebar('simple-left-sidebar-4')">
+          <mat-icon>filter_list</mat-icon>
+        </button>
+
+        <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+          <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Budgets
+            List</span>
+        </div>
+      </div>
+      <div fxLayout="column">
+        <span>
+          Total Profit Ratio:
+          {{totalProfitRatio | number:'1.2-2'}} %
+        </span>
+        <span>
+          Total Profit:
+          {{totalProfitAmount | currency:'USD':'symbol'}}
+        </span>
+        <span>
+          Minimum Profit Margin Percentage:
+          {{profitMargin}} %
+        </span>
+      </div>
+    </div>
+
+    <!--END APP TITLE-->
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- SIDEBAR -->
+    <fuse-sidebar class="sidebar" name="simple-left-sidebar-4" position="left">
+
+      <!-- SIDEBAR CONTENT -->
+      <div class="content" fusePerfectScrollbar>
+        <app-contracts-main-sidenav *fuseIfOnDom [@animate]="{value:'*'}"></app-contracts-main-sidenav>
+
+      </div>
+      <!-- / SIDEBAR CONTENT -->
+
+    </fuse-sidebar>
+    <!-- / SIDEBAR -->
+
+    <!-- CENTER -->
+    <div class="center p-24 pb-56 pr-sm-92" fusePerfectScrollbar>
+
+      <!-- CONTENT -->
+      <div class="content fuse-white-bg mat-elevation-z4">
+        <div class="spinner-container" *ngIf="loading$ | async">
+          <mat-spinner></mat-spinner>
+        </div>
+        <app-contract-list [marginProfit]="profitMargin" [readOnly]="readOnly"></app-contract-list>
+
+      </div>
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CENTER -->
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>
+
+<!--NEW ELEMENT BUTTON-->
+<div id="sidenav-buttons">
+  <div fxLayout="column">
+
+    <!--EXPORT CSV BUTTON--
+    <button mat-fab class="mat-accent-bg mb-8" (click)="exportToCsv()" matTooltip="Export Budgets to CSV"
+      matTooltipPosition="left" [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+      <mat-icon>open_in_browser</mat-icon>
+    </button>
+    --END EXPORT CSV BUTTON-->
+
+    <!--NEW ELEMENT BUTTON-->
+    <button mat-fab class="mg-accent-bg mb-8" id="add-contracts-button" aria-label="add contract" *ngIf="!readOnly"
+      [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}" (click)="newContract()">
+      <mat-icon>note_add</mat-icon>
+    </button>
+    <!--END NEW ELEMENT BUTTON-->
+
+    <!--IMPORT CSV BUTTON-->
+    <button mat-fab class="mg-accent-bg" (click)="importCsv()" *ngIf="!readOnly"
+      matTooltip="Import Revenue and Expenses from CSV" matTooltipPosition="left"
+      [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+      <mat-icon>move_to_inbox</mat-icon>
+    </button>
+    <!--END IMPORT CSV BUTTON-->
+
+  </div>
+</div>
+<!--END NEW ELEMENT BUTTON-->

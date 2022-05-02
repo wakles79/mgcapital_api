@@ -1,0 +1,36 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/mat-table";
+
+app-categories-list {
+  flex: 1;
+
+  .category-collection {
+    .category-item {
+      padding: 10px;
+      border-top-right-radius: 22px;
+      border-bottom-right-radius: 22px;
+      cursor: pointer;
+      width: 100%;
+
+      &:hover {
+        background-color: #efefef;
+      }
+
+      &.active {
+        background-color: #039be5;
+
+        &.text-truncate {
+          color: white;
+        }
+
+        .category-title {
+          color: white;
+        }
+      }
+
+      .category-title {
+        font-size: 12px;
+      }
+    }
+  }
+}

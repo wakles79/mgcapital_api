@@ -1,0 +1,162 @@
+<div class="sidenav-content">
+
+  <div class="card fuse-white-bg">
+    <!-- SIDENAV CONTENT -->
+    <div class="content py-16" fusePerfectScrollbar>
+
+      <div class="nav" fxLayout="column" fxLayoutAlign="start start">
+
+        <!-- SIDENAV HEADER -->
+        <div class="header p-24 title" fxFlexFill fxLayout="row" fxLayoutAlign="start center">
+          <span class="h5">FILTERS</span>
+        </div>
+        <!-- / SIDENAV HEADER -->
+
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('all')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='all'}">
+            <span class="title">All Work Orders</span>
+          </a>
+        </div>
+
+        <div class="nav-item" aria-label="inbox" fxFlexFill *ngIf="roleLevelLoggedUser <= 30">
+          <a class="nav-link" matRipple (click)="changeFilter('draft')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='draft'}">
+            <span class="title">Draft</span>
+          </a>
+        </div>
+
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('standBy')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='standBy'}">
+            <span class="title">Stand By</span>
+          </a>
+        </div>
+
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('active')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='active'}">
+            <span class="title">Active</span>
+          </a>
+        </div>
+
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('closed')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='closed'}">
+            <span class="title">Closed</span>
+          </a>
+        </div>
+
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('cancelled')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='cancelled'}">
+            <span class="title">Cancelled</span>
+          </a>
+        </div>
+
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('myWorkOrders')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='myWorkOrders'}">
+            <span class="title">My Work Orders</span>
+          </a>
+        </div>
+
+        <div class="nav-item border-top" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="filterUnscheduled()"
+            [ngClass]="{'active mg-accent-bg':showUnscheduled}">
+            <span class="title">Unscheduled</span>
+          </a>
+        </div>
+
+        <div class="mr-10 ml-10 p-24 border-top" aria-label="inbox" fxFlexFill>
+          <mat-checkbox class="over-due" [formControl]="filterOverDue">Over Due</mat-checkbox>
+        </div>
+
+        <div *mgcapRemoveIfFeatureOff="'filter-work-orders-with-billable-tasks'" class="mr-10 ml-10 p-24 border-top" aria-label="Billable Tasks" fxFlexFill>
+          <mat-checkbox class="over-due" [formControl]="filterBillableTasks">Billables</mat-checkbox>
+        </div>
+
+        <div class="nav-item pt-24 pl-24 pr-20 filterByBuilding" fxFlexFill>
+          <span class="title">By Building</span>
+          <div fxLayout="row">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Select Building" [formControl]="searchBuilding">
+                <mat-option>
+                  <ngx-mat-select-search [formControl]="searchBuildingCtrl" placeholderLabel="Search"
+                    noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                </mat-option>
+                <mat-option>All</mat-option>
+                <mat-option *ngFor="let building of filteredBuildings$ | async" [value]="building.id">
+                  {{building.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="nav-item pt-24 pl-24 pr-20 filterByType" fxFlexFill>
+          <span class="title">By Type</span>
+          <div fxLayout="row">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Select Type" [formControl]="searchType">
+                <mat-option>All</mat-option>
+                <mat-option *ngFor="let type of types" [value]="type.id">
+                  {{type.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <!-- Service -->
+        <div *mgcapRemoveIfFeatureOff="'service-filter-in-work-orders-list'" class="nav-item pt-24 pl-24 pr-20 filterByType" fxFlexFill>
+          <span class="title">Service Category</span>
+          <div fxLayout="row">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Service Category" [formControl]="workOrderServiceCategoryId" multiple>
+                <mat-option *ngFor="let category of categories" [value]="category.id">
+                  {{ category.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <span class="title">Service</span>
+          <div fxLayout="row">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Select Service" [formControl]="workOrderServiceId" multiple>
+                <mat-option *ngFor="let service of workOrderServices" [value]="service.id">
+                  {{ service.name }} ({{service.unitFactor}} - {{service.frequencyName}})
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <!-- Service -->
+
+        <div class="nav-item pt-24 pl-24 filterByDates" fxFlexFill>
+          <span class="title">Due Date</span>
+          <mat-form-field>
+            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="dateFrom.setValue('')">
+              <mat-icon>close</mat-icon>
+            </button>
+            <input matInput [matDatepicker]="picketFrom" [formControl]="dateFrom" placeholder="From">
+            <mat-datepicker-toggle matSuffix [for]="picketFrom"></mat-datepicker-toggle>
+            <mat-datepicker #picketFrom></mat-datepicker>
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="dateTo.setValue('')">
+              <mat-icon>close</mat-icon>
+            </button>
+            <input matInput [matDatepicker]="pickerTo" [formControl]="dateTo" placeholder="To">
+            <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+            <mat-datepicker #pickerTo></mat-datepicker>
+          </mat-form-field>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- / SIDENAV CONTENT -->

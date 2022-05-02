@@ -1,0 +1,77 @@
+<div id="users" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row"
+    fxLayoutAlign.gt-xs="space-between center">
+
+    <!-- APP TITLE -->
+    <div fxLayout="row" fxLayoutAlign="start center">
+
+      <button mat-icon-button class="sidebar-toggle mr-8" fxHide.gt-md (click)="toggleSidebar('simple-left-sidebar-4')">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">
+          account_box</mat-icon>
+        <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Users</span>
+      </div>
+
+    </div>
+    <!-- / APP TITLE -->
+
+    <!-- SEARCH -->
+    <div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="start center">
+      <label for="search" class="mr-8">
+        <mat-icon>search</mat-icon>
+      </label>
+      <mat-form-field mat-no-float class="m-0" floatLabel="never">
+        <input matInput [formControl]="searchInput" id="search" placeholder="Search for anything">
+      </mat-form-field>
+    </div>
+    <!-- / SEARCH -->
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- SELECTED BAR -->
+  <app-selected-bar class="accent-600" *ngIf="hasSelectedUsers" [@slideInTop]></app-selected-bar>
+  <!-- / SELECTED BAR -->
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- SIDEBAR -->
+    <fuse-sidebar class="sidebar w-240" name="simple-left-sidebar-4" position="left" lockedOpen="gt-sm">
+
+      <!-- SIDEBAR CONTENT -->
+      <app-main-user *fuseIfOnDom [@animate]="{value:'*'}"></app-main-user>
+      <!-- / SIDEBAR CONTENT -->
+
+    </fuse-sidebar>
+    <!-- / SIDEBAR -->
+
+    <!-- CENTER -->
+    <div class="center p-24 pb-56 pr-sm-92" fusePerfectScrollbar>
+
+      <!-- CONTENT -->
+      <div class="content fuse-white-bg mat-elevation-z4">
+        <app-user-list [readOnly]="readOnly"></app-user-list>
+      </div>
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CENTER -->
+
+  </div>
+  <!-- / CONTENT -->
+</div>
+
+<!-- ADD USER BUTTON -->
+<div *ngIf="!readOnly">
+  <button mat-fab class="mg-accent-bg" id="add-user-button" (click)="newUser()" aria-label="add user" *fuseIfOnDom
+    [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+    <mat-icon>person_add</mat-icon>
+  </button>
+</div>
+<!-- / ADD USER BUTTON -->

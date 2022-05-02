@@ -1,0 +1,122 @@
+<div class="sidenav-content">
+  <div class="card fuse-white-bg">
+    <div class="content py-16" fusePerfectScrollbar>
+      <div class="nav" fxLayout="column" fxLayoutAlign="start start">
+
+        <!--HEADER-->
+        <div class="header p-24 title" fxFlexFill fxLayout="row" fxLayoutAlign="start center">
+          <span class="h5">FILTERS</span>
+        </div>
+        <!--END HEADER-->
+
+        <!--CONTENT-->
+        <div class="nav-item pt-12" aria-label="contracts" fxFlexFill>
+          <span class="title ml-24">By Customer</span>
+          <div fxLayout="row" class="px-24">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Customer" [(ngModel)]="selectedCustomer" #sCustomer (selectionChange)="changeCustomer(sCustomer.value)">
+                <mat-option>
+                  <ngx-mat-select-search [formControl]="customerIdCtrl" placeholderLabel="Search"
+                  noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                </mat-option>
+
+                <mat-option value="0">
+                  All
+                </mat-option>
+                <mat-option *ngFor="let customer of filteredCustomers$ | async" [value]="customer.id">
+                  {{customer.code}} - {{customer.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="nav-item pt-12" aria-label="contracts" fxFlexFill>
+          <span class="title ml-24">By Building</span>
+          <div fxLayout="row" class="px-24">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Building" [(ngModel)]="selectedBuilding" #sBuilding (selectionChange)="changeBuilding(sBuilding.value)">
+                <mat-option>
+                  <ngx-mat-select-search [formControl]="buildingIdCtrl" placeholderLabel="Search"
+                  noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                </mat-option>
+
+                <mat-option value="0">
+                  All
+                </mat-option>
+                <mat-option *ngFor="let building of filteredBuildings$ | async" [value]="building.id">
+                  {{building.code}} - {{building.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="nav-item" aria-label="contracts" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('-1')" [ngClass]="{'active mg-accent-bg':filterActive ==='-1'}">
+            <span class="title">All</span>
+          </a>
+        </div>
+        <div class="nav-item" aria-label="contracts" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('0')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='0'}">
+            <span class="title">Pending</span>
+          </a>
+        </div>
+        <div class="nav-item" aria-label="contracts" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('1')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='1'}">
+            <span class="title">Active</span>
+          </a>
+        </div>
+        <div class="nav-item" aria-label="contracts" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('2')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='2'}">
+            <span class="title">Completed</span>
+          </a>
+        </div>
+        <div class="nav-item" aria-label="contracts" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('3')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='3'}">
+            <span class="title">Declined</span>
+          </a>
+        </div>
+
+        <div class="nav-item pt-12" aria-label="contracts" fxFlexFill>
+          <span class="title ml-24">By Date</span>
+          <div fxLayout="row" class="px-24">
+            <mat-form-field fxFlex>
+              <input matInput [matDatepicker]="datePicker" [formControl]="dateFilter" placeholder="Date">
+              <mat-datepicker-toggle matSuffix [for]="datePicker"></mat-datepicker-toggle>
+              <mat-datepicker #datePicker></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="nav-item" aria-label="contracts" fxFlexFill>
+          <a class="nav-link" matRipple>
+            <span class="title">By Updated Date Range</span>
+          </a>
+        </div>
+
+        <div class="nav-item" aria-label="contracts" fxFlexFill>
+          <mat-form-field fxFlex class="ml-24 mr-24">
+            <input matInput [matDatepicker]="fromUpdateDatePicker" [formControl]="updatedDateFrom" placeholder="From">
+            <mat-datepicker-toggle matSuffix [for]="fromUpdateDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #fromUpdateDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <div class="nav-item" aria-label="contracts" fxFlexFill>
+          <mat-form-field fxFlex class="ml-24 mr-24">
+            <input matInput [matDatepicker]="toUpdateDatePicker" [formControl]="updatedDateTo" placeholder="To">
+            <mat-datepicker-toggle matSuffix [for]="toUpdateDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #toUpdateDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <!--END CONTENT-->
+
+      </div>
+    </div>
+  </div>
+</div>

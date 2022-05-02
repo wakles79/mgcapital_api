@@ -1,0 +1,39 @@
+<div class="page-layout blank p-24" fusePerfectScrollbar>
+  <div class="content">
+    <div fxLayout="row wrap" fxLayout.gt-md="column">
+
+      <div class="mb-48" [ngClass.lt-lg]="'mr-32'" [ngClass.xs]="'mr-0'">
+
+        <div class="pb-24 font-size-18 font-weight-300">
+          Welcome Home <span *ngIf="authService.isLoggedIn()">{{ authService.currentUser.employeeFullName }}</span>!
+        </div>
+
+        <div class="fuse-card" *ngIf="viewMobileAppVersions">
+
+          <div class="p-16">
+            <div class="h1 font-weight-300">Latest Mobile App Versions</div>
+          </div>
+
+          <table class="simple">
+            <thead>
+              <tr>
+                <th></th>
+                <th class="text-right">Platform</th>
+                <th class="text-right">Version</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let mobileApp of mobileAppVersions$ | async">
+                <td>{{ MobileApp[mobileApp.mobileApp] }}</td>
+                <td class="text-right">{{ MobilePlatform[mobileApp.platform] }}</td>
+                <td class="text-right"><a href="{{ mobileApp.url }}" target="_blank">{{ mobileApp.versionNumber }}</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

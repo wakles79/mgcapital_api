@@ -1,0 +1,81 @@
+<div class="dialog-content-wrapper">
+  <!--TITLE-->
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END TITLE-->
+
+  <!--CONTENT-->
+  <div mat-dialog-content class="p-12 m-0" fusePerfectScrollbar>
+    <form [formGroup]="revenueForm">
+      <!-- #region date, SUBTOTAL, TASK AND TOTAL-->
+      <div fxLayout="row" fxLayoutAlign="star star" fxFill>
+        <!-- #region DATE-->
+        <mat-form-field fxFlex="50">
+          <input matInput [matDatepicker]="picker" required formControlName="date" placeholder="Date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <!-- #endregion DATE-->
+        <!-- #region SUBTOTAL-->
+        <mat-form-field fxFlex="50">
+          <mat-icon matPrefix class="mr-8 s-20 secondary-text">attach_money</mat-icon>
+          <input matInput formControlName="subTotal" type="number" placeholder="Sub-Total" (keyup)="onChangeTax()"
+            required>
+        </mat-form-field>
+        <!-- #endregion SUBTOTAL-->
+      </div>
+      <div fxLayout="row" fxLayoutAlign="star star" fxFill>
+        <!-- #region TAX-->
+        <mat-form-field fxFlex="50">
+          <mat-icon matPrefix class="mr-8 s-20 secondary-text">%</mat-icon>
+          <input matInput formControlName="tax" type="number" max="100" placeholder="Tax" (keyup)="onChangeTax()"
+            required>
+        </mat-form-field>
+        <!-- #endregion TASK-->
+
+        <!-- #region TOTAL-->
+        <mat-form-field fxFlex="50">
+          <mat-icon matPrefix class="mr-8 s-20 secondary-text">attach_money</mat-icon>
+          <input matInput formControlName="total" type="number" placeholder="Total" readonly='readonly'>
+        </mat-form-field>
+        <!-- #endregion TOTAL-->
+      </div>
+      <!-- #endregion  SUBTOTAL, TASK AND TOTAL-->
+
+      <!-- #region DESCRIPTION AND REFERENCES-->
+      <div fxLayout="row" fxLayoutAlign="star star" fxFill>
+        <mat-form-field fxFlex>
+          <textarea matInput formControlName="description" placeholder="Description" rows="2"></textarea>
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="star star" fxFill>
+        <mat-form-field fxFlex>
+          <textarea matInput formControlName="reference" placeholder="Reference" rows="2"></textarea>
+        </mat-form-field>
+      </div>
+      <!-- #endregion DESCRIPTION AND REFERENCES-->
+
+    </form>
+  </div>
+  <!--END CONTENT-->
+
+  <!--ACTION BUTTONS-->
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between end">
+    <button mat-raised-button *ngIf="action !=='edit'" color="accent" aria-label="SAVE" [disabled]="revenueForm.invalid"
+      (click)="dialogRef.close(revenueForm)">
+      SAVE
+    </button>
+
+    <button mat-raised-button *ngIf="action ==='edit'" color="accent" aria-label="SAVE" [disabled]="revenueForm.invalid"
+      (click)="dialogRef.close(revenueForm)">
+      SAVE
+    </button>
+  </div>
+  <!--END ACTION BUTTONS-->
+</div>

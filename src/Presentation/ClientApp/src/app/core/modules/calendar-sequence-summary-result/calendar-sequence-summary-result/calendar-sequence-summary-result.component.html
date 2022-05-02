@@ -1,0 +1,51 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title"> Sequence Result </span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div mat-dialog-content class="p-12 m-0" fusePerfectScrollbar>
+    <mat-card class="p-0" *ngIf="summaries.length === 0">
+      Any Records Added
+    </mat-card>
+    <mat-card class="p-0 mb-8" *ngFor="let summary of summaries">
+      <div fxLayout="row" fxLayoutAlign="center">
+        <div fxLayout="row" fxLayoutAlign="center center"
+          [ngClass]="{'green-bg' : summary.success, 'red-bg' : !summary.success}" fxFlex="90px">
+          <span class="white-fg">
+            {{summary.success ? 'Success' : 'Failed'}}
+          </span>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="center none" fxFlex class="p-8">
+          <div *ngIf="summary.success">
+            Work Order
+            <span class="font-weight-500 h4">
+              #{{summary.woNumber}}
+            </span>
+          </div>
+
+          <div>
+            Scheduled Date:
+            <span class="font-weight-500 h4">
+              {{summary.date | date: 'short'}}
+            </span>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+
+  <!--ACTIONS-->
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center">
+
+    <button mat-raised-button color="accent" aria-label="CLOSE" (click)="dialogRef.close()">
+      Close
+    </button>
+
+  </div>
+  <!--END ACTIONS-->
+</div>

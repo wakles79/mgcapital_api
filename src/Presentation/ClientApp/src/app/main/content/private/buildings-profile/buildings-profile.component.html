@@ -1,0 +1,54 @@
+<div id="Building-profile" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row"
+  fxLayoutAlign.gt-xs="space-between center">
+
+    <!-- APP TITLE -->
+    <div fxLayout="column" fxLayoutAlign="center start">
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon class="secondary-text s-16">home</mat-icon>
+          <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+          <span class="secondary-text">Buildings</span>
+      </div>
+
+    <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+      <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Building profile</span>
+    </div>
+
+  </div>
+    <!-- / APP TITLE -->
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+
+      <!-- SIDEBAR -->
+      <fuse-sidebar class="sidebar" name="simple-left-sidebar-4" position="left" lockedOpen="gt-sm">
+
+          <!-- SIDEBAR CONTENT -->
+              <app-main></app-main>
+          <!-- / SIDEBAR CONTENT -->
+
+      </fuse-sidebar>
+      <!-- / SIDEBAR -->
+
+      <!-- CENTER -->
+      <div class="center p-24 pb-56 pr-sm-92" fusePerfectScrollbar>
+
+          <!-- CONTENT -->
+          <div class="content">
+              <app-building-profile-list></app-building-profile-list>
+          </div>
+          <!-- / CONTENT -->
+
+      </div>
+      <!-- / CENTER -->
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

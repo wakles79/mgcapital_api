@@ -1,0 +1,53 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/custom-theme";
+
+#buildings {
+
+  .content {
+    overflow: hidden;
+  }
+
+  .breadcrumb {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+}
+
+[disabled].mat-accent-bg {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: none !important;
+  color: rgba(0, 0, 0, 0.26) !important;
+}
+
+#add-buildings-button {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}
+
+#export-pdf-button {
+  position: absolute;
+  bottom: 74px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}
+
+#export-csv-button {
+  position: absolute;
+  bottom: 136px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}
+
+.section {
+  border-bottom: none !important;
+}
+
+#addNoteButton {
+  background-color: #049546;
+}

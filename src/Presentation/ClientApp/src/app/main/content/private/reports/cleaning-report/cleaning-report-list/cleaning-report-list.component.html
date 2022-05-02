@@ -1,0 +1,160 @@
+<!-- SEARCH -->
+<div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="end center">
+
+  <button mat-button [ngClass]="{'mr-8' : true,'green-500 fuse-white-fg' : onlyPendingReply === true}"
+    (click)="filterOnlyPedingReply()">
+    Pending Reply ({{totalPendingReply}})
+  </button>
+
+  <label for="search" class="mr-8">
+    <mat-icon>search</mat-icon>
+  </label>
+  <mat-form-field floatLabel="never">
+    <input matInput [formControl]="searchInput" id="search" placeholder="Search for anything">
+  </mat-form-field>
+
+</div>
+<!-- / SEARCH -->
+<mat-table #table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+  <!-- Number -->
+  <ng-container cdkColumnDef="number">
+    <mat-header-cell *cdkHeaderCellDef class="font-weight-600" mat-sort-header>No.</mat-header-cell>
+    <mat-cell *cdkCellDef="let report">
+      <div fxLayout="column" fxFlex="100">
+        <p class="font-weight-600">
+          {{report.number}}
+        </p>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Mgmt Company -->
+  <ng-container cdkColumnDef="dateOfService">
+    <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Date of Service</mat-header-cell>
+    <mat-cell *cdkCellDef="let report">
+      <p>
+        {{ report.epochDateOfService | fromEpoch | date: 'MMM dd, yyyy' }}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Mgmt Company -->
+  <ng-container cdkColumnDef="companyName">
+    <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Mgmt Company</mat-header-cell>
+    <mat-cell *cdkCellDef="let report">
+      <div fxLayout="column" fxFlex="100">
+        <p>
+          {{ report.companyName }}
+        </p>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Location -->
+  <ng-container cdkColumnDef="location">
+    <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Location</mat-header-cell>
+    <mat-cell *cdkCellDef="let report">
+      <div fxLayout="column" fxFlex="100">
+        <p>
+          {{ report.location }}
+        </p>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Prepared For -->
+  <ng-container cdkColumnDef="preparedFor">
+    <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Prepared For</mat-header-cell>
+    <mat-cell *cdkCellDef="let report">
+      <div fxLayout="column" fxFlex="100">
+        <p>
+          {{ report.preparedFor }}
+        </p>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- To -->
+  <ng-container cdkColumnDef="to">
+    <mat-header-cell *cdkHeaderCellDef class="font-weight-600">To</mat-header-cell>
+    <mat-cell *cdkCellDef="let report">
+      <div fxLayout="column" fxFlex="100">
+        <p>
+          {{ report.to }}
+        </p>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Cleaning Items -->
+  <ng-container cdkColumnDef="cleaningItems">
+    <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Cleaning Items</mat-header-cell>
+    <mat-cell *cdkCellDef="let report">
+      <div fxLayout="column" fxFlex="100">
+        <p>
+          {{ report.cleaningItems }}
+        </p>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Finding Items -->
+  <ng-container cdkColumnDef="findingItems">
+    <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Finding Items</mat-header-cell>
+    <mat-cell *cdkCellDef="let report">
+      <div fxLayout="column" fxFlex="100">
+        <p>
+          {{ report.findingItems }}
+        </p>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Status -->
+  <ng-container cdkColumnDef="status">
+    <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Status</mat-header-cell>
+    <mat-cell *cdkCellDef="let report">
+      <span class="badge" [ngClass]="report.status">
+        {{ report.status | uppercase }}
+      </span>
+      <span class="quantity-indicator text-truncate ml-12"
+        [ngClass]="quantityIndicatorClass(report.lastCommentDirection)">
+      </span>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container cdkColumnDef="buttons">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let report">
+      <div fxFlex="row" fxLayoutAlign="end center">
+
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+          <button id="mat-menu-item" mat-menu-item aria-label="send_credentials" (click)="editElement(report)">
+            <!-- <mat-icon>edit</mat-icon> -->
+            <span>Edit</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="removeElement(report)"
+            *ngIf="!readOnly">
+            <!-- <mat-icon>delete</mat-icon> -->
+            <span>Remove</span>
+          </button>
+
+        </mat-menu>
+      </div>
+
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *cdkRowDef="let report; columns: displayedColumns;" class="user"
+    [routerLink]="'/app/reports/cleaning-report/' + report.id" matRipple [@animate]="{value:'*',params:{y:'100%'}}">
+  </mat-row>
+</mat-table>
+
+<mat-paginator [length]="reportsCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]"></mat-paginator>

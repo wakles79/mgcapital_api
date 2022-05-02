@@ -1,0 +1,23 @@
+<div id="error-403" fxLayout="column" fusePerfectScrollbar>
+
+  <div id="error-403-form-wrapper" fxLayout="column" fxLayoutAlign="center center">
+
+    <div id="error-403-form" *fuseIfOnDom [@animate]="{value:'*',params:{duration:'300ms',y:'100px'}}">
+
+      <div class="logo">
+        <img src="assets/images/logos/MGCapitalIcon.svg">
+      </div>
+
+      <div class="title">Sorry, but you don't have access to the page you are looking for</div>
+
+      <br>
+
+      <button class="mat-light-blue-600-bg mt-16 mt-sm-0" mat-raised-button [routerLink]="'/app/home'" >
+        Go Back
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

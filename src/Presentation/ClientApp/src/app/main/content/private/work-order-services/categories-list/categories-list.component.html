@@ -1,0 +1,24 @@
+<!-- LOADER -->
+<div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading" class="my-24">
+  <mat-spinner></mat-spinner>
+</div>
+<!-- END LOADER -->
+
+<div fxLayout="column" class="category-collection" *ngIf="!loading">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <div [ngClass]="{'category-item text-truncate mr-40':true, 'active':selectedCategoryId===0}" (click)="selectCategory(0)">
+      <span class="category-title">All</span>
+    </div>
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="1px" *ngFor="let category of categories">
+    <div [ngClass]="{'category-item text-truncate':true, 'active':selectedCategoryId===category.id}"
+      (click)="selectCategory(category.id)">
+      <span class="category-title"> {{category.name}} </span>
+    </div>
+
+    <button mat-icon-button (click)="editCategory(category.id)">
+      <mat-icon class="s-16">edit</mat-icon>
+    </button>
+  </div>
+</div>

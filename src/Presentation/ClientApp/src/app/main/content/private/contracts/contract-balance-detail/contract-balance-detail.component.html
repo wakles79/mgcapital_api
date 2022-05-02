@@ -1,0 +1,269 @@
+<div id="contract-report-detail" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayoutAlign="space-between center" fxLayout.gt-xs="row"
+    fxLayoutAlign.gt-xs="space-between center">
+
+    <!-- APP TITLE -->
+    <div fxLayout="column" fxLayoutAlign="center start">
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Budget Balance Report Detail</span>
+      </div>
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <button class="mr-0 mr-sm-16" mat-icon-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <button mat-button class="sidebar-toggle mr-8" (click)="toggleSidebar('simple-left-sidebar-4')">
+          <mat-icon>filter_list</mat-icon>
+          <span class="logo-text">FILTER</span>
+        </button>
+
+        <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+          <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Budget
+            Balance Report Details</span>
+        </div>
+      </div>
+
+    </div>
+    <!-- / APP TITLE -->
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content primary-50-bg">
+
+    <!--LOADER-->
+    <div class="spinner-container" *ngIf="loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
+    <!--END LOADER-->
+
+    <!-- SIDEBAR -->
+    <fuse-sidebar class="sidebar" name="simple-left-sidebar-4" position="left">
+
+      <!-- SIDEBAR CONTENT -->
+      <div class="content" fusePerfectScrollbar>
+        <app-main-balance-sidenav *fuseIfOnDom [@animate]="{value:'*'}"></app-main-balance-sidenav>
+      </div>
+      <!-- / SIDEBAR CONTENT -->
+
+    </fuse-sidebar>
+    <!-- / SIDEBAR -->
+
+    <!-- CENTER -->
+    <div class="center p-24 pb-56 pr-sm-92" fusePerfectScrollbar>
+
+      <!-- CONTENT -->
+      <div class="content p-40 fuse-white-bg mat-elevation-z4">
+        <div class="report">
+          <!--TITLE-->
+          <div class="title-document" fxLayoutAlign="center center">
+            <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="center center">
+              <span class="mat-headline fuse-black-fg">MG Capital Balance Budget Report</span>
+            </div>
+          </div>
+          <!--END TITLE-->
+          <!--HEADER-->
+          <div class="ml-8 m-sm-0 " fxLayoutAlign="space-between stretch">
+            <div class="invoice-number pt-24" fxLayout="row" fxFlex="50" fxLayoutAlign="start center">
+              <div fxLayout="column">
+
+                <div fxLayout="row">
+                  <span class="title"> CUSTOMER </span>
+                  <span class="number number-date"> {{contractReportDetail.customerName}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> BUILDING </span>
+                  <span class="number number-date"> {{contractReportDetail.buildingName}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> DAYS PER MONTH </span>
+                  <span class="number number-date"> {{contractReportDetail.daysPerMonth}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> NUMBER OF PEOPLE </span>
+                  <span class="number number-date"> {{contractReportDetail.numberOfPeople}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> EXPIRATION DATE </span>
+                  <span class="number number-date"> {{contractReportDetail.expirationDate | date}}
+                  </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> STATUS </span>
+                  <span class="number number-date">
+                    {{ getStatus(contractReportDetail.status) | uppercase }} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> DESCRIPTION </span>
+                  <span class="number number-date"> {{contractReportDetail.description}} </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="invoice-number pl-24 pt-24 " fxLayout="row" fxFlex="50" fxLayoutAlign="start center">
+              <div class="issuer" fxLayout="row" fxLayoutAlign="start center">
+                <div class="logo">
+                  <img src="assets/images/logos/MG Logo Black Text.png">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--END HEADER-->
+
+          <!--REVENUE-->
+          <div class="mat-elevation-z2 mt-24">
+            <!--TITLE-->
+            <div class="sub-title-document green-400-bg" fxLayoutAlign="center center">
+              <div class="pt-16" fxFill fxLayout="row" fxLayoutAlign="space-between center">
+                <span class="mat-headline pl-16">REVENUES</span>
+                <div class="fuse-white-fg breadcrumb pr-16" fxFlex="0 1 auto">
+                  <button mat-icon-button matTooltip="Add Items" (click)="newRevenue()">
+                    <mat-icon>add_box</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!--END TITLE-->
+            <table style="width:100%;">
+              <thead>
+                <tr class="mat-header-row">
+                  <th class="mat-header-cell">Description</th>
+                  <th class="mat-header-cell">Reference</th>
+                  <th class="mat-header-cell">Date</th>
+                  <th class="mat-header-cell">Sub-Total</th>
+                  <th class="mat-header-cell">Tax</th>
+                  <th class="mat-header-cell" align="right">Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let cItem of contractReportDetail.revenues" class="mat-row" style="cursor:pointer;"
+                  (click)="updateRevenueItem(cItem)">
+                  <td class="mat-cell"> {{cItem.description}} </td>
+                  <td class="mat-cell"> {{cItem.reference}} </td>
+                  <td class="mat-cell"> {{ cItem.date  | date: 'MMM dd, yyyy' }} </td>
+                  <td class="mat-cell"> {{cItem.subTotal | currency:'USD':'symbol'}} </td>
+                  <td class="mat-cell">% {{cItem.tax}} </td>
+                  <td class="mat-cell" align="right"> {{cItem.total | currency:'USD':'symbol'}} </td>
+                </tr>
+                <tr class="mat-row table-footer">
+                  <td class="mat-cell"> </td>
+                  <td class="mat-cell"> </td>
+                  <td class="mat-cell"> </td>
+                  <td class="mat-cell"> </td>
+                  <td class="mat-cell">
+                    <span>
+                      TOTAL
+                    </span>
+                  </td>
+                  <td class="mat-cell" align="right">
+                    <span>
+                      <b>
+                        {{ totalRevenues | currency:'USD':'symbol'}}
+                      </b>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--END REVENUE-->
+
+          <!--EXPENSES-->
+          <div class="mat-elevation-z2 mt-24">
+            <!--TITLE-->
+            <div class="sub-title-document red-400-bg" fxLayoutAlign="center center">
+              <div class="pt-16" fxFill fxLayout="row" fxLayoutAlign="space-between center">
+                <span class="mat-headline pl-16">EXPENSES</span>
+                <div class="fuse-white-fg breadcrumb pr-16" fxFlex="0 1 auto">
+                  <button mat-icon-button matTooltip="Add Items" (click)="newExpense()">
+                    <mat-icon>add_box</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!--END TITLE-->
+            <table style="width:100%;">
+              <thead>
+                <tr class="mat-header-row">
+                  <th class="mat-header-cell">Description</th>
+                  <th class="mat-header-cell">Reference</th>
+                  <th class="mat-header-cell">Date</th>
+                  <th class="mat-header-cell">Vendor</th>
+                  <th class="mat-header-cell" align="right">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let cItem of contractReportDetail.expenses" class="mat-row" style="cursor:pointer;"
+                  (click)="updateExpenseItem(cItem)">
+                  <td class="mat-cell"> {{cItem.description}} </td>
+                  <td class="mat-cell"> {{cItem.reference}} </td>
+                  <td class="mat-cell"> {{cItem.date | date: 'MMM dd, yyyy'}} </td>
+                  <td class="mat-cell"> {{cItem.vendor}} </td>
+                  <td class="mat-cell" align="right"> {{cItem.amount | currency:'USD':'symbol'}} </td>
+                </tr>
+                <tr class="mat-row table-footer">
+                  <td class="mat-cell"> </td>
+                  <td class="mat-cell"> </td>
+                  <td class="mat-cell"> </td>
+                  <td class="mat-cell">
+                    <span>
+                      TOTAL
+                    </span>
+                  </td>
+                  <td class="mat-cell" align="right">
+                    <span>
+                      <b>
+                        {{ totalExpenses | currency:'USD':'symbol' }}
+                      </b>
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--END EXPENSES-->
+
+          <!--TOTALS-->
+          <div class="mat-elevation-z2 mt-24 p-8 ">
+            <table style="width:100%;">
+              <tr>
+                <td><span class="mat-title">Net Profit</span></td>
+                <td align="right">
+                  <span [ngClass]="{'mat-title': true,'red-fg':  Profit < 0 }">
+                    {{ Profit | currency:'USD':'symbol' }} </span>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="mat-title">Profit Ratio</span></td>
+                <td align="right">
+                  <span class="mat-title"> {{ ProfitRatio | percent:'2.2-2' }} </span>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <!--END TOTALS-->
+
+        </div>
+      </div>
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CENTER -->
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

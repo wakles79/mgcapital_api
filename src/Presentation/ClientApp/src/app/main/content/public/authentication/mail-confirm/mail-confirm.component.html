@@ -1,0 +1,73 @@
+<div id="reset-password" fxLayout="column" fusePerfectScrollbar>
+
+  <div id="reset-password-form-wrapper" fxLayout="column" fxLayoutAlign="center center" *fuseIfOnDom [@animate]="{value:'*',params:{duration:'300ms',y:'100px'}}">
+
+    <div id="reset-password-form">
+
+      <div class="logo">
+        <img src="assets/images/logos/MGCapitalIcon.svg">
+      </div>
+
+      <div class="title" *ngIf="!success">CREATE YOUR PASSWORD</div>
+      <div class="title" *ngIf="success">ALL SET!!!
+        <br>
+        <small> now go to login page</small>
+      </div>
+      <div class="title" *ngIf="(badRequest$ | async)">
+        <mat-error>
+          Invalid or expired link
+        </mat-error>
+        <br>
+        <small>Please contact your System Administrator</small>
+      </div>
+
+      <div class="spinner-container" *ngIf="isLoading$ | async">
+        <mat-spinner></mat-spinner>
+      </div>
+
+      <form name="resetPasswordForm" [formGroup]="resetPasswordForm" #f="ngForm" novalidate (ngSubmit)="reset(f.value)" *ngIf="!success && !(badRequest$ | async) && !(isLoading$ | async)">
+
+        <mat-error *ngIf="isInvalid">Something went wrong</mat-error>
+        <mat-form-field>
+          <input matInput [(ngModel)]="email" placeholder="Email" formControlName="email">
+          <mat-error *ngIf="resetPasswordFormErrors.email.required">
+            Email is required
+          </mat-error>
+          <mat-error *ngIf="!resetPasswordFormErrors.email.required && resetPasswordFormErrors.email.email">
+            Please enter a valid email address
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="password" placeholder="Password" formControlName="password">
+          <mat-error *ngIf="resetPasswordFormErrors.password.required">
+            Password is required
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="password" placeholder="Password (Confirm)" formControlName="confirmPassword">
+          <mat-error *ngIf="resetPasswordFormErrors.confirmPassword.required">
+            Password confirmation is required
+          </mat-error>
+          <mat-error *ngIf="resetPasswordFormErrors.confirmPassword.passwordsNotMatch">
+            Passwords must match
+          </mat-error>
+        </mat-form-field>
+
+        <input type="hidden" formControlName="code">
+
+        <button mat-raised-button class="submit-button" color="accent" aria-label="RESET MY PASSWORD" [disabled]="resetPasswordForm.invalid">
+          DEFINE MY PASSWORD
+        </button>
+      </form>
+
+      <div class="login" fxLayout="row" fxLayoutAlign="center center">
+        <a class="link" [routerLink]="'/auth/login'">Go back to login</a>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

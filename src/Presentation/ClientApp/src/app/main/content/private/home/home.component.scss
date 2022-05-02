@@ -1,0 +1,25 @@
+@import "src/@fuse/scss/fuse";
+
+.content {
+  display: flex;
+  flex: 1 1 auto;
+  padding: 32px;
+  min-width: 0;
+
+  @include media-breakpoint('lt-lg') {
+    flex: 1 0 100%;
+    margin-top: 32px;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .fuse-card {
+
+    @include media-breakpoint('lt-lg') {
+      width: 100%;
+      min-width: 0;
+      max-width: none;
+    }
+  }
+}

@@ -1,0 +1,49 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/custom-theme";
+
+#roles {
+  .top-bg {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 200px;
+    background-image: url("../../../../../assets/images/backgrounds/header-bg.png");
+    background-size: cover;
+  }
+
+  .sidenav {
+    .content {
+      .mat-list {
+        .mat-list-item {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  .center {
+    .header {
+      background-image: none;
+    }
+    .content-card {
+      // border-radius: 10px 10px 0px 0px;
+      .content {
+        .icon-action-type {
+          background-color: #333333;
+          color: #ffffff;
+          width: 30px;
+          height: 30px;
+          padding: 5px;
+          border-radius: 15px;
+          font-size: 20px;
+        }
+      }
+    }
+  }
+
+  .accent-bg {
+    background-color: #228750 !important;
+  }
+}

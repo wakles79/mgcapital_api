@@ -1,0 +1,18 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/custom-theme";
+
+#scheduleTypes {
+
+  .content {
+      overflow: hidden;
+  }
+}
+
+
+#add-schedule-type-button {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}

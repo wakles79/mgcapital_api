@@ -1,0 +1,192 @@
+<div id="invoice" class="compact page-layout blank inner-scroll" fusePerfectScrollbar>
+
+  <div class="invoice-container" fxLayout="row">
+    <div fxFlex="33"></div>
+    <!-- INVOICE -->
+    <div class="card" fxFlex="33" *ngIf="!isEmpty(workOrder)">
+
+      <div class="header">
+
+        <div fxLayout="row" fxLayoutAlign="space-between stretch">
+
+          <div class="client">
+            <div class="invoice-date">Created: {{ workOrder.epochCreatedDate | fromEpoch | date:'medium'}}</div>
+            <div class="invoice-number pt-24 pb-24" fxLayout="row" fxLayoutAlign="start center">
+              <span class="title-wo">Work Order</span>
+              <span class="number-wo">{{ workOrder.clonePath ? workOrder.clonePath : workOrder.number }}</span>
+            </div>
+
+            <div class="invoice-number building" fxLayout="row" fxLayoutAlign="start center">
+              <span class="title">BUILDING</span>
+              <span class="number">{{ workOrder.buildingName }}</span>
+            </div>
+
+            <div class="invoice-number building" fxLayout="row" fxLayoutAlign="start center">
+              <span class="title">LOCATION</span>
+              <span class="number">{{ workOrder.location }}</span>
+            </div>
+
+            <div class="invoice-number building info" fxLayout="row" fxLayoutAlign="start center">
+              <span class="title">REQUESTER</span>
+              <span class="number">{{ workOrder.requesterFullName }} , </span>
+              <span class="number">{{ workOrder.requesterEmail }}</span>
+            </div>
+
+            <div class="invoice-number building" fxLayout="row" fxLayoutAlign="start center">
+              <span class="title">TYPE</span>
+              <span class="number">{{ workOrderType | uppercase}}</span>
+            </div>
+
+            <div class="invoice-number" fxLayout="row" fxLayoutAlign="start center">
+              <span class="title pr-12">STATUS</span>
+              <span class="badge" [ngClass]="ngClassWorkOrderStatus(workOrder.statusId)">
+                {{ workOrderStatus | uppercase }}
+              </span>
+            </div>
+
+            <div class="info">
+            </div>
+          </div>
+
+          <div class="issuer" fxLayout="row" fxLayoutAlign="start start">
+            <div class="logo">
+              <img src="assets/images/logos/MG Logo Black Text.png">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="sections">
+
+          <!--Description-->
+          <div class="section">
+            <div class="section-header" fxLayout="row" fxLayoutAlign="start center">
+              <mat-icon class="s-20">assignment</mat-icon>
+              <span fxFlex class="section-title">DESCRIPTION</span>
+            </div>
+
+            <div class="">
+              <pre>{{workOrder.description}}</pre>
+            </div>
+          </div>
+
+          <!--Closing Notes-->
+          <div class="section" *ngIf="workOrder.closingNotes">
+            <div class="section-header" fxLayout="row" fxLayoutAlign="start center">
+              <span fxFlex class="section-title">CLOSING NOTES</span>
+            </div>
+
+            <div class="">
+              <p> {{additionalNotes}} </p>
+            </div>
+          </div>
+
+          <!--Tasks-->
+          <div class="section" *ngIf="tasks.length > 0">
+            <div class="checklist">
+              <div class="section-header" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="s-20">check_box</mat-icon>
+                <span fxFlex class="section-title">TASK LIST</span>
+              </div>
+
+              <div class="checklist-progress" fxLayout="row" fxLayoutAlign="start center">
+
+                <span class="checklist-progress-value">
+                  {{ countTasksCheck() }} / {{ tasks.length}}
+                </span>
+
+                <mat-progress-bar class="mat-primary checklist-progressbar" mode="determinate"
+                  value="{{100 * countTasksCheck() / tasks.length}}">
+                </mat-progress-bar>
+              </div>
+
+              <!-- List of Tasks -->
+              <div class="check-items">
+                <div *ngFor="let item of tasks; index as i;" class="check-item pb-12" fxLayout="row"
+                  fxLayoutAlign="start start">
+                  <div class="" fxFlex="5" fxLayout="row">
+                    <mat-checkbox [disabled]="true" [checked]="item.isComplete"></mat-checkbox>
+                  </div>
+                  <div class="" fxFlex="95" fxLayout="row">
+                    <span class="">{{ item.description }}</span>
+                  </div>
+                </div>
+              </div>
+              <!-- End List of Tasks-->
+            </div>
+          </div>
+
+          <!--Attachments-->
+          <div class="section" *ngIf="attachments.length > 0">
+            <div class="section-header" fxLayout="row" fxLayoutAlign="start center">
+              <mat-icon class="s-20">attachment</mat-icon>
+              <span fxFlex class="section-title">ATTACHMENTS</span>
+            </div>
+            <div class="attachments">
+              <div class="attachment" *ngFor="let item of attachments; index as i">
+                <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <!-- {{i}}{{item.fullUrl }} -->
+                  <div fxLayout="row" fxLayoutAlign="start center" fxLayout="row" fxLayoutAlign="center start">
+                    <!-- <div class="attachment-preview mat-elevation-z2"
+                      [ngStyle]="{'background-image': 'url('+this.attachments[i].fullUrl+')'}" (click)="open(i)">
+                    </div> -->
+                    <img class="attachment-preview mat-elevation-z2" [src]="item.fullUrl" (click)="open(i)">
+                    <div class="attachment-content" fxLayout="column">
+                      <span class="attachment-description">DESCRIPTION</span>
+                      <div fxLayout="row" fxLayoutAlign="start center">
+                        <span class="attachment-name">{{ item.description }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="footer pt-64">
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <div class="logo">
+            <img src="assets/images/logos/MGCapitalIcon.svg">
+          </div>
+          <div class="small-note">
+            MG Capital Maintenance - 110 Pheasant Wood Ct Suite D Morrisville, N.C. 27560. Office Hours 8am-5pm
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" fxFlex="33" *ngIf="isEmpty(workOrder)">
+      <div id="error-404" fxLayout="column" fxLayoutAlign="center center">
+        <div class="content" fxLayout="column" fxLayoutAlign="center center">
+          <div class="error-code">404</div>
+          <div class="message">Sorry but we could not find the page you are looking for</div>
+        </div>
+      </div>
+      <div class="footer pt-64">
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <div class="logo">
+            <img src="assets/images/logos/MGCapitalIcon.svg">
+          </div>
+          <div class="small-note">
+            MG Capital Maintenance - 110 Pheasant Wood Ct Suite D Morrisville, N.C. 27560 O: 9194618573
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / INVOICE -->
+    <div fxFlex="33"></div>
+  </div>
+
+</div>
+
+<!-- ADD ELEMENT BUTTON -->
+<a href="http://mgcapitalmain.com/wordpress/index.php/workorder/" target="_blank" mat-fab class="mg-accent-bg"
+  id="external-link-button" aria-label="Add work order" *fuseIfOnDom
+  [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+  <mat-icon>note_add</mat-icon>
+</a>
+<!-- / ADD ELEMENT BUTTON -->

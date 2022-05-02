@@ -1,0 +1,79 @@
+<!-- LOADER -->
+<div class="spinner-container" *ngIf="loading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+<!-- END LOADER -->
+
+<!--SEARCH-->
+<div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="end center">
+  <label for="search" class="mr-8">
+    <mat-icon>search</mat-icon>
+  </label>
+  <mat-form-field floatLabel="never">
+    <input matInput [formControl]="searchInput" id="search" placeholder="Search for anything">
+  </mat-form-field>
+</div>
+<!--END SEARCH-->
+
+<!-- TABLE -->
+<mat-table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+
+  <!-- COLOR -->
+  <ng-container cdkColumnDef="color">
+    <mat-header-cell *cdkHeaderCellDef fxFlex="80px">Color</mat-header-cell>
+    <mat-cell *cdkCellDef="let row" fxFlex="80px">
+      <div class="w-20 h-20" style="border-radius: 10px;" [ngStyle]="{'background-color': row.hexColor}"> </div>
+    </mat-cell>
+  </ng-container>
+  <!-- COLOR -->
+
+  <!-- DESCRIPTION -->
+  <ng-container cdkColumnDef="description">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="description">Description</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <span>
+        {{row.description}}
+      </span>
+    </mat-cell>
+  </ng-container>
+  <!-- DESCRIPTION -->
+
+  <!-- Buttons Column -->
+  <ng-container cdkColumnDef="buttons">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let tag">
+      <div fxFlex="row" fxLayoutAlign="end center">
+
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="editTag(tag.id)">
+            <!-- <mat-icon>edit</mat-icon> -->
+            <span>Edit</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="deleteTag(tag.id, tag.referenceCount)">
+            <!-- <mat-icon>delete</mat-icon> -->
+            <span>Remove</span>
+          </button>
+
+        </mat-menu>
+
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!-- End Buttons Column -->
+
+  <mat-header-row *cdkHeaderRowDef="columnsToDisplay"></mat-header-row>
+  <mat-row *cdkRowDef="let tag; columns: columnsToDisplay;" [@animate]="{value:'*',params:{y:'100%'}}">
+  </mat-row>
+</mat-table>
+<!-- TABLE -->
+
+<!--PAGINATOR-->
+<mat-paginator [length]="getTagCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]">
+</mat-paginator>
+<!--END PAGINATOR-->

@@ -1,0 +1,206 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/mat-table";
+
+app-work-order-list {
+  flex: 1;
+
+  .mat-table {
+    background: transparent;
+    box-shadow: none;
+    max-height: 100%;
+
+    .mat-column-number {
+      max-width: 52px;
+      padding-left: 0;
+      white-space: pre-wrap;
+    }
+
+    .mat-column-description {
+      flex: 0 0 250px !important;
+      width: 250px !important;
+      word-wrap: break-word !important;
+      white-space: unset !important;
+      overflow-wrap: break-word;
+      padding-right: 2%;
+    }
+
+    .mat-column-tasks {
+      flex: 0 1 80px;
+    }
+
+    .mat-column-notes {
+      flex: 0 1 64px;
+    }
+
+    .mat-column-buttons {
+      max-width: 40px;
+      padding-right: 2%;
+      padding-left: 4%;
+
+     .mat-icon-button {
+       width: 25px;
+     }
+   }
+
+    .mat-header-row {
+      font-weight: 500;
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .mat-row {
+      position: relative;
+      cursor: pointer;
+      padding: 8px 8px 8px 24px;
+      padding-left: 18px;
+      padding-right: 18px;
+
+      .mat-cell {
+        min-width: 0;
+
+        .closing-notes {
+          font-style: italic;
+        }
+
+        .followUpOnClosingNotes {
+          color: #f44336;
+        }
+
+        .quantity-indicator {
+          display: inline-block;
+          vertical-align: middle;
+          width: 8px;
+          height: 8px;
+          border-radius: 4px;
+          margin-right: 8px;
+
+          & + span {
+            display: inline-block;
+            vertical-align: middle;
+          }
+        }
+
+        .badge-notification {
+          display: inline-block;
+          padding: 2px;
+          font-size: 0.9em;
+          font-weight: 500;
+          line-height: 1;
+          text-align: center;
+          white-space: nowrap;
+          vertical-align: baseline;
+          border-radius: 4px;
+          color: #fff;
+
+          &.enabled {
+            background-color: #28a745 !important;
+
+            &.last-one {
+              background-color: red !important;
+            }
+          }
+
+          &.disabled {
+            background-color: #d8d8d8 !important;
+          }
+        }
+
+        .badge {
+          display: inline-block;
+          padding: 5px 20px 5px 20px;
+          font-size: 75%;
+          font-weight: 500;
+          line-height: 1;
+          text-align: center;
+          white-space: nowrap;
+          vertical-align: baseline;
+          border-radius: 0.25rem;
+          color: #fff;
+
+          &.active {
+            background-color: #ffc107 !important;
+
+            &.overdue {
+              background-color: #d32f2f !important;
+            }
+          }
+
+          &.stand-by {
+            background-color: #2196f3 !important;
+
+            &.overdue {
+              background-color: #d32f2f !important;
+            }
+          }
+
+          &.closed {
+            background-color: #28a745 !important;
+          }
+
+          &.cancelled {
+            background-color: black !important;
+          }
+
+          &.draft {
+            background-color: gray !important;
+          }
+        }
+
+        .is-expired {
+          color: #f44336 !important;
+        }
+
+        &.mat-column-detail-button {
+          flex: 0 1 auto;
+          padding: 0 24px 0 0;
+
+          @include media-breakpoint('gt-md') {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  .small-margin {
+    margin-left: 3px;
+  }
+
+  .span-margin {
+    margin-left: 3px;
+  }
+
+  /* Absolute Center Spinner */
+  .spinner-container {
+    position: fixed;
+    z-index: 999;
+    height: 2em;
+    width: 2em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  /* Transparent Overlay */
+  .spinner-container:before {
+    content: "";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+}
+
+#add-contact-button {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}

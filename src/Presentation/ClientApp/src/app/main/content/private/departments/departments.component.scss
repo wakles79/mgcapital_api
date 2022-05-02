@@ -1,0 +1,16 @@
+@import "src/app/core/scss/custom/custom-theme";
+
+#departments {
+
+  .content {
+      overflow: hidden;
+  }
+}
+
+#sidenav-buttons {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}

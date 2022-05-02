@@ -1,0 +1,205 @@
+<div class="dialog-content-wrapper">
+  <!--TOOLBAR-->
+  <mat-toolbar matDialogTitle class="accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title"> {{title}} </span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END TOOLBAR-->
+
+  <!--DIALOG CONTENT-->
+  <div mat-dialog-content class="p-16 m-0" fusePerfectScrollbar>
+    <form [formGroup]="taskForm">
+      <div fxLayout="column" fxLayoutAlign="start none">
+
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="mb-12">
+          <h3 class="font-weight-500 m-0">General Information</h3>
+
+          <div>
+            <mat-icon class="s-20 ml-8 green-fg" matTooltip="Requires Scheduling" *ngIf="schedulingRequired">
+              calendar_today
+            </mat-icon>
+            <!-- <mat-icon class="s-20 ml-8 green-fg" matTooltip="Hours required at close" *ngIf="hoursRequired">timer</mat-icon> -->
+            <mat-icon class="s-20 ml-8 green-fg" matTooltip="Quantity required at close" *ngIf="quantityRequired">
+              assignment
+            </mat-icon>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <mat-form-field>
+          <input matInput formControlName="location" placeholder="Location/Suite" required>
+        </mat-form-field>
+        <!-- Location -->
+
+        <!-- Category -->
+        <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px" *ngIf="showBilling">
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Category" formControlName="workOrderServiceCategoryId">
+              <mat-option *ngFor="let category of categories" [value]="category.id">
+                {{ category.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Service" formControlName="workOrderServiceId">
+              <mat-option *ngFor="let service of workOrderServices" [value]="service.id">
+                {{ service.name }} ({{service.unitFactor}} - {{service.frequencyName}})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!-- Category -->
+
+        <!-- Rate -->
+        <div class="w-100-p mb-12" *ngIf="showBilling">
+          <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px">
+            <mat-form-field fxFlex="32">
+              <input matInput formControlName="rate" placeholder="Rate" required>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="32">
+              <input matInput formControlName="quantity" placeholder="Quantity" required>
+              <mat-hint>{{selectedWorkOrderService ? selectedWorkOrderService.unitFactor : ''}}</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field fxFlex="32">
+              <input matInput formControlName="total" placeholder="Total" disabled>
+            </mat-form-field>
+          </div>
+
+          <mat-slide-toggle formControlName="quantityRequiredAtClose">Quantity Required</mat-slide-toggle>
+
+        </div>
+        <!-- Rate -->
+
+        <!-- Description -->
+        <mat-form-field>
+          <textarea matInput formControlName="description" placeholder="Description" rows="2" required></textarea>
+        </mat-form-field>
+        <!-- Description -->
+
+        <!-- Note -->
+        <mat-form-field *ngIf="viewNotesforBilling">
+          <textarea matInput placeholder="Billing Notes" formControlName="note" rows="2"></textarea>
+        </mat-form-field>
+        <!-- Note -->
+
+        <!-- General Note -->
+        <ng-container *mgcapRemoveIfFeatureOff="'view-general-task-notes'">
+          <mat-form-field>
+            <textarea matInput placeholder="Task Note" formControlName="generalNote" rows="2"></textarea>
+          </mat-form-field>
+        </ng-container>
+        <!-- General Note -->
+        </div>
+
+      <div *ngIf="action==='edit' && isCompleted">
+        <h3 class="font-weight-500 m-0">Closing Information</h3>
+        <div fxLayout="row" fxLayoutAlign="space-between none" fxLayoutGap="8px">
+          <mat-form-field fxFlex>
+            <input matInput [matDatepicker]="pCompletedDate" placeholder="Completed Date"
+              formControlName="completedDate" required>
+            <mat-datepicker-toggle matSuffix [for]="pCompletedDate"></mat-datepicker-toggle>
+            <mat-datepicker #pCompletedDate></mat-datepicker>
+          </mat-form-field>
+
+          <div fxLayout="column" fxFlex>
+            <mat-form-field *ngIf="quantityRequired">
+              <input matInput placeholder="Hours Executed" formControlName="quantityExecuted" required>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="hoursRequired">
+              <input matInput placeholder="Hours Executed" formControlName="hoursExecuted" required>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="action==='edit' && showDates">
+        <div fxLayout="column" fxLayoutAlign="space-between none" fxLayoutGap="8px" fxLayout.gt-sm="row">
+          <mat-form-field fxFlex="50">
+            <input matInput [matDatepicker]="pCreatedDate" placeholder="Created Date" formControlName="createdDate"
+              required>
+            <mat-datepicker-toggle matSuffix [for]="pCreatedDate"></mat-datepicker-toggle>
+            <mat-datepicker #pCreatedDate></mat-datepicker>
+          </mat-form-field>
+
+          <!-- <mat-form-field fxFlex>
+            <input matInput [matDatepicker]="pLastCheckedDate" placeholder="Complete date"
+              formControlName="lastCheckedDate">
+            <mat-datepicker-toggle matSuffix [for]="pLastCheckedDate"></mat-datepicker-toggle>
+            <mat-datepicker #pLastCheckedDate></mat-datepicker>
+          </mat-form-field> -->
+        </div>
+      </div>
+
+      <div fxLayout="column" fxLayoutAlign="start none" class="mb-12" *ngIf="!hideAttachments">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <h3 class="font-weight-500 m-0">Attachments</h3>
+
+          <input #fileInput hidden type="file" multiple accept="image/*" (change)="fileChange($event.target.files)">
+          <button mat-button class="mat-icon-button" (click)="fileInput.click()" *ngIf="editAttachments">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
+
+        <!-- Uploaded Attachments -->
+        <div fxLayout="column" fxLayoutAlign="start none" formArrayName="attachments">
+          <div *ngFor="let attachment of taskAttachments.controls; let i = index" class="p-8" fxLayout="row"
+            fxLayoutAlign="start center" fxLayoutGap="8px" [formGroupName]="i">
+            <div></div>
+            <mat-card class="p-4">
+              <img [src]="attachment.value.fullUrl" style="max-width: 160px;">
+            </mat-card>
+            <div>
+              <p>
+                <mat-form-field class="w-100-p">
+                  <input matInput placeholder="Name" formControlName="description">
+                </mat-form-field>
+              </p>
+              <p>
+                <button mat-button (click)="removeUploadedAttachment(i)" *ngIf="editAttachments">Remove</button>
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Uploaded Attachments -->
+      </div>
+    </form>
+
+    <!-- Local Attachments -->
+    <div fxLayout="column" fxLayoutAlign="start none">
+      <div *ngFor="let file of localAttachments; let i = index" class="p-8" fxLayout="row" fxLayoutAlign="start center"
+        fxLayoutGap="8px">
+        <mat-card class="p-4">
+          <img [src]="file.url" style="max-width: 160px;">
+        </mat-card>
+        <div>
+          <p>
+            <mat-form-field class="w-100-p">
+              <input matInput placeholder="Description" [(ngModel)]="file.description">
+            </mat-form-field>
+          </p>
+          <p>
+            <button mat-button (click)="removeLocalAttachment(i)">Remove</button>
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- Local Attachments -->
+  </div>
+  <!--DIALOG CONTENT-->
+
+  <!--DIALOG ACTIONS-->
+  <div mat-dialog-actions class="m-0 p-16">
+    <button mat-raised-button color="accent" [disabled]="taskForm.invalid" (click)="submit()" aria-label="SAVE">
+      SAVE
+    </button>
+  </div>
+  <!--DIALOG ACTIONS-->
+</div>

@@ -1,0 +1,45 @@
+<div class="dialog-content-wrapper">
+  <!--TITLE-->
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END TITLE-->
+
+  <!--CONTENT-->
+  <div mat-dialog-content class="p-12 m-0" fusePerfectScrollbar>
+    <form [formGroup]="tagForm">
+      <div fxLayout="column" fxLayoutAlign="space-between none">
+        <mat-form-field appearance="outline">
+          <input matInput placeholder="Description" formControlName="description">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-select placeholder="Color" formControlName="hexColor">
+            <mat-option *ngFor="let color of colors" [value]="color.hexCode">
+              <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px">
+                <div class="w-20 h-20" style="border-radius: 10px;" [ngStyle]="{'background-color': color.hexCode}">
+                </div>
+                <span> {{ color.name }} </span>
+              </div>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </form>
+  </div>
+  <!-- CONTENT -->
+
+  <!--ACTION BUTTONS-->
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between end">
+    <button mat-raised-button color="accent" aria-label="SAVE" [disabled]="tagForm.invalid "
+      (click)="dialogRef.close(tagForm)">
+      SAVE
+    </button>
+  </div>
+  <!--END ACTION BUTTONS-->
+</div>

@@ -1,0 +1,359 @@
+<div id="invoice" class="compact page-layout blank inner-scroll" fusePerfectScrollbar>
+
+  <div class="invoice-container" fxLayout="row">
+    <div class="no-print" fxHide.lt-lg fxFlex="20"></div>
+
+    <!-- INVOICE -->
+    <div class="card" fxFlex="100" fxFlex.gt-lg="60" *ngIf="reportDetails">
+
+      <div class="content">
+        <div class="report-list">
+          <!-- HEADER -->
+          <div class="title-document" fxLayoutAlign="center center">
+            <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="center center">
+              <span class="mat-headline">MG Capital Cleaning Report</span>
+            </div>
+          </div>
+          <div class="print-no-margin print-no-padding mt-16 ml-32 m-sm-0 " fxLayoutAlign="space-between stretch">
+            <div class="invoice-number print-no-padding pl-32 pt-24" fxLayout="row" fxFlex="50"
+              fxLayoutAlign="start center">
+              <div fxLayout="column">
+
+                <div fxLayout="row">
+                  <span class="title">TO </span>
+                  <span class="number number-date">{{ reportDetails.to }}</span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> FROM </span>
+                  <span class="number number-date">{{ reportDetails.from }}</span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> LOCATION </span>
+                  <span class="number number-date">{{ reportDetails.location }}</span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title">DATE FORM </span>
+                  <span class="number number-date">
+                    {{ reportDetails.epochDateOfService | fromEpoch | date: 'MMMM dd,yyyy' }}
+                  </span>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="invoice-number" fxLayout="row" fxFlex="50" fxLayoutAlign="start center">
+              <div class="issuer" fxLayout="row" fxLayoutAlign="start center">
+                <div class="logo">
+                  <img src="assets/images/logos/MG Logo Black Text.png">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- / HEADER -->
+
+          <div class="print-no-margin card-table m-32">
+            <div class="card-table">
+              <!-- TITLE -->
+              <div class="title-document" fxLayoutAlign="center center">
+                <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="space-between center">
+                  <span class="mat-headline pl-24">Cleaning Report</span>
+                </div>
+              </div>
+              <!-- /TITLE -->
+
+              <!-- REPORT ITEMS -->
+              <mat-table #table [dataSource]="cleaningItemsDataSource" [@animateStagger]="{value:'50'}" matSort
+                matSortDisableClear>
+
+                <!-- Building -->
+                <ng-container cdkColumnDef="building">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Building</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item">
+                    <p>
+                      {{ item.buildingName }}
+                    </p>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Building -->
+                <ng-container cdkColumnDef="location">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Suite/Location</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item">
+                    <p>
+                      {{ item.location }}
+                    </p>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Building -->
+                <ng-container cdkColumnDef="time">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Time</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item">
+                    <p>
+                      {{ item.time | uppercase }}
+                    </p>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Building -->
+                <ng-container cdkColumnDef="observances">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600" fxFlex="40">Observances</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item; let rowIndex = index;" fxFlex="40">
+                    <div fxLayout="column" fxLayoutAlign="start start">
+                      <p>
+                        {{ item.observances }}
+                      </p>
+                      <div class="attachments" *ngIf="item.attachments.length > 0">
+                        <mat-expansion-panel fxFlex="100">
+                          <mat-expansion-panel-header class="no-print">
+                            <mat-panel-title>
+                              <div class="section-header pb-12" fxLayout="row" fxLayoutAlign="start center" fxFlex="100">
+                                <mat-icon>attachment</mat-icon>
+                                <span fxFlex class="section-title">&nbsp;IMAGES ({{item.attachments.length}})</span>
+                              </div>
+                            </mat-panel-title>
+                          </mat-expansion-panel-header>
+
+                          <div class="attachment" *ngFor="let att of item.attachments; index as i">
+                            <div fxLayout.lt-md="column" fxLayout fxLayoutAlign="start center"
+                              fxLayoutAlign="center start">
+                              <div fxFlex="100" fxLayout="column" class="attachment-preview mat-elevation-z2"
+                                (click)="open(att.id)">
+                                <img src="{{att.fullUrl}}" alt="image">
+                              </div>
+                              <div fxFlex="100" class="attachment-content" fxLayout="column">
+                                <span class="attachment-description">DESCRIPTION</span>
+                                <div fxLayout="row" fxLayoutAlign="start center">
+                                  <span class="attachment-name">{{ att.title }}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </mat-expansion-panel>
+                      </div>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+
+                <mat-header-row *cdkHeaderRowDef="cleaningItemsDisplayedColumns"></mat-header-row>
+                <mat-row *cdkRowDef="let reportItem; columns: cleaningItemsDisplayedColumns;" class="user" matRipple
+                  [@animate]="{value:'*',params:{y:'100%'}}">
+                </mat-row>
+              </mat-table>
+              <mat-paginator [length]="cleaningItemsCount" [pageSize]="100" [pageSizeOptions]="[100, 200, 500]">
+              </mat-paginator>
+              <!-- /REPORT ITEMS -->
+
+            </div>
+          </div>
+
+          <div class="print-no-margin card-table m-32">
+            <div class="card-table">
+              <!-- TITLE -->
+              <div class="title-document" fxLayoutAlign="center center">
+                <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="space-between center">
+                  <span class="mat-headline pl-24">Findings</span>
+                </div>
+              </div>
+              <!-- /TITLE -->
+
+              <!-- FINDING -->
+              <mat-table #table [dataSource]="findingItemsDataSource" [@animateStagger]="{value:'50'}" matSort
+                matSortDisableClear>
+
+                <!-- Building -->
+                <ng-container cdkColumnDef="building">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Building</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item">
+                    <p>
+                      {{ item.buildingName }}
+                    </p>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Location -->
+                <ng-container cdkColumnDef="location">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Suite/Location</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item">
+                    <p>
+                      {{ item.location }}
+                    </p>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Observances -->
+                <ng-container cdkColumnDef="observances">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600" fxFlex="40">Observances</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item; let rowIndex = index;" fxFlex="40">
+                    <div fxLayout="column" fxLayoutAlign="start start">
+                      <p>
+                        {{ item.observances }}
+                      </p>
+                      <div class="attachments" *ngIf="item.attachments.length > 0">
+                        <mat-expansion-panel fxFlex="100">
+                          <mat-expansion-panel-header class="no-print">
+                            <mat-panel-title>
+                              <div class="section-header pb-12" fxLayout="row" fxLayoutAlign="start center" fxFlex="100">
+                                <mat-icon>attachment</mat-icon>
+                                <span fxFlex class="section-title">&nbsp;IMAGES ({{item.attachments.length}})</span>
+                              </div>
+                            </mat-panel-title>
+                          </mat-expansion-panel-header>
+
+                          <div class="attachment" *ngFor="let att of item.attachments; index as i">
+                            <div fxLayout.lt-md="column" fxLayout fxLayoutAlign="start center"
+                              fxLayoutAlign="center start">
+                              <div fxFlex="100" fxLayout="column" class="attachment-preview mat-elevation-z2"
+                                (click)="open(att.id)">
+                                <img src="{{att.fullUrl}}" alt="image">
+                              </div>
+                              <div fxFlex="100" class="attachment-content" fxLayout="column">
+                                <span class="attachment-description">DESCRIPTION</span>
+                                <div fxLayout="row" fxLayoutAlign="start center">
+                                  <span class="attachment-name">{{ att.title }}</span>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </mat-expansion-panel>
+                      </div>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+
+                <mat-header-row *cdkHeaderRowDef="findingItemsDisplayedColumns"></mat-header-row>
+                <mat-row *cdkRowDef="let item; columns: findingItemsDisplayedColumns;" class="user" matRipple
+                  [@animate]="{value:'*',params:{y:'100%'}}">
+                </mat-row>
+              </mat-table>
+              <mat-paginator [length]="cleaningItemsCount" [pageSize]="100" [pageSizeOptions]="[100, 200, 500]">
+              </mat-paginator>
+              <!-- /FINDINGS -->
+            </div>
+          </div>
+
+          <!-- NOTES -->
+          <div class="print-no-margin card-table m-32">
+            <div class="card-table" fxLayout="column">
+
+              <!-- TITLE -->
+              <div class="title-document" fxLayoutAlign="center center">
+                <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="space-between center">
+                  <span class="mat-headline pl-24">Comments</span>
+                </div>
+              </div>
+              <!-- /TITLE -->
+
+              <div class="" fxLayout="column" fxFlex="100">
+                <span class="no-messages-text hint-text mt-32" *ngIf="reportDetails.notes.length === 0">
+                  Questions? Concerns? Comments? Feel free to let us know by sending us a message below.
+                </span>
+
+                <div class="scroll-table" fxFlex="70">
+                  <mat-table #table [dataSource]="notesDataSource" [@animateStagger]="{value:'50'}" matSort
+                    matSortDisableClear>
+
+                    <!-- Message -->
+                    <ng-container cdkColumnDef="message">
+                      <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Message</mat-header-cell>
+                      <mat-cell *cdkCellDef="let item">
+                        <div class="comment-row" [ngClass]="messageAlign(item.direction)" fxFlex="100"
+                          FlexLayout="column">
+                          <div class="comment-sender-name" fxLayout="row">
+                            {{ item.senderName }}
+                          </div>
+                          <div class="comment-bubble" [ngClass]="messageBg(item.direction)" fxLayout="row">
+                            {{ item.message }}
+                          </div>
+                          <div class="comment-time" fxLayout="row">
+                            {{ item.epochCreatedDate | fromEpoch | date: 'MMM dd hh:mm a' }}
+                          </div>
+                        </div>
+                      </mat-cell>
+                    </ng-container>
+
+                    <!-- <mat-header-row *cdkHeaderRowDef="notesDisplayedColums"></mat-header-row> -->
+                    <mat-row *cdkRowDef="let item; columns: notesDisplayedColums;" class="user" matRipple
+                      [@animate]="{value:'*',params:{y:'100%'}}">
+                    </mat-row>
+
+                  </mat-table>
+                </div>
+
+                <div class="separator mt-4 mb-4 ml-20 mr-32" fxLayoutAlign="center center"></div>
+
+                <div class="mt-16 ml-8 m-sm-0 pr-20 pl-20 pt-20 pb-20" fxLayout="row"
+                  fxLayoutAlign="space-between stretch" fxFlex="30">
+
+                  <form [formGroup]="noteForm" fxFlex="95">
+                    <textarea matInput name="message" formControlName="message" placeholder="Add a comment" rows="3"
+                      required></textarea>
+                  </form>
+
+                  <button mat-raised-button class="mat-accent-bg fuse-white-fg ml-16 mr-12" aria-label="SEND"
+                    (click)="addNote()" [disabled]="noteForm.invalid" fxLayoutAlign="center center" fxFlex="5">
+                    <mat-icon>send</mat-icon>
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- /NOTES -->
+
+        </div>
+      </div>
+
+      <div class="footer pt-64 pb-32">
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <div class="logo">
+            <img src="assets/images/logos/MGCapitalIcon.svg">
+          </div>
+          <div class="small-note">
+            MG Capital Maintenance - 110 Pheasant Wood Ct Suite D Morrisville, N.C. 27560 O: 9194618573
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / INVOICE -->
+
+    <div class="card" fxFlex="100" fxFlex.gt-lg="60" *ngIf="!reportDetails">
+      <div id="error-404" fxLayout="column" fxLayoutAlign="center center">
+        <div class="content" fxLayout="column" fxLayoutAlign="center center">
+          <div class="error-code">404</div>
+          <div class="message">Sorry but we could not find the page you are looking for</div>
+        </div>
+      </div>
+      <div class="footer pt-64">
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <div class="logo">
+            <img src="assets/images/logos/MGCapitalIcon.svg">
+          </div>
+          <div class="small-note">
+            MG Capital Maintenance - 110 Pheasant Wood Ct Suite D Morrisville, N.C. 27560 O: 9194618573
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="no-print" fxHide.lt-lg fxFlex="20"></div>
+  </div>
+
+</div>
+
+<!-- ADD ELEMENT BUTTON -->
+<a href="http://mgcapitalmain.com/wordpress/index.php/workorder/" target="_blank" mat-fab class="mat-accent-bg"
+  id="external-link-button" aria-label="Add work order" *fuseIfOnDom
+  [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+  <mat-icon>note_add</mat-icon>
+</a>
+<!-- / ADD ELEMENT BUTTON -->

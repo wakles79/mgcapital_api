@@ -1,0 +1,17 @@
+@import "src/app/core/scss/custom/custom-theme";
+
+#expensesTypes {
+
+  .content {
+      overflow: hidden;
+  }
+}
+
+
+#add-expense-type-button {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}

@@ -1,0 +1,160 @@
+<div id="roles" class="page-layout carded left-sidebar inner-scroll">
+
+  <!-- TOP BACKGROUND -->
+  <div class="top-bg mg-accent-bg"></div>
+  <!-- / TOP BACKGROUND -->
+
+  <!-- SIDEBAR -->
+  <fuse-sidebar class="sidebar" name="carded-left-sidebar-2" position="start" lockedOpen="gt-md">
+
+    <!-- SIDEBAR HEADER -->
+    <div class="header p-24" fxHide fxShow.gt-sm>
+    </div>
+    <!-- / SIDEBAR HEADER -->
+
+    <!-- SIDEBAR CONTENT -->
+    <div class="content" fusePerfectScrollbar>
+      <mat-list role="list">
+        <mat-list-item role="listitem">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100-p">
+            <div>
+              <mat-icon class="secondary-text mr-4">group</mat-icon>
+              <span class="mat-headline m-0">Roles</span>
+            </div>
+
+            <button mat-icon-button (click)="newRole()" *ngIf="!readOnly">
+              <mat-icon>add</mat-icon>
+            </button>
+          </div>
+        </mat-list-item>
+        <mat-list-item role="listitem" *ngFor="let rol of roles"
+          [ngClass]="{'accent-bg fuse-white-fg':rol.id === selectedRoleId}" (click)="selectedRoleChanged(rol.id)"
+          style="border-bottom: 1px solid rgba(0,0,0,.12);">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100-p">
+            <span [ngClass]="{'pl-16':rol.type != 0}">
+              <mat-icon class="s-12" *ngIf="rol.type === 0">star</mat-icon>
+              {{rol.name}}
+            </span>
+
+            <button mat-icon-button (click)="editRole(rol.id)" *ngIf="!readOnly && rol.type === 1">
+              <mat-icon class="s-14">edit</mat-icon>
+            </button>
+          </div>
+        </mat-list-item>
+      </mat-list>
+    </div>
+    <!-- / SIDEBAR CONTENT -->
+
+  </fuse-sidebar>
+  <!-- / SIDEBAR -->
+
+  <!-- CENTER -->
+  <div class="center">
+
+    <!-- CONTENT HEADER -->
+    <div class="header p-24">
+    </div>
+    <!-- / CONTENT HEADER -->
+
+    <!-- CONTENT CARD -->
+    <div class="content-card fuse-white-bg">
+
+      <!-- CONTENT TOOLBAR -->
+      <div class="toolbar px-24 py-8">
+
+        <button mat-icon-button class="sidebar-toggle" fxHide.gt-md (click)="toggleSidebar('carded-left-sidebar-2')">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <mat-icon class="secondary-text mr-4">chevron_right</mat-icon>
+        <span fxHide.gt-sm class="font-weight-500">
+          {{ selectedRoleName }}
+        </span>
+        &nbsp;
+        <span> Module Permissions</span>
+      </div>
+      <!-- / CONTENT TOOLBAR -->
+
+      <!-- CONTENT -->
+      <div class="content p-24" fusePerfectScrollbar>
+        <div class="w-100-p">
+
+          <!--DEFAULT MESSAGE-->
+          <div fxLayout="row" fxLayoutAlign="center center" class="h-100-p" *ngIf="selectedRoleId === 0">
+            <span class="mat-display-1">Select a role.</span>
+          </div>
+          <!--END DEFAULT MESSAGE-->
+
+          <!-- LOADER -->
+          <div fxLayout="row" fxLayoutAlign="center center" class="h-100-p" *ngIf="loading$ | async">
+            <div class="spinner-container">
+              <mat-spinner></mat-spinner>
+            </div>
+          </div>
+          <!-- END LOADER -->
+
+          <!--MODULES-->
+          <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column" fxLayoutAlign="start none"
+            *ngIf="modules.length > 0">
+            <div fxFlex="30" fusePerfectScrollbar>
+              <span class="mat-title">Modules</span>
+              <mat-list role="list">
+                <ng-container *ngFor="let module of modules">
+                  <mat-list-item *mgcapRemoveIfFeatureOff="getModuleFeatureFlag(module.moduleName)" role="listitem"
+                    (click)="moduleChanged(module.module)">
+                    <mat-icon *ngIf="module.module === selectedModuleId">arrow_right</mat-icon>
+                    {{module.moduleName}}
+                  </mat-list-item>
+                </ng-container>
+
+              </mat-list>
+            </div>
+            <div fxFlex="70" fusePerfectScrollbar>
+              <mat-card class="mt-0 pt-0">
+                <div fxLayout="column" fxLayoutAlign="start none">
+                  <div fxLayout="row" fxLayoutAlign="space-between center" class="mb-12"
+                    style="border-bottom: 1px solid #eee;">
+                    <span class="mat-title m-0">Permissions</span>
+
+                    <div>
+                      <button mat-icon-button (click)="updateModuleAccess(0)" matTooltip="Full access">
+                        <mat-icon>lock_open</mat-icon>
+                      </button>
+
+                      <button mat-icon-button class="mx-4" (click)="updateModuleAccess(1)"
+                        matTooltip="Read only access">
+                        <mat-icon>remove_red_eye</mat-icon>
+                      </button>
+
+                      <button mat-icon-button (click)="updateModuleAccess(2)" matTooltip="Access lock">
+                        <mat-icon>lock</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let permission of modulePermissions"
+                    class="py-8">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                      <mat-checkbox [checked]="permission.isAssigned"
+                        (change)="updateModulePermission($event,permission.id)" [disabled]="readOnly">
+                      </mat-checkbox>
+                      <span class="ml-8"> {{permission.fullName}} </span>
+                    </div>
+                  </div>
+                </div>
+              </mat-card>
+            </div>
+          </div>
+          <!--END MODULES-->
+
+        </div>
+      </div>
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CONTENT CARD -->
+
+  </div>
+  <!-- / CENTER -->
+
+</div>

@@ -1,0 +1,125 @@
+<div class="sidenav-content primary-50-bg">
+  <mat-card class="p-0">
+    <mat-card-header class="primary-bg fuse-white-fg py-20">
+      <mat-card-title class="p-0 m-0">FILTERS</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="p-12">
+      <div fxLayout="column">
+
+        <!--FILTER-->
+        <span class="font-weight-500">By Client</span>
+        <mat-form-field>
+          <mat-select placeholder="Select Customer" [formControl]="searchCustomer">
+            <mat-option>
+              <ngx-mat-select-search [formControl]="searchCustomerCtrl" placeholderLabel="Search"
+                noEntriesFoundLabel="No results"></ngx-mat-select-search>
+            </mat-option>
+            <mat-option>All</mat-option>
+            <mat-option *ngFor="let customer of filteredCustomers$ | async" [value]="customer.id">
+              {{customer.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!--NO FILTER-->
+
+        <!--FILTER-->
+        <span class="font-weight-500">By Building</span>
+        <mat-form-field>
+          <mat-select placeholder="Select Building" [formControl]="searchBuilding">
+            <mat-option>
+              <ngx-mat-select-search [formControl]="searchBuildingCtrl" placeholderLabel="Search"
+                noEntriesFoundLabel="No results"></ngx-mat-select-search>
+            </mat-option>
+            <mat-option>All</mat-option>
+            <mat-option *ngFor="let building of filteredBuildings$ | async" [value]="building.id">
+              {{building.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!--END FILTER-->
+
+        <!--FILTER-->
+        <span class="font-weight-500">By Type</span>
+        <mat-form-field>
+          <mat-select placeholder="Select Type" [formControl]="searchType">
+            <mat-option *ngFor="let type of types" [value]="type.id">
+              {{type.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!--END FILTER-->
+
+        <!--FILTER CATEGORY-->
+        <span class="font-weight-500">Category</span>
+        <mat-form-field>
+          <mat-select placeholder="Select Type" [formControl]="scheduleCategory" multiple>
+            <mat-option *ngFor="let type of scheduleCategories" [value]="type.id">
+              {{type.description}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!--END FILTER CATEGORY -->
+
+        <!--FILTER SUBCATEGORY-->
+        <span class="font-weight-500">SubCategory</span>
+        <mat-form-field>
+          <mat-select placeholder="Select Type" [formControl]="scheduleSubCategory" multiple>
+            <mat-option *ngFor="let type of scheduleSubCategories" [value]="type.id">
+              {{type.categoryName}} > {{type.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!--END FILTER SUBCATEGORY -->
+
+        <!--FILTER-->
+        <span class="font-weight-500">Between Dates</span>
+        <mat-form-field>
+          <!-- <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="dateFrom.setValue('')">
+            <mat-icon>close</mat-icon>
+          </button> -->
+          <input matInput [matDatepicker]="pFromDate" placeholder="From" [formControl]="dateFrom">
+          <mat-datepicker-toggle matSuffix [for]="pFromDate"></mat-datepicker-toggle>
+          <mat-datepicker #pFromDate></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+          <!-- <button mat-button matPrefix mat-icon-button aria-label="Clear" (click)="dateTo.setValue('')">
+            <mat-icon>close</mat-icon>
+          </button> -->
+          <input matInput [matDatepicker]="pDateTo" placeholder="To" [formControl]="dateTo">
+          <mat-datepicker-toggle matSuffix [for]="pDateTo"></mat-datepicker-toggle>
+          <mat-datepicker #pDateTo></mat-datepicker>
+        </mat-form-field>
+        <!--END FILTER-->
+
+        <!--FILTER-->
+        <span class="font-weight-500">Approved Status</span>
+        <mat-checkbox [(ngModel)]="approvedStatus" (change)="clienteApprovedFilterChanged($event, 1)">Approved
+        </mat-checkbox>
+        <mat-checkbox [(ngModel)]="unapprovedStatus" (change)="clienteApprovedFilterChanged($event, 0)">Unapproved
+        </mat-checkbox>
+        <!--END FILTER-->
+
+        <div class="line-divider"></div>
+
+        <!--FILTER-->
+        <span class="font-weight-500">Schedule Date Confirmed</span>
+        <mat-checkbox [(ngModel)]="confirmedScheduleDate" (change)="scheduleDateFilterChanged($event, 1)">Confirmed
+        </mat-checkbox>
+        <mat-checkbox [(ngModel)]="notConfirmedScheduleDate" (change)="scheduleDateFilterChanged($event, 0)">Not
+          Confirmed</mat-checkbox>
+        <!--END FILTER-->
+
+        <div class="line-divider"></div>
+
+        <!--FILTER-->
+        <!-- <span class="font-weight-500">Due Date Status</span>
+        <mat-checkbox (change)="dueDateStatusFilterChanged($event, 0)">No Due Date</mat-checkbox>
+        <mat-checkbox (change)="dueDateStatusFilterChanged($event, 1)">Has Due Date</mat-checkbox> -->
+        <!--END FILTER-->
+
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

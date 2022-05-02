@@ -1,0 +1,12 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/mat-table";
+@import "src/app/core/scss/custom/custom-theme";
+
+  .content {
+    overflow: hidden;
+  }
+
+  .breadcrumb {
+    margin-top: 2px;
+    margin-bottom: 20px;
+  }

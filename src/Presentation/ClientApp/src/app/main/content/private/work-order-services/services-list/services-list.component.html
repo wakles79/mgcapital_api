@@ -1,0 +1,97 @@
+<!-- LOADER -->
+<div class="spinner-container" *ngIf="loading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+<!-- END LOADER -->
+<mat-table #table [dataSource]="dataSource" style="border-radius: 8px;">
+  <!-- NAME -->
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Service </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+  </ng-container>
+  <!-- NAME -->
+
+  <!-- CATEGORY -->
+  <ng-container matColumnDef="category">
+    <mat-header-cell *matHeaderCellDef> Category </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.categoryName}} </mat-cell>
+  </ng-container>
+  <!-- CATEGORY -->
+
+  <!-- FREQUENCY -->
+  <ng-container matColumnDef="frequency">
+    <mat-header-cell *matHeaderCellDef> Frequency </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.frequencyName}} </mat-cell>
+  </ng-container>
+  <!-- FREQUENCY -->
+
+  <!-- UNIT FACTOR -->
+  <ng-container matColumnDef="unitFactor">
+    <mat-header-cell *matHeaderCellDef> Unit Factor </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.unitFactor}} </mat-cell>
+  </ng-container>
+  <!-- UNIT FACTOR -->
+
+  <!-- RATE -->
+  <ng-container matColumnDef="rate">
+    <mat-header-cell *matHeaderCellDef> Rate </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.rate}} </mat-cell>
+  </ng-container>
+  <!-- RATE -->
+
+  <!-- RULES -->
+  <ng-container matColumnDef="rules">
+    <mat-header-cell fxFlex="100px" *matHeaderCellDef> </mat-header-cell>
+    <mat-cell fxFlex="100px" *matCellDef="let element">
+      <div fxLayout="row" fxLayoutGap="12px">
+        <mat-icon matTooltip="Requires Scheduling"
+          [ngClass]="{'primary-100-fg s-20':true, 'green-fg':element.requiresScheduling}">
+          calendar_today
+        </mat-icon>
+
+        <!-- <mat-icon matTooltip="Hours required at close"
+          [ngClass]="{'primary-100-fg s-20':true, 'green-fg':element.hoursRequiredAtClose}">
+          timer
+        </mat-icon> -->
+
+        <mat-icon matTooltip="Quantity required at close"
+          [ngClass]="{'primary-100-fg s-20':true, 'green-fg':element.quantityRequiredAtClose}">
+          assignment
+        </mat-icon>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!-- RULES -->
+
+  <!-- OPTIONS -->
+  <ng-container matColumnDef="options">
+    <mat-header-cell fxFlex="60px" *matHeaderCellDef> </mat-header-cell>
+    <mat-cell fxFlex="60px" *matCellDef="let element">
+      <div fxFlex="row" fxLayoutAlign="end center">
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+          <button mat-menu-item aria-label="edit" (click)="editService(element.id)">
+            <!-- <mat-icon>edit</mat-icon> -->
+            <span>Edit</span>
+          </button>
+
+          <!-- <button mat-menu-item aria-label="remove">
+            <mat-icon>delete</mat-icon>
+            <span>Remove</span>
+          </button> -->
+
+        </mat-menu>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!-- OPTIONS -->
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+
+<mat-paginator [length]="servicesCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]"></mat-paginator>

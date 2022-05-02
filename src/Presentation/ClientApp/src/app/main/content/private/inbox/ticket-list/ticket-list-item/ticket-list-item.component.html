@@ -1,0 +1,85 @@
+<div fxLayout="row" fxLayoutAlign="start center" class="px-24 py-16">
+
+  <mat-checkbox [(ngModel)]="selected" (ngModelChange)="onSelectedChange()" (click)="$event.stopPropagation();">
+    {{ticket.number}}
+  </mat-checkbox>
+
+  <div class="info" fxFlex FlexLayout="column">
+
+    <!-- FLAGS -->
+    <div class="w-100-p">
+      <div class="states">
+        <span class="state new" *ngIf="ticket.pendingReview">
+          New
+        </span>
+        <span class="state new-response" *ngIf="ticket.newRequesterResponse && !ticket.pendingReview">
+          New Response
+        </span>
+        <span class="state expired-snooze-date" *ngIf="expiredSnoozeDate">
+          Was Snoozed
+        </span>
+      </div>
+    </div>
+    <!-- FLAGS -->
+
+    <div class="row-1" fxLayout="row" fxLayoutAlign="start center">
+
+      <div class="name" fxLayout="row" fxLayoutAlign="start center" fxFlex>
+        <span class="text-truncate pr-8">{{ticket.requesterFullName}}</span>
+        <span class="font-weight-400">({{ticket.requesterEmail}})</span>
+        <mat-icon class="mat-icons" *ngIf="ticket.attachmentsCount > 0">attachment</mat-icon>
+      </div>
+
+      <div fxLayout="column" fxLayoutAlign="start end">
+        <span class="time font">
+          Last Updated: {{ ticket.epochUpdatedDate | fromEpoch | date: 'MMM dd hh:mm a' }}
+        </span>
+        <p class="m-0 secondary-text font2 text-right" *ngIf="ticket.assignedEmployeeId">
+          Opened by {{ticket.assignedEmployeeName}}
+        </p>
+      </div>
+      <div fxLayout="column" fxLayoutAlign="start end">
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+          <button id="mat-menu-item" mat-menu-item aria-label="activity log" (click)="showActivity()" >
+            <span>Activity</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
+
+    <div class="row-2 mt-0" fxLayout="row" fxLayoutAlign="space-between center"
+      *ngIf="ticket.buildingName || ticket.epochSnoozeDate>0">
+
+      <div fxLayout="row">
+        <span class="subject text-truncate pb-12" fxLayoutAlign="start">{{ticket.buildingName}}</span>
+      </div>
+
+      <div fxLayout="row" *ngIf="ticket.epochSnoozeDate > 0">
+        <mat-icon class="nav-icon">access_time</mat-icon>
+        <span class="time font">{{getValidSnoozeDate(ticket)}}</span>
+      </div>
+
+    </div>
+
+    <div class="row-2" fxLayout="row" fxLayoutAlign="space-between center">
+      <!-- DESCRIPTION -->
+      <div class="text-truncate" *ngIf="ticket?.description">
+        {{ticket.description }}
+      </div>
+      <!-- DESCRIPTION -->
+
+      <!-- TAGS -->
+      <div class="labels" fxLayout="row" *ngIf="ticket.tags.length >0">
+        <div class="label" *ngFor="let tag of ticket.tags">
+          <span class="color-badge" [ngStyle]="{'background-color': tag.hexColor}">
+          </span>
+          <span>{{tag.description}}</span>
+        </div>
+      </div>
+      <!-- TAGS -->
+    </div>
+  </div>
+</div>

@@ -1,0 +1,272 @@
+<div class="inspection-item-form-template dialog-content-wrapper">
+  <div class="">
+    <mat-toolbar matDialogTitle class="mg-accent-bg m-0">
+      <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+
+        <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+
+          <mat-icon>note_add</mat-icon>
+          <span class="title dialog-title">Inspection Item</span>
+
+        </div>
+
+        <!-- CLOSE DIALOG BUTTON -->
+        <button mat-icon-button (click)="closeDialog()" aria-label="Close Dialog">
+          <mat-icon>close</mat-icon>
+        </button>
+        <!-- / CLOSE DIALOG BUTTON -->
+      </div>
+    </mat-toolbar>
+  </div>
+  <div mat-dialog-content class="p-12 m-0" fusePerfectScrollbar>
+
+    <div class="sections" *ngIf="InspectionItem">
+      <div class="section section-request">
+        <div class="section-header number-work-order" fxLayout="row" fxLayoutAlign="start start">
+          <div fxFlex="50">
+            <mat-icon class="s-20">assignment</mat-icon>
+            <span fxFlex class="section-title">
+              Inspection Item: {{InspectionItem.number}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form [formGroup]="InspectionItemForm">
+
+      <div fxLayout="row">
+        <!-- WO Type -->
+        <mat-form-field class="mr-sm-24" fxFlex="50" fxFlexFill>
+          <mat-select placeholder="Type" formControlName="type" #sPriority (selectionChange)="onChangePriority(sPriority.value)">
+            <mat-option *ngFor="let type of workOrderTypes" [value]="type.key">
+              {{type.value}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- / End WO Type -->
+
+        <!-- Priority -->
+        <mat-form-field fxFlex="50" fxFlexFill>
+          <mat-select placeholder="Priority" formControlName="priority">
+            <mat-option *ngFor="let priority of workOdersPriorities" [value]="priority.id">
+              {{priority.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- / End Priority -->
+      </div>
+
+      <!-- Suite/location-->
+      <div fxLayout="row">
+        <mat-form-field fxFlex="50" fxFlex>
+          <mat-icon matPrefix class="mr-12 s-20 secondary-text">where_to_vote</mat-icon>
+          <input matInput placeholder="Suite/Location" formControlName="position" required>
+        </mat-form-field>
+      </div>
+      <!-- / Suite/location-->
+
+      <!-- Description -->
+      <div fxLayout="row">
+        <mat-form-field fxFlex>
+          <textarea matInput rows="2" placeholder="Description" formControlName="description" required></textarea>
+        </mat-form-field>
+      </div>
+      <!-- / End Description -->
+
+      <!-- Tasks Section -->
+      <div class="section">
+        <div class="checklist">
+          <div class="section-header" fxLayout="row" fxLayoutAlign="start center">
+            <mat-icon class="s-20 mb-12">check_box</mat-icon>
+            <span fxFlex class="section-title mb-16">Task List</span>
+
+            <div>
+              <button mat-icon-button class="checklist-actions-button" [matMenuTriggerFor]="checklistActionsMenu">
+                <mat-icon class="s-20 mb-12">more_vert</mat-icon>
+              </button>
+              <mat-menu #checklistActionsMenu="matMenu">
+                <button mat-menu-item>
+                  <mat-icon>delete</mat-icon>
+                  <span>Remove Checklist</span>
+                </button>
+              </mat-menu>
+            </div>
+          </div>
+          <div class="section-content pt-4 pb-8">
+
+            <!-- #region task ProgressBar-->
+
+            <!-- #region Button List Task-->
+            <div class="check-items">
+
+              <!-- #region List task-->
+              <div formArrayName="tasks"
+                *ngFor="let item of tasks.controls; let i = index; let lst = last; let fst = first;" class="check-item"
+                fxLayout="row" fxLayoutAlign="space-between center">
+                <div [formGroupName]="i" fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-form-field fxFlex class="mx-12">
+                    <input formControlName="description" matInput name="description" autocomplete="off">
+                  </mat-form-field>
+                </div>
+                <ng-container>
+                  <button mat-button class="mat-icon-button" aria-label="Delete" matTooltip="Delete"
+                    (click)="deleteTask(i)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </ng-container>
+              </div>
+              <!-- #endregion List Task-->
+              <!-- #region Controller Add Task-->
+              <div class="check-item" fxLayout="row" fxLayoutAlign="space-between center">
+                <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+                  <mat-icon class="s-20">add</mat-icon>
+                  <mat-form-field fxFlex class="mx-12">
+                    <input matInput name="description" placeholder="Add a task" autocomplete="off"
+                      [(ngModel)]="taskDescription" [ngModelOptions]="{standalone: true}">
+                  </mat-form-field>
+                </div>
+                <button mat-raised-button class="mat-accent" aria-label="Add" (click)="addTask(taskDescription)">
+                  <span>Add</span>
+                </button>
+              </div>
+              <!-- #endregion Controller Add Task-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- / End Tasks Section -->
+
+      <!-- Attachment Section -->
+      <div class="section">
+        <div class="attachments">
+          <div class="section-header" fxLayout="row" fxLayoutAlign="start center">
+            <mat-icon class="s-20 mb-12">attachment</mat-icon>
+            <span fxFlex class="section-title">Attachments</span>
+          </div>
+
+          <div class="">
+            <input id="fileInput" hidden type="file" multiple accept="image/*"
+              (change)="fileChange($event.target.files)" #fileInput>
+
+            <div class="attachment" formArrayName="attachments"
+              *ngFor="let item of attachments.controls; let i = index; let lst = last; let fst = first;">
+              <div [formGroupName]="i" fxFlex fxLayout="row" fxLayoutAlign="start center">
+
+                <div fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="start center" fxLayout="column"
+                  fxLayoutAlign="center start">
+
+                  <div class="attachment-preview mat-elevation-z2"
+                    [ngStyle]="{'background-image': 'url('+this.attachments.at(i).get('fullUrl').value+')'}"
+                    (click)="open(i)">
+
+                  </div>
+
+                  <div class="attachment-content" fxLayout="column">
+
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                      <mat-form-field fxFill>
+                        <input matInput type="text" placeholder="Image Description" formControlName="title">
+                      </mat-form-field>
+                      <!-- <span class="attachment-name">{{ this.attachments.at(i).get('description').value }}</span> -->
+                    </div>
+                    <!-- <span class="attachment-time">{{ this.attachments.at(i).get('imageTakenDate').value }}</span> -->
+
+                    <div>
+                      <button mat-button class="add-attachment-button" aria-label="remove attachment"
+                        (click)="removeAttachment(i)">
+                        Remove Attachment
+                      </button>
+                    </div>
+
+                  </div>
+                </div>
+
+                <!-- <div *ngSwitchCase="'link'" fxLayout="row">
+                        <div class="attachment-preview mat-elevation-z2" fxLayout="column" fxLayoutAlign="center center">
+                          <span>LINK</span>
+                        </div>
+                        <div class="attachment-content" fxLayout="column">
+                          <span class="attachment-url">{{item.fullUrl}}</span>
+                          <span class="attachment-time">{{item.imageTakenDate}}</span>
+                        </div>
+                      </div> -->
+              </div>
+            </div>
+            <button mat-button class="add-attachment-button" aria-label="add attachment" (click)="fileInput.click()">
+              <div fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="s-20">add</mat-icon>
+                <span>Add an attachment</span>
+              </div>
+            </button>
+          </div>
+
+        </div>
+      </div>
+      <!-- / End Attachment Section -->
+
+      <!-- NOTES-->
+      <div class="section">
+
+        <div class="comments">
+
+          <div class="section-header" fxLayout="row" fxLayoutAlign="start center">
+            <mat-icon class="s-20">comment</mat-icon>
+            <span fxFlex class="section-title">Notes</span>
+          </div>
+
+          <div name="cardCommentForm" class="comment new-comment" fxLayout="column" fxLayoutAlign="start">
+            <div fxLayout="row">
+              <img class="comment-member-avatar" src="assets/images/avatars/profile.jpg">
+              <div fxFlex>
+                <mat-form-field fxFlex>
+                  <input name="textNote" matInput placeholder="Write a note.." [(ngModel)]="textNote"
+                    [ngModelOptions]="{standalone: true}">
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="end center">
+              <button mat-raised-button class="mat-accent" aria-label="Add" (click)="addNote(textNote)">
+                <span>Add Note</span>
+              </button>
+            </div>
+          </div>
+
+          <div formArrayName="notes"
+            *ngFor="let item of notes.controls; let i = index; let lst = last; let fst = first;"
+            class="section-content">
+            <div [formGroupName]="i">
+              <div class="comment" fxLayout="row" fxLayoutAlign="start">
+                <img class="comment-member-avatar" src="assets/images/avatars/profile.jpg">
+                <div fxLayout="column">
+                  <div class="comment-member-name">
+                    {{ notes.controls[i].controls.employeeFullName.value }}
+                  </div>
+                  <div class="comment-bubble">
+                    {{ notes.controls[i].controls.note.value }}
+                  </div>
+                  <div class="comment-time secondary-text">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <!--END  NOTES-->
+    </form>
+  </div>
+
+  <!-- <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">No Thanks</button>
+  </div> -->
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center">
+
+    <button mat-raised-button (click)="onNoClick()" [disabled]="InspectionItemForm.invalid"
+      color="accent" aria-label="SAVE">
+      SAVE
+    </button>
+
+  </div>
+</div>

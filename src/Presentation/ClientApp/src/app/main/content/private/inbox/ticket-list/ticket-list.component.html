@@ -1,0 +1,11 @@
+<div *ngIf="tickets.length === 0" fxLayout="column" fxLayoutAlign="center center" fxFlexFill>
+  <span class="no-messages-text hint-text"> No Tickets </span>
+</div>
+
+<div class="ticket-list" [@animateStagger]="{value:'50'}">
+  <app-ticket-list-item *ngFor="let ticket of tickets" [ticket]="ticket" (click)="viewTicketSummary(ticket.id)"
+    [ngClass]="{'current-ticket':ticket?.id == currentTicket?.id}" [@animate]="{value:'*',params:{y:'100%'}}">
+  </app-ticket-list-item>
+  <mat-paginator [length]="ticketsCount" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions"
+    (page)="getTickets($event)"></mat-paginator>
+</div>

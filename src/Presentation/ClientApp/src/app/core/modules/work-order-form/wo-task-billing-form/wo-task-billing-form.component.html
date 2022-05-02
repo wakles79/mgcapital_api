@@ -1,0 +1,146 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div mat-dialog-content class="p-24 m-0" fusePerfectScrollbar>
+
+    <form [formGroup]="woTaskBillingForm">
+
+      <!-- Service -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">label</mat-icon>
+        <mat-form-field fxFlex>
+          <mat-select placeholder="Service" formControlName="serviceId" required>
+            <mat-option *ngFor="let service of services" [value]="service.id">
+              {{service.name}}
+            </mat-option>
+          </mat-select>
+
+          <mat-hint>Unit Price: {{ unitPrice }} - {{ unitFactor}}</mat-hint>
+          <mat-hint class="pl-24">Minimum Price: {{ minPrice }}</mat-hint>
+
+        </mat-form-field>
+      </div>
+      <!-- End Service -->
+
+      <!-- Total -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">attach_money</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="unitPrice" formControlName="unitPrice" placeholder="Total" matInput>
+        </mat-form-field>
+      </div>
+      <!-- End Unit Price -->
+
+      <!-- Note -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">description</mat-icon>
+        <mat-form-field fxFlex>
+          <textarea name="note" formControlName="note" placeholder="Note" matInput rows="3"></textarea>
+        </mat-form-field>
+      </div>
+      <!-- End Note -->
+
+      <ng-container *ngIf="action === 'edit'">
+        <!-- Dates -->
+        <div fxLayout.gt-sm="row" fxLayoutAlign.gt-sm="space-between center" fxLayout="column" fxLayoutAlign="space-between center">
+          <!-- Created Date -->
+          <div fxFlex="50" class="due-date" fxLayout="row" fxLayoutAlign="start center" fxFlexFill>
+            <mat-icon class="mr-12 mt-12">date_range</mat-icon>
+            <mat-form-field>
+              <input matInput [matDatepicker]="pickerCompletedDate" formControlName="createdDate" placeholder="Create Date">
+              <mat-datepicker-toggle matSuffix [for]="pickerCompletedDate"></mat-datepicker-toggle>
+              <mat-datepicker #pickerCompletedDate></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <!-- / End Due Date  -->
+
+          <!-- Completed Date -->
+          <div fxFlex="50" class="due-date" fxLayout="row" fxLayoutAlign="start center" fxFlexFill>
+            <mat-icon class="mr-12 mt-12">timelapse</mat-icon>
+            <mat-form-field>
+              <input matInput [min]="createdDate.value" [matDatepicker]="pickerLastCheckedDate" formControlName="lastCheckedDate"
+                placeholder="Complete Date">
+              <mat-datepicker-toggle matSuffix [for]="pickerLastCheckedDate"></mat-datepicker-toggle>
+              <mat-datepicker #pickerLastCheckedDate></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <!-- / End Due Date  -->
+
+        </div>
+        <!--End Dates-->
+      </ng-container>
+
+      <!-- Unit Price -->
+      <!-- <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">label</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="unitPrice" formControlName="unitPrice" [(ngModel)]="unitPrice" placeholder="Unit Price" matInput>
+          <span matSuffix> {{ unitFactor}} </span>
+        </mat-form-field>
+      </div> -->
+      <!-- End Unit Price -->
+
+      <!-- Quantity -->
+      <!-- <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">label</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="quantity" formControlName="quantity" [(ngModel)]="quantity" required placeholder="Quantity" matInput maxLength="80">
+        </mat-form-field>
+      </div> -->
+      <!-- End Quantity -->
+
+      <!-- Discount Percentage -->
+      <!-- <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">label</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="discountPercentage" formControlName="discountPercentage" [(ngModel)]="discountPercentage" placeholder="Discount Percentage"
+            matInput maxLength="80">
+        </mat-form-field>
+      </div> -->
+      <!-- End Discount Percentage -->
+
+      <!-- Total -->
+      <!-- <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">attach_money</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="total" formControlName="total" placeholder="Total" matInput maxLength="80" readonly="true" value="{{ total | number: '1.2' }}">
+        </mat-form-field>
+      </div> -->
+      <!-- End Total -->
+
+      <!--Override Minimun Price-->
+      <!-- <div class="mb-24" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="mr-12 mt-12">attach_money</mat-icon>
+        <mat-form-field fxFlex="20">
+          <input name="total" readonly="true" placeholder="Minimum Price" matInput value="{{ minPrice | number: '1.2' }}">
+        </mat-form-field>
+        <mat-checkbox class="ml-12" formControlName="overrideMinPrice" fxFlex="80">
+          Override Minimum Price
+        </mat-checkbox>
+
+      </div> -->
+      <!--End Minimun Price-->
+
+      <input type="hidden" formControlName="serviceName" [(ngModel)]="serviceName">
+      <input type="hidden" formControlName="unitFactor" [(ngModel)]="unitFactor">
+
+    </form>
+
+  </div>
+
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="!readOnly">
+
+    <button mat-raised-button (click)="submit()" color="accent" [disabled]="woTaskBillingForm.invalid"
+      aria-label="SAVE">
+      SAVE
+    </button>
+
+  </div>
+</div>

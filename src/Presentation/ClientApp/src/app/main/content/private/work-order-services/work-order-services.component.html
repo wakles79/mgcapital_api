@@ -1,0 +1,68 @@
+<div id="work-order-services-page" class="page-layout simple left-sidenav inner-sidenav">
+
+  <!-- HEADER -->
+  <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayoutAlign="space-between center"
+    fxLayoutAlign.gt-xs="space-between start">
+    <!--BREADCRUMB-->
+    <div class="white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+      <mat-icon class="secondary-text s-16">home</mat-icon>
+      <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+      <span class="secondary-text">Work Order Services</span>
+    </div>
+    <!--BREADCRUMB-->
+
+
+    <!-- TITLE -->
+    <div class="white-fg" fxLayout="row" fxLayoutAlign="space-between center">
+      <h2 class="m-0"> Work Order Services</h2>
+    </div>
+    <!-- TITLE -->
+  </div>
+  <!-- HEADER -->
+
+  <!--SIDENAV CONTAINER-->
+  <mat-sidenav-container class="primary-50-bg h-100-p">
+    <!--CENTER CONTENT-->
+    <div class="center p-16 pr-sm-92">
+      <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutAlign="start none" class="h-100-p w-100-p" fxLayoutGap="20px">
+        <div fxFlex="20" fusePerfectScrollbar class="service-container categories">
+          <mat-card class="p-0 pb-12">
+            <mat-card-content>
+              <div fxLayout="row" fxLayoutAlign="space-between center" class="px-12 pt-8">
+                <h3 class="secondary-text">Categories</h3>
+
+                <button mat-icon-button *ngIf="!readOnly" (click)="newCategory()">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+
+              <mat-divider class="my-8" [inset]="true"></mat-divider>
+
+              <app-categories-list [readOnly]="readOnly"></app-categories-list>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <div fxFlex fusePerfectScrollbar class="service-container">
+          <mat-card class="p-0">
+            <mat-card-content>
+              <app-services-list [readOnly]="readOnly"></app-services-list>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+    <!--CENTER CONTENT-->
+  </mat-sidenav-container>
+  <!--SIDENAV CONTAINER-->
+</div>
+
+<!-- ADD ELEMENT BUTTON -->
+<div>
+  <button mat-fab class="mg-accent-bg" id="add-element-button" aria-label="add work order"
+    [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}" *ngIf="!readOnly" (click)="newService()">
+    <mat-icon>note_add</mat-icon>
+  </button>
+</div>
+<!-- / ADD ELEMENT BUTTON -->
+

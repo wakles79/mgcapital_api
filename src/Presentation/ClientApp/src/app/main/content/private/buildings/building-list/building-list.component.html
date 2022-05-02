@@ -1,0 +1,154 @@
+<div class="spinner-container" *ngIf="loading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+
+<!-- SEARCH -->
+<div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="end center">
+  <label for="search" class="mr-8">
+    <mat-icon>search</mat-icon>
+  </label>
+  <mat-form-field floatLabel="never">
+    <input matInput [formControl]="searchInput" id="search" placeholder="Search for anything">
+  </mat-form-field>
+</div>
+<!-- / SEARCH -->
+
+<mat-table #table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+  <!-- Code -->
+  <ng-container cdkColumnDef="code">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Building Code</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <p class="font-weight-600 text-truncate" [matTooltip]="building.code" matTooltipPosition="below">
+        {{ building.code }}
+      </p>
+    </mat-cell>
+  </ng-container>
+  <!--Code-->
+
+  <!-- Name -->
+  <ng-container cdkColumnDef="name">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Name</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <div fxLayout="column" fxFlex="100">
+        <p class="font-weight-600">
+          {{ building.name }}
+        </p>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Full Address -->
+  <ng-container cdkColumnDef="fullAddress">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Address</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <div fxLayout="column" fxFlex="100">
+        <p class="">
+          {{ building.fullAddress }}
+        </p>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Customer Code -->
+  <ng-container cdkColumnDef="customerCode">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Customer Code</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <div fxLayout="column" fxFlex="100">
+        <p class="font-weight-600">
+          {{ building.customerCode }}
+        </p>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Operations Manager Full Name -->
+  <ng-container cdkColumnDef="operationsManagerFullName">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Operations Manager</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <div fxLayout="column" fxFlex="100">
+        <p>
+          {{ building.operationsManagerFullName }}
+        </p>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Emergency Phone -->
+  <ng-container cdkColumnDef="emergencyPhone">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Emergency Phone</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <div fxLayout="column" fxFlex="100">
+        <p>
+          {{ building.emergencyPhone }}
+        </p>
+      </div>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Is Complete -->
+  <ng-container cdkColumnDef="isComplete">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Complete</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <p>
+        {{ completeStatus(building.isComplete) | uppercase }}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Is Active -->
+  <ng-container cdkColumnDef="isActive">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Status</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <p class="badge available" [ngClass]="{'not-available':building.isActive === 0}">
+        {{ activeStatus(building.isActive) | uppercase }}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Buttons Column -->
+  <ng-container cdkColumnDef="buttons">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <div fxFlex="row" fxLayoutAlign="end center">
+
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="editBuilding(building)">
+            <!-- <mat-icon>edit</mat-icon> -->
+            <span>Edit</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="deleteBuilding(building)"
+            *ngIf="!readOnly && building.isActive === 1">
+            <!-- <mat-icon>autorenew</mat-icon> -->
+            <span>Disable</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="deleteBuilding(building, false)"
+            *ngIf="!readOnly && building.isActive === 0">
+            <!-- <mat-icon>autorenew</mat-icon> -->
+            <span>Enable</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="activity" (click)="displayActivityLog(building.id)">
+            <!-- <mat-icon>list_alt</mat-icon> -->
+            <span>Activity Log</span>
+          </button>
+
+        </mat-menu>
+      </div>
+
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *cdkRowDef="let building; columns: displayedColumns;" class="building" matRipple
+    (click)="editBuilding(building)" [@animate]="{value:'*',params:{y:'100%'}}">
+  </mat-row>
+</mat-table>
+
+<mat-paginator [length]="buildingsCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]"></mat-paginator>

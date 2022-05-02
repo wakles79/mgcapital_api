@@ -1,0 +1,101 @@
+<div class="dialog-content-wrapper">
+  <!--TOOLBAR-->
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title"> Reply to ticket #{{ticketNumberMGCAP}} </span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END TOOLBAR-->
+
+  <!--DIALOG CONTENT-->
+  <div mat-dialog-content class="p-16 m-0" fusePerfectScrollbar>
+    <table class="w-100-p">
+      <tr>
+        <td>To: </td>
+        <td>{{to_email}}</td>
+      </tr>
+      <tr>
+        <td valign="top">CC:</td>
+        <td>
+          <table class="w-100-p cc-table">
+            <tr *ngFor="let cc of CcEmail" class="pb-4">
+              <td>
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <span class="secondary-text">{{cc}}</span>
+
+                  <button mat-icon-button (click)="revomeCcEmail(cc)" matTooltip="Remove Email">
+                    <mat-icon class="s-16">close</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div fxLayout="row">
+                  <input placeholder="Email" [(ngModel)]="ccText" fxFlex class="email-box-input">
+
+                  <button mat-button (click)="addCCEmail()" class="add-email-cc-btn">Add</button>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+
+    <!--FORM-->
+    <form [formGroup]="replyTicketForm">
+      <!--BODY EMAIL-->
+      <div class="column">
+        <mat-form-field fxFlexFill>
+          <mat-label>Message</mat-label>
+          <textarea formControlName="body" matInput rows="3"></textarea>
+        </mat-form-field>
+      </div>
+      <!--END BODY EMAIL-->
+    </form>
+    <!--END FORM-->
+
+    <!-- ATTACHMENTS -->
+    <div class="column" class="attachments">
+      <input hidden type="file" #fileInput multiple accept="image/*" (change)="fileChange($event.target.files)" />
+      <div fxLayout="row" fxLayoutAlign="space-between center" fxLayout="row wrap">
+        <h4 class="m-0">Attachments</h4>
+
+        <button mat-icon-button (click)="fileInput.click()">
+          <mat-icon>attach_file</mat-icon>
+        </button>
+      </div>
+
+      <div fxLayout="column" fxLayoutAlign="start none" fxLayout="row wrap">
+        <div class="attachment-summary" fxLayout="row" fxLayoutAlign="space-between center"
+          *ngFor="let attach of attachments; let i = index">
+          <div>
+            <span class="font-weight-500">
+              {{attach.name}}
+            </span>
+            <span>
+              ({{(attach.size / 1024) | number:'1.1-2'}} Kb)
+            </span>
+          </div>
+
+          <button mat-icon-button matTooltip="Remove File" (click)="removeFile(i)">
+            <mat-icon class="s-16">delete</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+    <!-- END ATTACHMENTS -->
+  </div>
+  <!--END DIALOG CONTENT-->
+
+  <!--END ACTIONS-->
+  <div mat-dialog-actions class="m-0 p-16">
+    <button mat-raised-button class="mat-accent mr-16" (click)="submit()">Confirm</button>
+    <button mat-button (click)="dialogRef.close()">Cancel</button>
+  </div>
+  <!--ACTIONS-->
+</div>

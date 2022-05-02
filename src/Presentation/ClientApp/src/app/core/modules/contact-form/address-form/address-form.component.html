@@ -1,0 +1,117 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar matDialogTitle class="accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="addressDialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div mat-dialog-content class="p-24 m-0" fusePerfectScrollbar>
+
+    <form [formGroup]="addressForm">
+      <input type="hidden" formControlName="entityId">
+      <input type="hidden" formControlName="latitude">
+      <input type="hidden" formControlName="longitude">
+
+      <ng-container *ngIf="type !== 'building'">
+        <!-- Type -->
+        <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+          <mat-icon class="mr-12 mt-12">label</mat-icon>
+          <mat-form-field fxFlex>
+            <input name="type" formControlName="type" placeholder="Type" matInput required maxlength="80">
+          </mat-form-field>
+        </div>
+
+        <!-- Name -->
+        <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+          <mat-icon class="mr-12 mt-12">label</mat-icon>
+          <mat-form-field fxFlex>
+            <input name="name" formControlName="name" placeholder="Name" matInput maxlength="80">
+          </mat-form-field>
+        </div>
+      </ng-container>
+      <!-- AddressLine1 -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">room</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="addressLine1" #search formControlName="addressLine1" matInput type="adressLine1" placeholder="Address Line 1"
+            required maxlength="80">
+        </mat-form-field>
+      </div>
+
+      <!-- AddressLine2 -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">room</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="addressLine2" formControlName="addressLine2" placeholder="Address Line 2" matInput maxlength="80">
+        </mat-form-field>
+      </div>
+
+      <!-- City -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">location_city</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="city" formControlName="city" placeholder="City" matInput maxLength="80">
+        </mat-form-field>
+      </div>
+
+      <!-- State -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">room</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="state" formControlName="state" placeholder="State" matInput maxLength="80">
+        </mat-form-field>
+      </div>
+
+      <!-- ZipCode -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">room</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="zipCode" formControlName="zipCode" placeholder="ZipCode" matInput maxlength="32">
+        </mat-form-field>
+      </div>
+
+      <!-- CountryCode -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">room</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="countryCode" formControlName="countryCode" placeholder="CountryCode" matInput maxLength="3">
+        </mat-form-field>
+      </div>
+
+      <!-- Default -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12"></mat-icon>
+        <mat-checkbox formControlName="default">Default</mat-checkbox>
+      </div>
+
+      <!-- Edition only fields -->
+      <ng-container *ngIf="action === 'edit'">
+        <input type="hidden" formControlName="addressId">
+      </ng-container>
+      <!-- End of edition only fields -->
+    </form>
+
+  </div>
+
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center">
+
+    <button *ngIf="action !=='edit'" mat-raised-button (click)="addressDialogRef.close(addressForm)" color="accent"
+      [disabled]="addressForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+
+    <button *ngIf="action ==='edit'" mat-raised-button (click)="addressDialogRef.close(['save',addressForm])" color="accent"
+      [disabled]="addressForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+
+    <button *ngIf="action ==='edit'" mat-button class="mat-icon-button" (click)="addressDialogRef.close(['delete',addressForm])"
+      aria-label="Delete" matTooltip="Delete">
+      <mat-icon>delete</mat-icon>
+    </button>
+
+  </div>
+</div>

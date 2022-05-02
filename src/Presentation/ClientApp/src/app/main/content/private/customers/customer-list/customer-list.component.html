@@ -1,0 +1,97 @@
+<div class="spinner-container" *ngIf="loading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+
+<mat-table #table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+  <!-- Checkbox Column -->
+  <ng-container cdkColumnDef="checkbox">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let customer">
+      <mat-checkbox [(ngModel)]="checkboxes[customer.guid]" (ngModelChange)="onSelectedChange(customer.guid)"
+        *ngIf="!readOnly" (click)="$event.stopPropagation()">
+      </mat-checkbox>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Code Column -->
+  <ng-container cdkColumnDef="code">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header>Customer Code</mat-header-cell>
+    <mat-cell *cdkCellDef="let customer">
+      <p class="text-truncate font-weight-600" [matTooltip]="customer.code" matTooltipPosition="below">{{customer.code}}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Name Column -->
+  <ng-container cdkColumnDef="name">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header>Name</mat-header-cell>
+    <mat-cell *cdkCellDef="let customer">
+      <p class="text-truncate font-weight-600">{{customer.name}}</p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Phone Column -->
+  <ng-container cdkColumnDef="phone">
+    <mat-header-cell *cdkHeaderCellDef fxHide fxShow.gt-sm>Phone</mat-header-cell>
+    <mat-cell *cdkCellDef="let customer" fxHide fxShow.gt-sm>
+      <p class="text-truncate">
+        {{customer.phone}}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Address Column -->
+  <ng-container cdkColumnDef="address">
+    <mat-header-cell *cdkHeaderCellDef fxHide fxShow.gt-sm>Address</mat-header-cell>
+    <mat-cell *cdkCellDef="let customer" fxHide fxShow.gt-sm>
+      <p class="text-truncate">
+        {{customer.fullAddress}}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Contacts Total Column -->
+  <ng-container cdkColumnDef="contactsTotal">
+    <mat-header-cell *cdkHeaderCellDef fxHide fxShow.gt-sm mat-sort-header>Contacts Total</mat-header-cell>
+    <mat-cell *cdkCellDef="let customer" fxHide fxShow.gt-sm>
+      <p class="text-truncate">
+        {{customer.contactsTotal}}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Buttons Column -->
+  <ng-container cdkColumnDef="buttons">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let customer">
+      <div fxFlex="row" fxLayoutAlign="end center">
+
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="editCustomer(customer)">
+            <!-- <mat-icon>edit</mat-icon> -->
+            <span>Edit</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="deleteCustomer(customer)" *ngIf="!readOnly">
+            <!-- <mat-icon>delete</mat-icon> -->
+            <span>Remove</span>
+          </button>
+
+        </mat-menu>
+      </div>
+
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *cdkRowDef="let customer; columns: displayedColumns;" class="customer" (click)="editCustomer(customer)"
+    [ngClass]="{'mat-light-blue-50-bg':checkboxes[customer.guid]}" matRipple [@animate]="{value:'*',params:{y:'100%'}}">
+  </mat-row>
+</mat-table>
+
+<mat-paginator [length]="customersCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]"></mat-paginator>

@@ -1,0 +1,165 @@
+<div class="dialog-content-wrapper primary-50-bg">
+  <!--TOOLBAR-->
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title"> {{dialogTitle}} </span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END TOOLBAR-->
+
+  <!--DIALOG CONTENT-->
+  <div mat-dialog-content class="p-16 m-0" fusePerfectScrollbar>
+    <mat-card>
+      <!--FORM-->
+      <form [formGroup]="contractForm">
+
+        <!--COLUMN-->
+        <div fxLayout="column" fxLayoutAlign="space-around none">
+
+          <div fxLayout="row" fxLayoutAlign="start start" class="mb-16">
+            <!--CUSTOMER-->
+            <div fxFlex="50">
+              <p class="font-weight-500 m-0 pb-4">Customer</p>
+              <span> {{assignedCustomer ? assignedCustomer.name : ''}} </span>
+            </div>
+            <!--END CUSTOMER-->
+
+            <!--BUILDING-->
+            <div fxFlex="50">
+              <p class="font-weight-500 m-0 pb-4">Building</p>
+              <span> {{assignedBuilding ? assignedBuilding.name : ''}} </span>
+            </div>
+            <!--END BUILDING-->
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+            <!--DAYS PER MONTH-->
+            <mat-form-field fxFlex="25">
+              <mat-icon matPrefix class="mr-8 s-20 secondary-text">date_range</mat-icon>
+              <input matInput #daysPerMonth placeholder="Days Per Month" formControlName="daysPerMonth" required>
+            </mat-form-field>
+            <!--END DAYS PER MONTH-->
+
+            <!--PRODUCTION RATE-->
+            <mat-form-field fxFlex="25" class="pl-12">
+              <mat-icon matPrefix class="mr-8 s-20 secondary-text">equalizer</mat-icon>
+              <input matInput #daysPerMonth placeholder="Production Rate" formControlName="productionRate" required>
+            </mat-form-field>
+            <!--END PRODUCTION RATE-->
+
+            <!--EXPIRATION DATE-->
+            <mat-form-field fxFlex="30" class="pr-12 pl-12">
+              <input matInput formControlName="expirationDate" [matDatepicker]="picker" placeholder="Expiration date">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            <!--END EXPIRATION DATE-->
+
+            <!--STATUS-->
+            <mat-form-field fxFlex="20">
+              <mat-icon matPrefix class="mr-8 s-20 secondary-text">ballot</mat-icon>
+              <mat-select placeholder="Status" formControlName="status" required>
+                <mat-option *ngFor="let status of contractStatus" [value]="status.id">
+                  {{status.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <!--END STATUS-->
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="start start">
+            <!--CONTRACT NUMBER-->
+            <mat-form-field fxFlex="40">
+              <mat-icon matPrefix class="mr-8 s-20">vpn_key</mat-icon>
+              <input matInput placeholder="Contract Number" formControlName="contractNumber" required>
+              <mat-hint align="start" *ngIf="invalidCode" class="red-400-fg">
+                The contract number has already been taken
+              </mat-hint>
+            </mat-form-field>
+            <!--END CONTRACT NUMBER-->
+
+            <!--DESCRIPTION-->
+            <mat-form-field fxFlex="60" class="pl-8">
+              <mat-icon matPrefix class="mr-8 s-20">comment</mat-icon>
+              <input matInput placeholder="Description" formControlName="description">
+            </mat-form-field>
+            <!--END DESCRIPTION-->
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+            <!--BUSY SPACE-->
+            <mat-form-field fxFlex="33">
+              <input matInput type="number" placeholder="Occupied Square Feet" formControlName="busySquare">
+              <button mat-button matSuffix mat-icon-button (click)="newOfficeSpace()"
+                *ngIf="!contract.editionCompleted">
+                <mat-icon>add</mat-icon>
+              </button>
+            </mat-form-field>
+            <!--END BUSY SPACE-->
+
+            <!--AVAILABLE SPACE-->
+            <mat-form-field fxFlex="34" class="pl-12 pr-12">
+              <input matInput type="number" placeholder="Unoccupied Square Feet"
+                formControlName="unoccupiedSquareFeets">
+            </mat-form-field>
+            <!--END AVAILABLE SPACE-->
+
+            <!--TOTAL SPACE-->
+            <mat-form-field fxFlex="33">
+              <input matInput type="number" placeholder="Total Square Feet" formControlName="totalSquareFeet">
+            </mat-form-field>
+            <!--END TOTAL SPACE-->
+          </div>
+
+          <!--OFFICE SPACES-->
+          <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+            <div fxFlex="33">
+              <table style="width: 100%;">
+                <thead>
+                  <tr class="mat-header-row">
+                    <th class="mat-header-cell">Office Type</th>
+                    <th class="mat-header-cell">Square Feet</th>
+                    <th class="mat-header-cell" *ngIf="!contract.editionCompleted"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of officeSpaces" class="mat-row" (click)="editOfficeSpace(item)">
+                    <td class="mat-cell"> <span class="font-weight-400">{{item.officeTypeName}}</span> </td>
+                    <td class="mat-cell"> {{item.squareFeet}} </td>
+                    <td class="mat-cell" *ngIf="!contract.editionCompleted">
+                      <mat-icon matTooltip="Delete Office Space" (click)="deleteOfficeSpace(item)"
+                        style="cursor: pointer;">delete</mat-icon>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!--END OFFICE SPACES-->
+
+          <div fxLayout="row" fxLayoutAlign="start start" style="border-top: 1px solid #eee;" class="py-16 mt-16"
+            *ngIf="contract.editionCompleted">
+            <mat-checkbox formControlName="updatePrepopulatedItems">Update pre populated items? </mat-checkbox>
+          </div>
+
+        </div>
+        <!--END COLUMN-->
+
+      </form>
+      <!--END FORM-->
+    </mat-card>
+  </div>
+  <!--END DIALOG CONTENT-->
+
+  <!--ACTIONS-->
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between end">
+    <button mat-raised-button color="accent" aria-label="SAVE" [disabled]="contractForm.invalid"
+      (click)="dialogRef.close(contractForm)">
+      SAVE
+    </button>
+  </div>
+  <!--END ACTIONS-->
+</div>

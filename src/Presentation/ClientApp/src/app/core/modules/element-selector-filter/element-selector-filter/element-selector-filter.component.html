@@ -1,0 +1,60 @@
+<form [formGroup]="filterForm">
+  <mat-form-field fxFill>
+    <mat-label>{{filterData.displayName}}</mat-label>
+    <mat-select [placeholder]="filterData.displayName" formControlName="searchItems"
+      (selectionChange)="itemOnChanged($event)" [multiple]="filterData.type === REF.Multiselect"
+      [required]="filterData.isRequired">
+
+      <mat-option>
+        <ngx-mat-select-search formControlName="searchItemCtrl" placeholderLabel="Search"
+          noEntriesFoundLabel="No results"></ngx-mat-select-search>
+      </mat-option>
+
+      <mat-select-trigger *ngIf="filterData.type === REF.Multiselect">
+        <span *ngIf="allItemsChecked === true">All</span>
+
+        <ng-container *ngIf="allItemsChecked === false">
+          <span>{{searchItems.value?.length > 0 ?
+             ( nameFirstSelectedValue | splitStringByUppercase | titlecase ): ''}} </span>
+
+          <span *ngIf="searchItems.value?.length > 1">
+            (+{{searchItems.value.length - 1}} {{searchItems.value?.length === 2 ? 'other'
+            : 'others'}})
+          </span>
+        </ng-container>
+
+      </mat-select-trigger>
+
+      <ng-container *ngIf="displayOptionAll">
+
+        <mat-checkbox *ngIf="filterData.type === REF.Multiselect" [(ngModel)]="allItemsChecked"
+          (change)="allItemsOnChanged($event.checked)" style="padding-left:15px;" [ngModelOptions]="{standalone: true}">
+          All
+        </mat-checkbox>
+
+        <mat-option *ngIf="filterData.type === REF.Select" value="All" style="padding-left:15px;">
+          All
+        </mat-option>
+
+      </ng-container>
+
+      <ng-container *ngIf="displayOptionNone">
+
+        <mat-checkbox *ngIf="filterData.type === REF.Multiselect" [(ngModel)]="allItemsChecked"
+          (selectionChange)="allItemsOnChanged($event.checked)" style="padding-left:15px;">
+          None
+        </mat-checkbox>
+
+        <mat-option *ngIf="filterData.type === REF.Select" value="All" style="padding-left:15px;">
+          None
+        </mat-option>
+
+      </ng-container>
+
+      <mat-option *ngFor="let item of filteredItems$ | async" [value]="item.id">
+        {{item.name | splitStringByUppercase | titlecase}}
+      </mat-option>
+
+    </mat-select>
+  </mat-form-field>
+</form>

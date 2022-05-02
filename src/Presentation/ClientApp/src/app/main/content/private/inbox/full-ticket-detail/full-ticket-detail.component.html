@@ -1,0 +1,586 @@
+<div id="ticket-detail" #ticketDetail class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header px-16 py-8">
+    <div fxLayout="column" fxLayoutAlign="space-between none" class="h-100-p">
+      <!--BREADCRUMB-->
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Ticket</span>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Ticket Detail</span>
+      </div>
+      <!--End BREADCRUMB-->
+
+      <!-- TITLE -->
+      <div class="fuse-white-fg" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="budget-header-title" fxLayout="row">
+          <button class="mr-0 mr-sm-16" mat-icon-button (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+
+          <div fxLayout="column" fxLayoutAlign="space-around none">
+            <h2 class="m-0">Ticket</h2>
+          </div>
+        </div>
+      </div>
+      <!-- END TITLE -->
+    </div>
+  </div>
+  <!--END HEADER-->
+
+  <!--CONTAINER-->
+  <div class="content primary-50-bg">
+
+    <!--LOADER-->
+    <div class="spinner-container" *ngIf="loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
+    <!--END LOADER-->
+
+    <!--CENTER CONTENT-->
+    <div class="center">
+      <div fxLayout="row" fxLayoutAlign="start none" class="h-100-p w-100-p">
+        <!-- TICKET -->
+        <div fxFlex="25" fxLayout="column" class="fuse-white-bg ticket-container h-100-p ps">
+
+          <!-- CONTENT -->
+          <div class="py-16 px-24" fusePerfectScrollbar *ngIf="ticket">
+            <!-- HEADER -->
+            <div fxLayout="row">
+              <!-- SUMMARY -->
+              <div fxFlex>
+                <h3 class="m-0">Ticket # {{ticket.number}} - Activity Log</h3>
+                <!-- SOURCE --
+                <span class="ticket-tag" style="border-left: 4px solid rgb(3, 169, 244);">
+                  {{ REF.TicketSource[ticket.source] }}
+                </span>
+                -- SOURCE -->
+                <!-- DESTINATION --
+                <span class="ticket-tag" style="border-left: 4px solid green;"
+                  *ngIf="ticket.status === REF.TicketStatus.converted">
+                  {{ REF.TicketDestinationType[ticket.destinationType] | splitStringByUppercase }}
+                </span>
+                -- DESTINATION -->
+                <!-- STATUS --
+                <span class="ticket-tag"
+                  [ngStyle]="{'border-left': '4px solid '+REF.TicketStatusColor[REF.TicketStatus[ticket.status]]}"
+                  *ngIf="ticket.status !== REF.TicketStatus.converted">
+                  {{ REF.TicketStatus[ticket.status] | splitStringByUppercase }}
+                </span>
+                -- STATUS -->
+              </div>
+              <!-- SUMMARY -->
+
+              <!-- OPTIONS -->
+              <div>
+                <button mat-icon-button [matMenuTriggerFor]="mgTicketMenu" matTooltip="Tags"
+                  [disabled]="this.ticket.isDeleted">
+                  <mat-icon class="s-20">label</mat-icon>
+                </button>
+                <mat-menu #mgTicketMenu="matMenu">
+                  <div *ngIf="tags.length===0" class="px-16">
+                    No Tags
+                  </div>
+                  <div style="max-height: 400px;" *ngIf="tags.length>0">
+                    <button mat-menu-item *ngFor="let tag of filteredTags" (click)="assignTag(tag.id)"
+                      [disabled]="this.ticket.isDeleted">
+                      <mat-icon *ngIf="tag.assigned" class="m-0 s-20">check</mat-icon>
+                      <span> {{tag.name}} </span>
+                    </button>
+                  </div>
+                </mat-menu>
+              </div>
+              <!-- OPTIONS -->
+            </div>
+            <!-- HEADER -->
+
+            <!-- TAGS -->
+            <div class="w-100-p" *ngIf="assignedTags.length>0">
+              <h6 class="mb-0 font-weight-500">Tags</h6>
+              <div style="display:flex; flex-flow: row wrap;">
+                <div class="ticket-tag mb-4" *ngFor="let tag of assignedTags">
+                  <span class="color-badge" [ngStyle]="{'background-color': tag.hexColor}"></span>
+                  <span>{{tag.description}}</span>
+                  <button mat-icon-button style="line-height: 0; width: 18px; height: 18px;" class="ml-4"
+                    (click)="unassignTag(tag.ticketTagId)" [disabled]="this.ticket.isDeleted">
+                    <mat-icon class="s-16">close</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- TAGS -->
+
+            <!-- FORM -->
+            <form [formGroup]="ticketForm" class="mt-12">
+              <div fxLayout="column" fxLayoutAlign="space-around none">
+                <!-- REQUESTER NAME -->
+                <h6 class="f-title">Requester Name</h6>
+                <mat-form-field>
+                  <input matInput formControlName="requesterFullName" [readonly]="this.ticket.isDeleted">
+                </mat-form-field>
+                <!-- REQUESTER NAME -->
+
+                <!-- REQUESTER EMAIL -->
+                <h6 class="f-title">Requester Email</h6>
+                <mat-form-field>
+                  <input matInput formControlName="requesterEmail" [readonly]="this.ticket.isDeleted">
+                </mat-form-field>
+                <!-- REQUESTER EMAIL -->
+
+                <!-- REQUESTER PHONE -->
+                <h6 class="f-title">Requester Phone</h6>
+                <mat-form-field>
+                  <input matInput formControlName="requesterPhone" [readonly]="this.ticket.isDeleted">
+                </mat-form-field>
+                <!-- REQUESTER PHONE -->
+
+                <!-- SNOOZE DATE -->
+                <h6 class="f-title">Snooze Date</h6>
+                <mat-form-field floatLabel="never">
+                  <input matInput formControlName="snoozeDate" [owlDateTimeTrigger]="dt" [owlDateTime]="dt"
+                    autocomplete="off" [readonly]="this.ticket.isDeleted">
+                  <owl-date-time hour12Timer="true" [disabled]="this.ticket.isDeleted" #dt></owl-date-time>
+                </mat-form-field>
+                <!-- SNOOZE DATE -->
+
+                <!-- BUILDING -->
+                <h6 class=" f-title">Building</h6>
+                <mat-form-field>
+                  <mat-select formControlName="buildingId" [disabled]="this.ticket.isDeleted">
+                    <mat-option>
+                      <ngx-mat-select-search [formControl]="buildingSearch" placeholderLabel="Search"
+                        noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                    </mat-option>
+                    <mat-option *ngFor="let building of filteredBuildings" [value]="building.id">
+                      {{building.name +' - '+ building.fullAddress}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                <!-- BUILDING -->
+
+                <!-- EMPLOYEE --
+                <h6 class="f-title">Employee</h6>
+                <mat-form-field>
+                  <mat-select formControlName="assignedEmployeeId">
+                    <ngx-mat-select-search [formControl]="employeeSearch" placeholderLabel="Search"
+                      noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                    <mat-option *ngFor="let employee of filteredEmployees" [value]="employee.id">
+                      {{employee.name}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+                -- EMPLOYEE -->
+
+                <!-- LOCATION -->
+                <h6 class="f-title">Suite/Location</h6>
+                <mat-form-field>
+                  <input matInput formControlName="location" [readonly]="this.ticket.isDeleted">
+                </mat-form-field>
+                <!-- LOCATION -->
+
+                <!-- ADDRESS -->
+                <h6 class="f-title">Address</h6>
+                <mat-form-field>
+                  <input matInput formControlName="fullAddress" [readonly]="this.ticket.isDeleted">
+                </mat-form-field>
+                <!-- ADDRESS -->
+
+                <!-- DESCRIPTION -->
+                <h6 class="f-title">Description</h6>
+                <mat-form-field>
+                  <textarea matInput formControlName="description" rows="3"
+                    [readonly]="this.ticket.isDeleted"></textarea>
+                </mat-form-field>
+                <!-- DESCRIPTION -->
+              </div>
+            </form>
+            <!-- END FORM -->
+
+            <!-- TICKET TASKS -->
+            <div class="mt-16">
+              <!-- SUMMARY -->
+              <div class="font-weight-500">
+                <span>Tasks</span>
+                ({{ticket.tasks.length}})
+              </div>
+              <!-- END SUMMARY -->
+
+              <!-- TASKS -->
+              <ul *ngIf="ticket.tasks.length > 0">
+                <li *ngFor="let item of ticket.tasks">
+                  {{item.description}}
+                </li>
+              </ul>
+              <!-- END TASKS -->
+            </div>
+            <!-- END TICKET TASKS -->
+
+            <!-- TICKET ATTATCHMENTS -->
+            <div class="mt-16">
+              <!-- SUMMARY -->
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="font-weight-500">
+                  <span>Attachments</span>
+                  ({{ticket.attachments.length}})
+                </div>
+
+
+                <input #fileInput hidden type="file" accept="image/*" (change)="fileChange($event.target.files)">
+                <button mat-icon-button (click)="fileInput.click()" [disabled]="this.ticket.isDeleted">
+                  <mat-icon class="s-16">attach_file</mat-icon>
+                </button>
+              </div>
+              <!-- END SUMMARY -->
+
+              <!-- ATTATCHMENTS -->
+              <div fxLayout="row" fxLayout="row wrap" *ngIf="ticket.attachments.length > 0">
+                <div class="attachment" fxLayout="column" *ngFor="let attachment of ticket.attachments">
+                  <img *ngIf="attachment?.fullUrl?.startsWith('https://mgcap.blob.core.windows.net/img/')"
+                    class="w-100 mt-16 mr-8" [src]="attachment.fullUrl">
+                  <ng-container *ngIf="attachment?.fullUrl?.startsWith('https://mgcap.blob.core.windows.net/files/')">
+                    <mat-icon class="s-112">insert_drive_file</mat-icon>
+                    <span class="text-truncate">
+                      {{attachment.blobName | slice:0:14}}...
+                    </span>
+                  </ng-container>
+                  <div fxLayout="column">
+                    <button *ngIf="attachment?.fullUrl?.startsWith('https://mgcap.blob.core.windows.net/img/')"
+                      (click)="openAlbumImage(attachment.id)">View</button>
+                    <button [matTooltip]="attachment.blobName"
+                      (click)="downloadImage(attachment.fullUrl, attachment.blobName)">Download</button>
+                  </div>
+                </div>
+              </div>
+              <!-- END ATTATCHMENTS -->
+            </div>
+            <!-- END TICKET ATTATCHMENTS -->
+          </div>
+          <!-- CONTENT -->
+
+          <!-- ACTIONS -->
+          <div *ngIf="ticket" class="pt-8">
+            <button mat-button
+              [ngClass]="{'fuse-white-fg w-100-p':true, 'primary-50-bg':ticketForm.invalid, 'blue-bg':ticketForm.valid}"
+              [disabled]="ticketForm.invalid || ticket.isDeleted" (click)="updateTicket()">
+              Update
+            </button>
+          </div>
+          <!-- ACTIONS -->
+        </div>
+        <!-- END TICKET -->
+
+        <!-- FRESHDESK TICKET -->
+        <div fxFlex fxLayout="column" class="fd-ticket-container w-100-p h-100-p ps" id="freshdesk-ticket-container">
+
+          <!-- TICKET OPTIONS-->
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="py-4 px-12 ticket-toolbar" *ngIf="ticket">
+            <!-- LEFT -->
+            <div fxLayout="row">
+              <div class="btn-group mx-4" *ngIf="!convertMode">
+                <button mat-button
+                  (click)="convertTicket(REF.TicketDestinationType[REF.TicketDestinationType.workOrder])"
+                  [disabled]="ticket.status === REF.TicketStatus.converted || ticket.status === REF.TicketStatus.closed || ticket.isDeleted">
+                  <mat-icon class="s-20">work</mat-icon>
+                  Work Order
+                </button>
+                <!--
+                <button mat-button
+                  (click)="convertTicket(REF.TicketDestinationType[REF.TicketDestinationType.cleaningItem])"
+                  [disabled]="ticket.status === REF.TicketStatus.converted || ticket.status === REF.TicketStatus.closed">
+                  <mat-icon class="s-20">forward</mat-icon>
+                  Cleaning Item
+                </button>
+                <button mat-button
+                  (click)="convertTicket(REF.TicketDestinationType[REF.TicketDestinationType.findingItem])"
+                  [disabled]="ticket.status === REF.TicketStatus.converted || ticket.status === REF.TicketStatus.closed">
+                  <mat-icon class="s-20">forward</mat-icon>
+                  Finding Item
+                </button>
+                -->
+              </div>
+            </div>
+            <!-- LEFT -->
+
+            <!-- RIGHT -->
+            <div fxLayout="row">
+              <div class="btn-group mx-4" *ngIf="!convertMode">
+                <button mat-button (click)="resolveTicket(REF.TicketStatus.closed)"
+                  [disabled]="ticket.status === REF.TicketStatus.converted || ticket.status === REF.TicketStatus.closed || ticket.isDeleted"
+                  *ngIf="ticket.status !== REF.TicketStatus.converted && ticket.status !== REF.TicketStatus.closed">
+                  <mat-icon class="s-20">check_circle_outline</mat-icon>
+                  Close
+                </button>
+
+                <button mat-button (click)="resolveTicket(REF.TicketStatus.pending)" [disabled]="this.ticket.isDeleted"
+                  *ngIf="ticket.status === REF.TicketStatus.converted || ticket.status === REF.TicketStatus.closed">
+                  <mat-icon class="s-20">check_circle_outline</mat-icon>
+                  Open
+                </button>
+              </div>
+
+              <div class="btn-group mx-4" *ngIf="!convertMode && freshdeskTicket">
+                <button mat-button
+                  [disabled]="ticket.status === REF.TicketStatus.converted || ticket.status === REF.TicketStatus.closed || ticket.isDeleted"
+                  (click)="sendTicketReply()" matTooltip="Reply">
+                  <mat-icon class="s-20">reply</mat-icon>
+                </button><button mat-button
+                  [disabled]="ticket.status === REF.TicketStatus.converted || ticket.status === REF.TicketStatus.closed || ticket.isDeleted"
+                  (click)="sendTicketReplyAll()" matTooltip="Reply All">
+                  <mat-icon class="s-20">reply_all</mat-icon>
+                </button><button mat-button (click)="forwardTicket()" matTooltip="Forward"
+                  [disabled]="this.ticket.isDeleted">
+                  <mat-icon class="s-20">forward</mat-icon>
+                </button>
+              </div>
+
+              <div class="btn-group mx-4" *ngIf="!convertMode">
+                <button mat-button
+                  [disabled]="ticket.status === REF.TicketStatus.converted || ticket.status === REF.TicketStatus.closed || ticket.isDeleted"
+                  (click)="mergeTicket()">
+                  <mat-icon class="s-20">merge_type</mat-icon>
+                  Merge
+                </button>
+                <button mat-button (click)="shareTicket()" [disabled]="this.ticket.isDeleted">
+                  <mat-icon class="s-20">link</mat-icon>
+                  Share
+                </button>
+                <button mat-button (click)="showActivity(ticket)">
+                  <mat-icon class="s-20">assignment</mat-icon>
+                  Activity
+                </button>
+              </div>
+
+              <button mat-icon-button class="btn-ticket-option" *ngIf="convertMode" (click)="convertMode=false">
+                <mat-icon class="s-20">close</mat-icon>
+              </button>
+            </div>
+            <!-- RIGHT -->
+          </div>
+          <!-- END TICKET OPTIONS -->
+
+          <div fxFlex fusePerfectScrollbar>
+            <!-- CONVERT -->
+            <div class="w-100-p px-40 py-20" *ngIf="convertMode">
+              <mat-card class="p-0">
+                <mat-card-content>
+                  <app-ticket-destination fusePerfectScrollbar fxFlex></app-ticket-destination>
+                </mat-card-content>
+              </mat-card>
+            </div>
+            <!-- CONVERT -->
+
+            <!-- FRESHDESK -->
+            <div class="w-100-p p-40" *ngIf="!convertMode">
+              <div *ngIf="freshdeskTicket" class="w-100-p">
+                <mat-card>
+                  <mat-card-content>
+                    <!-- HEADER -->
+
+                    <div fxLayout="row" fxLayoutAlign="space-between start" class="w-100-p mt-12">
+                      <!-- SUMMARY -->
+                      <div fxLayout="column" fxLayoutAlign="center none">
+                        <div>
+                          <p class="font-weight-500 font-size-16 m-0"> Subject: {{freshdeskTicket.subject}} </p>
+
+                          <span class="font-weight-500"> {{freshdeskTicket.email}} </span>
+                          <span> ({{freshdeskTicket.created_at | date:'medium'}}) </span>
+                        </div>
+
+                        <div *ngIf="freshdeskTicket.cc_emails.length > 0">
+                          <span class="font-weight-500">Cc: </span>
+                          <span *ngFor="let email of freshdeskTicket.cc_emails; let i = index">
+                            {{ i === (freshdeskTicket.cc_emails.length - 1) ? email : email + ', ' }}
+                          </span>
+                        </div>
+                      </div>
+                      <!-- END SUMMARY -->
+                    </div>
+                    <!--END HEADER-->
+
+                    <mat-divider [inset]="true" class="my-8"></mat-divider>
+
+                    <!-- CONTENT -->
+                    <div>
+
+                      <!-- <div [innerHTML]="freshdeskTicket.description"></div> -->
+                      <app-ticket-fd-detail [html]='freshdeskTicket.description'></app-ticket-fd-detail>
+
+                      <mat-divider [inset]="true" class="my-12"></mat-divider>
+
+                      <!-- ATTATCHMENTS -->
+                      <div *ngIf="freshdeskTicket.attachments.length > 0">
+                        <h4>Attachments ( {{freshdeskTicket.attachments.length}} )</h4>
+                        <div fxLayout="row" fxLayoutAlign="start none" fxLayout="row wrap">
+                          <div *ngFor="let attach of freshdeskTicket.attachments" class="p-4 attachment-container">
+                            <img [src]="attach.attachment_url" class="w-200 h-120"
+                              *ngIf="fileType(attach.name) === 'image'" />
+                            <div class="img-options" fxLayout="row" fxLayoutAlign="space-between center">
+                              <span class="text-truncate" [matTooltip]="attach.name">
+                                {{attach.name}}
+                              </span>
+
+                              <div class="actions" fxLayout="row">
+                                <button mat-icon-button matTooltip="Copy to ticket"
+                                  (click)="copyImageToTicket(attach.attachment_url, attach.name)">
+                                  <mat-icon class="s-16">library_add</mat-icon>
+                                </button>
+
+                                <button mat-icon-button matTooltip="Download"
+                                  (click)="downloadImage(attach.attachment_url, attach.name)">
+                                  <mat-icon class="s-16">cloud_download</mat-icon>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- END ATTATCHMENTS -->
+
+                    </div>
+                    <!--END  CONTENT -->
+                  </mat-card-content>
+                </mat-card>
+              </div>
+
+              <mat-divider class="mt-12" *ngIf="conversations.length > 0 && freshdeskTicket"></mat-divider>
+
+              <div *ngIf="conversations.length > 0" class="w-100-p mt-12">
+                <mat-card *ngFor="let conversation of conversations"
+                  [ngClass]="{'mt-12 pl-12 pt-12 pr-12 pb-0':true, 'blue-50-bg':conversation.fromActivityLog, 'green-50-bg':conversation.activityType === 16}">
+                  <mat-card-content>
+                    <!-- HEADER -->
+                    <div fxLayout="row" fxLayoutAlign="space-between start" class="w-100-p">
+                      <!-- SUMMARY -->
+                      <div fxLayout="column" fxLayoutAlign="center none">
+                        <div>
+                          <span class="font-weight-500" *ngIf="conversation.incoming">
+                            {{conversation.support_email}}
+                          </span>
+                          <span class="font-weight-500" *ngIf="!conversation.incoming"> {{companyName}} </span>
+                          <span *ngIf="conversation.fromActivityLog"> {{conversation.activityTypeName}} </span>
+                          <span> ({{conversation.created_at | date:'medium'}}) </span>
+                        </div>
+
+                        <div *ngIf="conversation.to_emails.length > 0">
+                          <span class="font-weight-500">To: </span>
+                          <span *ngFor="let email of conversation.to_emails"> {{email}} </span>
+                        </div>
+                        <div *ngIf="conversation.cc_emails.length > 0">
+                          <span class="font-weight-500">Cc: </span>
+                          <span *ngFor="let email of conversation.cc_emails; let i = index">
+                            {{ i === (conversation.cc_emails.length - 1) ? email : email + ', ' }}
+                          </span>
+                        </div>
+                        <div *ngIf="conversation.bcc_emails.length > 0">
+                          <span class="font-weight-500">Bcc: </span>
+                          <span *ngFor="let email of conversation.bcc_emails; let i = index">
+                            {{ i === (conversation.bcc_emails.length - 1) ? email : email + ', ' }}
+                          </span>
+                        </div>
+                      </div>
+                      <!-- END SUMMARY -->
+
+                      <!-- MENU --
+                    <div>
+                      <button mat-icon-button [matMenuTriggerFor]="menu">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #menu="matMenu">
+                        <button mat-menu-item>Delete</button>
+                      </mat-menu>
+                    </div>
+                    -- END MENU -->
+                    </div>
+                    <!--END HEADER-->
+
+                    <mat-divider [inset]="true" class="my-8"></mat-divider>
+
+                    <!-- CONTENT -->
+                    <div>
+
+                      <app-ticket-fd-conversation [html]='conversation.body_html'
+                        [blockquote]="conversation.body_blockquote" *ngIf="conversation.activityType != 32">
+                      </app-ticket-fd-conversation>
+
+                      <!--<div [innerHTML]="conversation.body | safeHtml" *ngIf="conversation.activityType != 32"></div>-->
+
+                      <div *ngIf="conversation.activityType === 32">
+                        {{conversation.body}}
+                        <button class="link-button"
+                          (click)="displayWorkOrderSequence(conversation.appCustomFields.EntityId)">
+                          View Sequence
+                        </button>
+                      </div>
+
+                      <mat-divider [inset]="true" class="my-12"></mat-divider>
+
+                      <!-- ATTATCHMENTS -->
+                      <div *ngIf="conversation.attachments.length > 0" class="pb-12">
+                        <div fxLayout="row" fxLayoutAlign="space-between center">
+                          <h4>Attachments ( {{conversation.attachments.length}} ) </h4>
+
+                          <button mat-icon-button (click)="copyAllConversationAttachmentsToTicket(conversation.id)"
+                            matTooltip="Copy All to Ticket">
+                            <mat-icon class="s-16">library_add</mat-icon>
+                          </button>
+                        </div>
+
+                        <div fxLayout="row" fxLayoutAlign="start none" fxLayout="row wrap">
+                          <div *ngFor="let attach of conversation.attachments" class="p-4 attachment-container">
+                            <img [src]="attach.attachment_url" class="w-200 h-120"
+                              *ngIf="fileType(attach.name) === 'image'" />
+
+                            <div class="img-options" fxLayout="row" fxLayoutAlign="space-between center">
+                              <span class="text-truncate" [matTooltip]="attach.name">
+                                {{attach.name}}
+                              </span>
+
+                              <div class="actions" fxLayout="row">
+                                <button mat-icon-button matTooltip="Copy to ticket"
+                                  (click)="copyImageToTicket(attach.attachment_url, attach.name)">
+                                  <mat-icon class="s-16">library_add</mat-icon>
+                                </button>
+
+                                <button mat-icon-button matTooltip="Download"
+                                  (click)="downloadImage(attach.attachment_url, attach.name)">
+                                  <mat-icon class="s-16">cloud_download</mat-icon>
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                      <!-- END ATTATCHMENTS -->
+                    </div>
+                    <!-- CONTENT -->
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+            <!-- END FRESHDESK -->
+
+            <!-- REPLY -->
+            <div #replyContainer>
+              <div class="w-100-p px-40 py-20" *ngIf="showTicketReply && !convertMode">
+                <mat-card>
+                  <mat-card-content>
+                    <app-ticket-reply [company]="companyName" [replyToData]="replyData"
+                      (replyEvent)="replyResponse($event)">
+                    </app-ticket-reply>
+                  </mat-card-content>
+                </mat-card>
+              </div>
+            </div>
+            <!-- END REPLY -->
+          </div>
+        </div>
+        <!-- END FRESHDESK TICKET -->
+      </div>
+    </div>
+    <!--END CENTER CONTENT-->
+  </div>
+
+</div>

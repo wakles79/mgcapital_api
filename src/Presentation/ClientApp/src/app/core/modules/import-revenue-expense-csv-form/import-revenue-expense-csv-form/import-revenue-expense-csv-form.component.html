@@ -1,0 +1,95 @@
+<div class="dialog-content-wrapper">
+  <!--HEADER-->
+  <mat-toolbar matDialogTitle class="accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END HEADER-->
+
+  <!--CONTENT-->
+  <div *ngIf="!isResult" class="m-0 p-16">
+    <p>
+      <strong>Total Elements:</strong>{{total}}
+    </p>
+    <p>
+      <strong>Total Imported Revenues:</strong> {{revenuesImported}}
+    </p>
+    <p>
+      <strong>Total Imported Expenses:</strong> {{expensesImproted}}
+    </p>
+    <p>
+      <strong>Total Repeated Revenues:</strong> {{revenueRepeated}}
+    </p>
+    <p>
+      <strong>Total Repeated Expenses:</strong> {{expensesRepeated}}
+    </p>
+  </div>
+  <div mat-dialog-content class="p-24 m-0" fusePerfectScrollbar *ngIf="isResult">
+    <div fxLayout="column">
+
+      <form [formGroup]="importCsvForm">
+        <!--TypeDoc-->
+        <div fxLayout="row" fxLayoutAlign="start start">
+          <mat-form-field fxFlex="100" class="pr-4">
+            <mat-icon matPrefix class="mr-4 s-20 secondary-text">apps</mat-icon>
+            <mat-select #sTypeDoc formControlName="TypeDocument" placeholder="Type of document to import"
+              (selectionChange)="changeTypeDocument(sTypeDoc.value)" required>
+              <mat-option *ngFor="let item of TypeDocument" [value]="item.id">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!--END TypeDoc-->
+      </form>
+
+      <div fxLayout="row" fxLayoutAlign="space-around none">
+        <mat-card fxFlex="48" fxLayout="column" fxLayoutAlign="space-around none"
+          class="text-center item-summary-box estimated py-16">
+          <span class="font-weight-500">The expected CSV document must have the following format</span>
+
+          <button mat-button class="add-attachment-button" aria-label="add Document CSV" (click)="downloadCSV()">
+            <mat-icon class="s-20">cloud_download</mat-icon>
+            <span>download csv format</span>
+          </button>
+        </mat-card>
+
+        <mat-card fxFlex="48" fxLayout="column" fxLayoutAlign="space-around none"
+          class="text-center item-summary-box estimated">
+          <span class="font-weight-500">CSV Document</span>
+
+          <button mat-button class="add-attachment-button" aria-label="add Document CSV" (click)="FileUpload.click()">
+            <mat-icon class="s-20">move_to_inbox</mat-icon>
+            <span>Import Document</span>
+          </button>
+
+          <input type="file" class="form-control" id="FileUpload" hidden required accept=".csv"
+            (change)="onChangeCSV($event)" #FileUpload required>
+
+          <small>
+            Elements to import: ( {{quantityElements}} )
+          </small>
+        </mat-card>
+      </div>
+
+    </div>
+  </div>
+  <!--CONTENT-->
+
+  <!--ACTION BUTTONS-->
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between end">
+    <button mat-raised-button color="accent" aria-label="SAVE" (click)="ClickSave()" *ngIf="isResult">
+      Import
+    </button>
+
+    <button mat-raised-button color="accent" aria-label="SAVE" (click)="dialogRef.close()"
+      *ngIf="!isResult">
+      OK
+    </button>
+  </div>
+  <!--END ACTION BUTTONS-->
+</div>

@@ -1,0 +1,97 @@
+<div class="dialog-content-wrapper">
+  <!--TOOLBAR-->
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title"> New Budget </span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END TOOLBAR-->
+
+  <!--DIALOG CONTENT-->
+  <div mat-dialog-content class="p-16 m-0" fusePerfectScrollbar>
+    <!--FORM-->
+    <form [formGroup]="contractForm">
+
+      <!--COLUMN-->
+      <div fxLayout="column" fxLayoutAlign="space-around none">
+
+        <!--CONTRACT NUMBER-->
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-8 s-20">vpn_key</mat-icon>
+          <input matInput placeholder="Contract Number" formControlName="contractNumber" required>
+          <mat-hint align="start" *ngIf="invalidCode" class="red-400-fg">
+            The contract number has already been taken
+          </mat-hint>
+        </mat-form-field>
+        <!--END CONTRACT NUMBER-->
+
+        <!-- CUSTOMER-->
+        <div fxLayout="row" fxLayoutAlign="start start">
+          <mat-icon class="mr-8 pt-16 s-20 secondary-text" style="cursor:pointer;" matTooltip="New Customer"
+            (click)="newCustomer()">add</mat-icon>
+          <mat-form-field fxFlex>
+            <mat-icon matPrefix class="mr-8 s-20 secondary-text">person</mat-icon>
+            <mat-select #customers placeholder="Customer" formControlName="customerId" required>
+              <mat-option>
+                <ngx-mat-select-search formControlName="customerIdCtrl" placeholderLabel="Search"
+                  noEntriesFoundLabel="No results"></ngx-mat-select-search>
+              </mat-option>
+
+              <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer.id">
+                {{customer.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!--END CUSTOMER-->
+
+        <!--BUILDING-->
+        <div fxLayout="row" fxLayoutAlign="start start">
+          <mat-icon class="mr-4 pt-16 s-20 secondary-text" style="cursor:pointer;" matTooltip="New Building"
+            (click)="newBuilding()">add</mat-icon>
+          <mat-form-field fxFlex>
+            <mat-icon matPrefix class="mr-8 s-20 secondary-text">business</mat-icon>
+            <mat-select placeholder="Building" formControlName="buildingId" required
+              (selectionChange)='buildingChange($event)'>
+              <mat-option>
+                <ngx-mat-select-search formControlName="buildingIdCtrl" placeholderLabel="Search"
+                  noEntriesFoundLabel="No results"></ngx-mat-select-search>
+              </mat-option>
+
+              <mat-option *ngFor="let building of filteredBuildings | async" [value]="building.id">
+                {{building.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!--END BUILDING-->
+
+      </div>
+      <!--END COLUMN-->
+
+    </form>
+    <!--END FORM-->
+
+    <div fxLayout="column" fxLayoutAlign="space-between none" *ngIf="!availableBuilding" class="pt-8"
+      style="border-top: 1px solid #EEE;">
+      <p class="m-0">
+        The selected building has an active contract, it will be disabled if you create a new contract with this
+        building.
+      </p>
+      <app-contract-summary [displayDetails]="true" [contractSummary]="contractSummary"></app-contract-summary>
+    </div>
+  </div>
+  <!--END DIALOG CONTENT-->
+
+  <!--ACTIONS-->
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between end">
+    <button mat-raised-button color="accent" aria-label="SAVE" [disabled]="contractForm.invalid"
+      (click)="saveContract()">
+      SAVE
+    </button>
+  </div>
+  <!--END ACTIONS-->
+</div>

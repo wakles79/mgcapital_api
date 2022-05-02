@@ -1,0 +1,24 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/custom-theme";
+
+#tags {
+  .content {
+    overflow: hidden;
+  }
+
+  .breadcrumb {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+  mat-sidenav-container .sidenav {
+    min-width: 250px !important;
+  }
+}
+
+#main-side-buttons {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}

@@ -1,0 +1,25 @@
+<div class="sidenav-content">
+
+  <div class="card fuse-white-bg">
+    <!-- SIDENAV CONTENT -->
+    <div class="content py-16" fusePerfectScrollbar>
+
+      <div class="nav" fxLayout="column" fxLayoutAlign="start start">
+
+        <!-- SIDENAV HEADER -->
+        <div class="header p-24 title" fxFlexFill fxLayout="row" fxLayoutAlign="start center">
+          <span class="h5">FILTERS</span>
+        </div>
+        <!-- / SIDENAV HEADER -->
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('all')" [ngClass]="{'active':filterActive ==='all'}">
+            <span class="title">All Services</span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- / SIDENAV CONTENT -->

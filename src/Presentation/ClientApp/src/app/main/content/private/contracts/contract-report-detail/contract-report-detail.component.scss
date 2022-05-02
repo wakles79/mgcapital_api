@@ -1,0 +1,213 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/custom-theme";
+@import "src/app/core/scss/custom/mat-table";
+
+#contract-report-detail {
+  .content {
+    overflow: hidden;
+  }
+
+  .breadcrumb {
+    margin-top: 2px;
+    margin-bottom: 20px;
+  }
+
+  .report {
+    flex: 1;
+
+    .title-document {
+      min-height: 55px;
+      max-height: 55px;
+      color: white !important;
+    }
+
+    .sub-title-document {
+      min-height: 35px;
+      max-height: 35px;
+      color: white !important;
+    }
+
+    .invoice-number {
+      font-size: 16px;
+      padding-bottom: 5px;
+      line-height: 22px;
+
+      //font-size: 20px;
+      font-weight: 400;
+      color: rgba(0, 0, 0, 0.54);
+
+      .title {
+        font-weight: 400;
+        color: rgba(0, 0, 0, 0.54);
+        font-size: 0.9em;
+      }
+
+      .number {
+        font-size: 14px;
+        padding-left: 10px;
+      }
+
+      .number-date {
+        color: rgba(0, 0, 0, 0.87) !important;
+      }
+
+      .issuer {
+        .logo {
+          width: 80%;
+          padding: 0 8px;
+        }
+
+        .info {
+          padding: 16px;
+        }
+      }
+    }
+
+    .subtitle-row {
+      min-height: 23px;
+      background-color: #efefef;
+      color: #333333;
+    }
+
+    .mat-row {
+      min-height: 35px;
+    }
+
+    .mat-header-row {
+      border-bottom: 1px solid #c1ced9;
+      min-height: 56px;
+    }
+
+    .mat-header-row,
+    .mat-row {
+      padding: 0 12px;
+    }
+
+    .table-footer {
+      background-color: #ededed;
+      border-top: 1px solid #5d6975;
+    }
+
+    .log-table {
+      width: 100%;
+
+      table {
+        width: 100%;
+
+        thead > tr > th {
+          font-size: 12px;
+          font-weight: 500;
+          padding: 0 12px;
+          min-height: 38px;
+        }
+
+        tbody {
+          tr {
+            min-height: 28px;
+
+            &:nth-child(even) {
+              background-color: #f2f2f2;
+            }
+
+            td {
+              padding: 0 8px;
+
+              .summary-table {
+                table {
+                  thead > tr > th {
+                    font-size: 12px;
+                    font-weight: 500;
+                    min-height: 16px;
+                    padding: 0 5px;
+                  }
+
+                  tbody {
+                    tr {
+                      min-height: 16px;
+                      padding: 0 5px;
+
+                      &:nth-child(even) {
+                        background-color: #fff;
+                      }
+
+                      td {
+                        padding: 0 5px;
+                        font-size: 12px;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .notes-section {
+      .comment-member-avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        margin-right: 16px;
+      }
+
+      .note-bubble {
+        border-radius: 4px;
+        padding: 8px 12px;
+        background-color: #3c4252;
+        color: #fff;
+      }
+    }
+  }
+  #btn-download-pdf {
+    position: absolute;
+    bottom: 135px;
+    right: 12px;
+    padding: 0;
+    z-index: 99;
+  }
+
+  #btn-copy-url {
+    position: absolute;
+    bottom: 74px;
+    right: 12px;
+    padding: 0;
+    z-index: 99;
+  }
+
+  #btn-show-shared-view {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    padding: 0;
+    z-index: 99;
+    // background-color: #039be5;
+  }
+
+  /* Absolute Center Spinner */
+  .spinner-container {
+    position: fixed;
+    z-index: 999;
+    height: 2em;
+    width: 2em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  /* Transparent Overlay */
+  .spinner-container:before {
+    content: "";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+}

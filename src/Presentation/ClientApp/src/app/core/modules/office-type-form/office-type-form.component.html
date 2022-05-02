@@ -1,0 +1,105 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+
+    <mat-toolbar-row class="toolbar-bottom py-8 py-sm-16" fxLayout="column" fxLayoutAlign="center center">
+      <div class="department-name" *ngIf="officeType">{{officeType.name}}</div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div mat-dialog-content class="p-24 m-0" fusePerfectScrollbar>
+
+    <form [formGroup]="officeTypeForm">
+
+      <!--NAME-->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">account_circle</mat-icon>
+        <mat-form-field fxFlex>
+          <mat-label>Name</mat-label>
+          <input name="name" maxlength="80" formControlName="name" matInput required>
+        </mat-form-field>
+      </div>
+      <!--END NAME-->
+
+      <!--RATE-->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">attach_money</mat-icon>
+        <mat-form-field fxFlex>
+          <mat-label>Rate</mat-label>
+          <input name="rate" maxlength="80" formControlName="rate" matInput required>
+        </mat-form-field>
+      </div>
+      <!--END RATE-->
+
+      <!-- TYPE -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">apps</mat-icon>
+        <mat-form-field fxFlex>
+          <mat-label>Type</mat-label>
+          <mat-select #rateTypeSelect formControlName="rateType"
+            (selectionChange)="rateTypeSelectChanged(rateTypeSelect.value)">
+            <mat-option *ngFor="let serviceType of serviceTypes" [value]="serviceType.id">
+              {{serviceType.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <!-- END TYPE -->
+
+      <!--SUPPLY FACTOR-->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start" *ngIf="rateType === 3">
+        <mat-icon class="mr-12 mt-12">attach_money</mat-icon>
+        <mat-form-field fxFlex>
+          <mat-label>Supply Factor</mat-label>
+          <input name="supplyFactor" maxlength="80" formControlName="supplyFactor" type="number" matInput required>
+        </mat-form-field>
+      </div>
+      <!--END SUPPLY FACTOR-->
+
+      <!--FRECUENCY-->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">calendar_today</mat-icon>
+        <mat-form-field fxFlex>
+          <mat-label>Frequency of the rate</mat-label>
+          <mat-select formControlName="periodicity">
+            <mat-option *ngFor="let periodicity of periodicities" [value]="periodicity">
+              {{periodicity}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <!--END FRECUENCY-->
+
+      <!--STATUS-->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-checkbox name="status" formControlName="status" class="pb-12">Active</mat-checkbox>
+      </div>
+      <!--END STATUS-->
+
+    </form>
+  </div>
+
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="!readOnly">
+
+    <button *ngIf="action !=='edit'" mat-raised-button (click)="dialogRef.close(officeTypeForm)" color="accent"
+      [disabled]="officeTypeForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+
+    <button *ngIf="action ==='edit'" mat-raised-button (click)="dialogRef.close(['save',officeTypeForm])" color="accent"
+      [disabled]="officeTypeForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+
+    <button *ngIf="action ==='edit'" mat-button class="mat-icon-button"
+      (click)="dialogRef.close(['delete',officeTypeForm])" aria-label="Delete" matTooltip="Delete">
+      <mat-icon>delete</mat-icon>
+    </button>
+
+  </div>
+</div>

@@ -1,0 +1,59 @@
+<div class="sidenav-content">
+
+  <div class="card fuse-white-bg">
+    <!-- SIDENAV CONTENT -->
+    <div class="content py-16" fusePerfectScrollbar>
+
+      <div class="nav" fxLayout="column" fxLayoutAlign="start start">
+
+        <!-- SIDENAV HEADER -->
+        <div class="header p-24 title" fxFlexFill fxLayout="row" fxLayoutAlign="start center">
+          <span class="h5">FILTERS</span>
+        </div>
+        <!-- / SIDENAV HEADER -->
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+
+          <div class="nav-item pt-12 filterByBuilding" aria-label="inbox">
+            <span class="pl-24 title">By Dates Range</span>
+            <!-- Date From -->
+            <!-- <mat-form-field fxLayout="row" fxLayoutAlign="start start" class="dates pl-24">
+              <input matInput [matDatepicker]="dateFrom" placeholder="From" [formControl]="dateFromCtrl"
+                (dateChange)="changeDates($event)">
+              <mat-datepicker-toggle matSuffix [for]="dateFrom"></mat-datepicker-toggle>
+              <mat-datepicker #dateFrom startView="multi-year" (yearSelected)="chosenYearHandler($event)"
+                (monthSelected)="chosenMonthHandler($event, dp)" panelClass="example-month-picker">
+              </mat-datepicker>
+            </mat-form-field> -->
+
+            <mat-form-field fxLayout="row" fxLayoutAlign="start start" class="dates pl-24">
+              <input matInput [matDatepicker]="dateFrom" placeholder="From" [formControl]="dateFromCtrl"
+                (dateChange)="changeDates($event)">
+              <mat-datepicker-toggle matSuffix [for]="dateFrom"></mat-datepicker-toggle>
+              <mat-datepicker #dateFrom></mat-datepicker>
+            </mat-form-field>
+
+            <!-- Date To -->
+            <mat-form-field fxLayout="row" fxLayoutAlign="start start" class="dates pl-24">
+              <input matInput [matDatepicker]="dateTo" placeholder="To" [formControl]="dateToCtrl"
+                (dateChange)="changeDates($event)">
+              <mat-datepicker-toggle matSuffix [for]="dateTo"></mat-datepicker-toggle>
+              <mat-datepicker #dateTo></mat-datepicker>
+            </mat-form-field>
+            <!-- Date To -->
+            <!-- <mat-form-field fxLayout="row" fxLayoutAlign="start start" class="dates pl-24">
+              <input matInput [matDatepicker]="dateTo" placeholder="To" [formControl]="dateToCtrl"
+                (dateChange)="changeDates($event)">
+              <mat-datepicker-toggle matSuffix [for]="dateTo"></mat-datepicker-toggle>
+              <mat-datepicker #dateTo startView="multi-year" (yearSelected)="chosenYearHandler($event)"
+                (monthSelected)="chosenMonthHandler($event, dp)" panelClass="example-month-picker">
+              </mat-datepicker>
+            </mat-form-field> -->
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- / SIDENAV CONTENT -->

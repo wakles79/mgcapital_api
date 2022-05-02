@@ -1,0 +1,176 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/lightbox";
+
+#invoice {
+  background: url("/assets/images/backgrounds/dark-material-bg.jpg") no-repeat;
+  background-size: cover;
+
+  &.compact {
+    padding: 0;
+    overflow: auto;
+
+    .invoice-container {
+      padding: 20px;
+
+      .card {
+        width: 100%;
+        overflow: hidden;
+        background: #ffffff;
+        @include mat-elevation(7);
+
+        .content {
+          .report-list {
+            flex: 1;
+
+            .card-table {
+              overflow: hidden;
+              background: #ffffff;
+              @include mat-elevation(1);
+
+              .mat-header-cell {
+                font-size: 14px;
+                font-weight: 500;
+                padding: 12px 4px;
+              }
+
+              .mat-row {
+                min-height: 28px;
+              }
+
+              .mat-cell {
+                font-size: 12px;
+                padding-right: 4px;
+              }
+            }
+
+            .title-document {
+              min-height: 60px;
+              max-height: 60px;
+              background-color: #049546 !important;
+              color: white !important;
+            }
+
+            .sub-title-document {
+              min-height: 35px;
+              max-height: 35px;
+              color: white !important;
+            }
+
+            .sub-title-document {
+              min-height: 35px;
+              max-height: 35px;
+              color: white !important;
+            }
+
+            .invoice-number {
+              font-size: 16px;
+              padding-bottom: 5px;
+              line-height: 22px;
+
+              //font-size: 20px;
+              font-weight: 400;
+              color: rgba(0, 0, 0, 0.54);
+
+              .title {
+                font-weight: 400;
+                color: rgba(0, 0, 0, 0.54);
+                font-size: 0.9em;
+              }
+
+              .number {
+                font-size: 14px;
+                padding-left: 10px;
+              }
+
+              .number-date {
+                color: rgba(0, 0, 0, 0.87) !important;
+              }
+
+              .issuer {
+                .logo {
+                  width: 80%;
+                  padding: 0 8px;
+                }
+
+                .info {
+                  padding: 16px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.m-r {
+  margin-left: 1%;
+}
+
+/* PRINT STYLES */
+@media print {
+  #invoice {
+    background: white;
+    background-size: cover;
+    padding: 0 !important;
+
+    .mat-headline {
+      font-size: 14px;
+      color: black;
+    }
+
+    &.compact {
+      padding: 0 !important;
+
+      .invoice-container {
+        padding: 0 !important;
+
+        .card {
+          .content {
+            .report-list {
+              .card-table {
+                overflow: hidden;
+
+                .mat-cell {
+                  font-size: 9px;
+                }
+
+                .mat-title {
+                  font-size: 12px;
+                }
+              }
+
+              .invoice-number {
+                font-size: 12px;
+                padding-bottom: 0px;
+                line-height: 15px;
+
+                .title {
+                  font-size: 8px;
+                }
+
+                .number {
+                  font-size: 12px;
+                  padding-left: 10px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-no-margin {
+    margin: 0 !important;
+  }
+
+  .print-no-padding {
+    padding: 0 !important;
+  }
+}

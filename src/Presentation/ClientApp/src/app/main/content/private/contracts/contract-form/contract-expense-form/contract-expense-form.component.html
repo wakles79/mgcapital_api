@@ -1,0 +1,209 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div mat-dialog-content class="p-16 m-0" fusePerfectScrollbar>
+
+    <!--FORM-->
+    <form [formGroup]="contractExpenseForm">
+      <!--TYPE-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-8 mt-16 s-20 secondary-text" style="cursor:pointer;" matTooltip="New Expense Type"
+          (click)="newExpenseType()">add</mat-icon>
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">apps</mat-icon>
+          <mat-select #expenseTypeSelect placeholder="Expense Type" formControlName="expenseTypeId"
+            (selectionChange)="expenseTypeChanged(expenseTypeSelect.value)">
+            <mat-option *ngFor="let expenseType of expenseTypes" [value]="expenseType.id">
+              {{ expenseType.name }}
+            </mat-option>
+          </mat-select>
+          <mat-hint align="end"> Category: {{expenseType?.expenseCategoryName}}</mat-hint>
+        </mat-form-field>
+      </div>
+      <!--END TYPE-->
+
+      <!--SUBCATEGORY-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-8 mt-16 s-20 secondary-text" style="cursor:pointer;" matTooltip="New Subcategory"
+          (click)="newSubcategory()">add</mat-icon>
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">archive</mat-icon>
+          <mat-select #expenseSubcategorySelect placeholder="Subcategory" formControlName="expenseSubcategoryId"
+            required (selectionChange)="expenseSubcategoryChanged(expenseSubcategorySelect.value)">
+            <mat-option *ngFor="let subcategory of subcategories" [value]="subcategory.id">
+              {{ subcategory.name }}
+            </mat-option>
+          </mat-select>
+          <!-- <mat-hint align="end"> Type: {{subcategorySelected?.rateTypeName}}, Frequency:
+            {{subcategorySelected?.periodicity}}</mat-hint> -->
+        </mat-form-field>
+      </div>
+      <!--END SUBCATEGORY-->
+
+      <div fxLayout="row" fxLayoutGap="15px" *ngIf="subcategorySelected">
+        <!--TYPE-->
+        <mat-form-field fxFlex="50">
+          <mat-select [(value)]="subcategorySelected.rateType" placeholder="Type">
+            <mat-option *ngFor="let item of types" [value]="item.id">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!--END TYPE-->
+
+        <!--PERIODICITY-->
+        <mat-form-field fxFlex="50">
+          <mat-select [(value)]="subcategorySelected.periodicity" placeholder="Frequency">
+            <mat-option *ngFor="let item of periodicities" [value]="item.name">
+              {{item.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!--END PERIODICITY-->
+      </div>
+
+      <!--NAME-->
+      <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+        <mat-form-field fxFlex="{{subcategorySelected?.rateType==3 || subcategorySelected?.rateType == 4? '0':'35'}}"
+          class="pr-4" *ngIf="subcategorySelected?.rateType!=3 && subcategorySelected?.rateType!=4">
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">equalizer</mat-icon>
+          <input matInput name="quantity" placeholder="Quantity" formControlName="quantity" required>
+        </mat-form-field>
+        <mat-form-field fxFlex="{{subcategorySelected?.rateType==3 || subcategorySelected?.rateType == 4? '100':'65'}}"
+          class="pl-4">
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">account_circle</mat-icon>
+          <input matInput name="description" placeholder="Description" formControlName="description" maxlength="128"
+            required>
+        </mat-form-field>
+      </div>
+      <!--END NAME-->
+
+      <!--RATE-->
+      <div fxLayout="row" fxLayoutAlign="start start" class="mt-8">
+        <mat-form-field fxFlex="{{expenseType?.expenseCategory == 0 ? '50' : '100'}}">
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">attach_money</mat-icon>
+          <input matInput type="number" formControlName="rate" placeholder="Rate">
+          <button mat-button matSuffix aria-label="Calculate" (click)="calculateTotals(1)"
+            *ngIf="subcategorySelected?.rateType===1">
+            CALCULATE
+          </button>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="{{expenseType?.expenseCategory == 0 ? '50' : '0'}}"
+          *ngIf="expenseType?.expenseCategory == 0" class="pl-8">
+          <input matInput type="number" formControlName="overheadPercent" placeholder="Payroll Taxes and Insurance">
+        </mat-form-field>
+      </div>
+      <!--END RATE-->
+
+      <!--HOUR-->
+      <div fxLayout="row" fxLayoutAlign="start start" *ngIf="subcategorySelected?.rateType===0">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">access_time</mat-icon>
+          <input matInput #hoursInput formControlName="value" type="number" placeholder="Hours">
+          <button mat-button matSuffix aria-label=" Clear" (click)="calculateTotals(hoursInput.value)">
+            CALCULATE
+          </button>
+        </mat-form-field>
+      </div>
+      <!--END HOUR-->
+
+      <!--ROOM-->
+      <div fxLayout="row" fxLayoutAlign="start start" *ngIf="subcategorySelected?.rateType===2">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">business</mat-icon>
+          <input matInput #roomsInput formControlName="value" type="number" placeholder="Room">
+          <button mat-button matSuffix aria-label="Clear" (click)="calculateTotals(roomsInput.value)">
+            CALCULATE
+          </button>
+        </mat-form-field>
+      </div>
+      <!--END ROOM-->
+
+      <!--Square Feet-->
+      <div fxLayout="row" fxLayoutAlign="start start" *ngIf="subcategorySelected?.rateType===3">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">crop</mat-icon>
+          <input matInput #squareFeetInput formControlName="value" type="number" placeholder="Square Feet">
+          <button mat-button matSuffix aria-label="Clear" (click)="calculateTotals(squareFeetInput.value)">
+            CALCULATE
+          </button>
+        </mat-form-field>
+      </div>
+      <!--END Square Feet-->
+
+      <!--UNIT-->
+      <div fxLayout="row" fxLayoutAlign="start start" *ngIf="subcategorySelected?.rateType===4">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">filter_none</mat-icon>
+          <input matInput #unitsInput formControlName="value" type="number" placeholder="Quantity">
+          <button mat-button matSuffix aria-label=" Clear" (click)="calculateTotals(unitsInput.value)">
+            CALCULATE
+          </button>
+        </mat-form-field>
+      </div>
+      <!--END UNIT-->
+
+      <!--DEVICE-->
+      <div fxLayout="row" fxLayoutAlign="start start" *ngIf="subcategorySelected?.rateType===5">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">devices</mat-icon>
+          <input matInput #devicesInput formControlName="value" type="number" placeholder="Devices">
+          <button mat-button matSuffix aria-label=" Clear" (click)="calculateTotals(devicesInput.value)">
+            CALCULATE
+          </button>
+        </mat-form-field>
+      </div>
+      <!--END DEVICE-->
+
+      <!--PERIODS-->
+      <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+        <mat-form-field fxFlex="33">
+          <mat-icon matPrefix class="s-20 mr-4 secondary-text">attach_money</mat-icon>
+          <input matInput type="text" formControlName="dailyRate" placeholder="Daily" required>
+        </mat-form-field>
+        <mat-form-field fxFlex="34" class="pl-8 pr-8">
+          <mat-icon matPrefix class="s-20 mr-4 secondary-text">attach_money</mat-icon>
+          <input matInput type="text" formControlName="monthlyRate" placeholder="Monthly" required>
+        </mat-form-field>
+        <mat-form-field fxFlex="33">
+          <mat-icon matPrefix class="s-20 mr-4 secondary-text">attach_money</mat-icon>
+          <input matInput type="text" formControlName="yearlyRate" placeholder="Yearly" required>
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+        <mat-form-field fxFlex="33">
+          <mat-icon matPrefix class="s-20 mr-4 secondary-text">attach_money</mat-icon>
+          <input matInput type="text" formControlName="biMonthlyRate" placeholder="Bi-Monthly">
+        </mat-form-field>
+        <mat-form-field fxFlex="34" class="pl-8 pr-8">
+          <mat-icon matPrefix class="s-20 mr-4 secondary-text">attach_money</mat-icon>
+          <input matInput type="text" formControlName="quarterly" placeholder="Quarterly">
+        </mat-form-field>
+        <mat-form-field fxFlex="33">
+          <mat-icon matPrefix class="s-20 mr-4 secondary-text">attach_money</mat-icon>
+          <input matInput type="text" formControlName="biAnnually" placeholder="Bi-annually">
+        </mat-form-field>
+      </div>
+      <!--END PERIODS-->
+
+    </form>
+    <!--END FORM-->
+
+  </div>
+
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between end">
+    <button mat-raised-button color="accent" (click)="submit()"
+      [disabled]="contractExpenseForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+  </div>
+
+</div>

@@ -1,0 +1,6 @@
+{
+  "launchDarkly": {
+    "userKey": "USER_KEY",
+    "clientId": "CLIENT_ID"
+  }
+}

@@ -1,0 +1,30 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/custom-theme";
+
+#work-order-services-page {
+  flex: 1;
+
+  .header {
+    background-color: #049546 !important;
+  }
+
+  .service-container {
+    border-radius: 8px;
+
+    &.categories {
+      max-height: 450px;
+    }
+  }
+
+  .mat-card {
+    border-radius: 8px;
+  }
+}
+
+#add-element-button {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}

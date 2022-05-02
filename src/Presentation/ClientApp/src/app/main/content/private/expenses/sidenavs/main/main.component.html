@@ -1,0 +1,103 @@
+<div class="sidenav-content">
+
+  <div class="card fuse-white-bg">
+    <!-- SIDENAV CONTENT -->
+    <div class="content py-16" fusePerfectScrollbar>
+
+      <div class="nav" fxLayout="column" fxLayoutAlign="start start">
+
+        <!-- SIDENAV HEADER -->
+        <div class="header p-24 title" fxFlexFill fxLayout="row" fxLayoutAlign="start center">
+          <span class="h5">FILTERS</span>
+        </div>
+        <!-- / SIDENAV HEADER -->
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+
+          <div class="nav-item pl-12 pr-8" aria-label="buildings" fxFlexFill>
+            <span>By Building</span>
+            <div fxLayout="row">
+              <mat-form-field fxFlex>
+                <mat-select placeholder="Building" [formControl]="searchBuilding" #sBuilding
+                  (selectionChange)="changeBuilding(sBuilding.value)">
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="searchBuildingCtrl" placeholderLabel="Search"
+                    noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let building of filteredBuildings$ | async" [value]="building.id">
+                    {{building.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="filterByDatesRange mt-4"></div>
+
+          <div class="nav-item pl-12 pr-8" aria-label="contracts" fxFlexFill>
+            <span>By Contract</span>
+            <div fxLayout="row">
+              <mat-form-field fxFlex>
+                <mat-select placeholder="Contract" #sContract (selectionChange)="changeContract(sContract.value)">
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="searchContractCtrl" placeholderLabel="Search"
+                    noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let Contract of filteredContracts$ | async" [value]="Contract.id">
+                    {{Contract.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="filterByDatesRange mt-4"></div>
+
+          <div class="nav-item pl-12 pr-8" aria-label="customers" fxFlexFill>
+            <span>By Customer</span>
+            <div fxLayout="row">
+              <mat-form-field fxFlex>
+                <mat-select placeholder="Customer" #sCustomer (selectionChange)="changeCustomer(sCustomer.value)">
+                  <mat-option>
+                    <ngx-mat-select-search [formControl]="searchCustomerCtrl" placeholderLabel="Search"
+                    noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                  </mat-option>
+                  <mat-option *ngFor="let Customer of filteredCustomers$ | async" [value]="Customer.id">
+                    {{Customer.name}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <div class="filterByDatesRange mt-4"></div>
+
+          <div class="nav-item pl-12 pr-8" aria-label="inbox" fxFlexFill>
+
+            <div class="nav-item pt-12 filterByBuilding" aria-label="inbox">
+              <span class="pl-24 title">By Dates Range</span>
+
+              <!-- Date From -->
+              <mat-form-field fxLayout="row" fxLayoutAlign="start start" class="dates pl-24">
+                <input matInput [matDatepicker]="dateFrom" placeholder="From" [formControl]="dateFromCtrl"
+                  (dateChange)="changeDates($event)">
+                <mat-datepicker-toggle matSuffix [for]="dateFrom"></mat-datepicker-toggle>
+                <mat-datepicker #dateFrom></mat-datepicker>
+              </mat-form-field>
+
+              <!-- Date To -->
+              <mat-form-field fxLayout="row" fxLayoutAlign="start start" class="dates pl-24">
+                <input matInput [matDatepicker]="dateTo" placeholder="To" [formControl]="dateToCtrl"
+                  (dateChange)="changeDates($event)">
+                <mat-datepicker-toggle matSuffix [for]="dateTo"></mat-datepicker-toggle>
+                <mat-datepicker #dateTo></mat-datepicker>
+              </mat-form-field>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- / SIDENAV CONTENT -->

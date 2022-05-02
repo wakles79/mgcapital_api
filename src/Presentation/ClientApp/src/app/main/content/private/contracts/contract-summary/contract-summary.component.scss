@@ -1,0 +1,14 @@
+@import "src/@fuse/scss/fuse";
+
+.item-summary-box {
+  max-width: 100px;
+  max-height: 100px;
+
+  &.estimated {
+    border-bottom: 4px solid #03a9f4;
+  }
+
+  &.real {
+    border-bottom: 4px solid #66bb6a;
+  }
+}

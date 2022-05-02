@@ -1,0 +1,56 @@
+<div id="officetypes" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayoutAlign="start start" fxLayout.gt-xs="row"
+  fxLayoutAlign.gt-xs="space-between center">
+
+    <!-- APP TITLE -->
+    <div fxLayout="row" fxLayoutAlign="start center">
+      <button mat-button class="mat-icon-button sidebar-toggle mr-12">
+        <mat-icon>menu</mat-icon>
+    </button>
+      <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">
+          account_box</mat-icon>
+        <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Office Service
+          Types</span>
+      </div>
+    </div>
+    <!-- / APP TITLE -->
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+
+      <!-- SIDEBAR -->
+
+      <!-- / SIDEBAR -->
+
+      <!-- CENTER -->
+      <div class="center p-24 pb-56 pr-sm-92" fusePerfectScrollbar>
+
+          <!-- CONTENT -->
+          <div class="content fuse-white-bg mat-elevation-z4">
+            <app-office-type-list [readOnly]="readOnly"></app-office-type-list>
+          </div>
+          <!-- / CONTENT -->
+
+      </div>
+      <!-- / CENTER -->
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>
+
+<!-- ADD OFFICE TYPE BUTTON -->
+<div *ngIf="!readOnly">
+  <button mat-fab class="mg-accent-bg" id="add-office-type-button" (click)="newOfficeType()"
+    aria-label="add office-type" [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+<!-- / ADD OFFICE TYPE BUTTON -->
+

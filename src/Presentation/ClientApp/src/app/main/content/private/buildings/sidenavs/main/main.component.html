@@ -1,0 +1,62 @@
+<div class="sidenav-content">
+
+  <div class="card fuse-white-bg">
+
+    <div class="content py-16" fusePerfectScrollbar>
+
+      <div class="nav" fxLayout="column" fxLayoutAlign="start start">
+
+        <!-- SIDENAV HEADER -->
+        <div class="header p-24 title" fxFlexFill fxLayout="row" fxLayoutAlign="start center">
+          <span class="h5">FILTERS</span>
+        </div>
+        <!-- / SIDENAV HEADER -->
+
+        <!-- SIDENAV CONTENT -->
+        <div class="nav-item pl-12 pr-8" aria-label="inbox" fxFlexFill>
+          <span>By Customer</span>
+          <div fxLayout="row">
+            <mat-form-field fxFlex class="customer-filter">
+              <mat-select #sCustomer placeholder="Customer" (selectionChange)="changeCustomer(sCustomer.value)">
+                <mat-option value="-1">
+                  All
+                </mat-option>
+                <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer.id">
+                  {{customer.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('all')" [ngClass]="{'active  mg-accent-bg':filterActive ==='all'}">
+            <span class="title">All</span>
+          </a>
+        </div>
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('active')"
+            [ngClass]="{'active  mg-accent-bg':filterActive ==='active'}">
+            <span class="title">Active</span>
+          </a>
+        </div>
+
+        <div class="nav-item" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('inactive')"
+            [ngClass]="{'active  mg-accent-bg':filterActive ==='inactive'}">
+            <span class="title">Inactive</span>
+          </a>
+        </div>
+
+        <!-- <div class="nav-item" aria-label="inbox" fxFlexFill>
+          <a class="nav-link" matRipple (click)="changeFilter('notAvailable')" [ngClass]="{'active':filterActive ==='notAvailable'}">
+            <span class="title">Not Available</span>
+          </a>
+        </div> -->
+        <!-- END SIDENAV CONTENT -->
+
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- / SIDENAV CONTENT -->

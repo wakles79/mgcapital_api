@@ -1,0 +1,79 @@
+@import "src/@fuse/scss/fuse";
+@import "../../../../../../../../node_modules/@progress/kendo-theme-material/dist/all.css";
+
+#ticket-reply-action-container {
+  border-radius: 4px;
+  box-shadow: none;
+  // box-shadow: rgba(18, 52, 77, 0.06) 0px 2px 4px 0px;
+  border: 1px solid rgb(235, 239, 243);
+
+  .mat-card-content {
+    border-radius: 4px;
+
+    .from-email {
+      border-radius: 4px, 4px, 0, 0;
+      background-color: #f5f7f9;
+      border-bottom: 1px solid #ebeff3;
+    }
+
+    .to-email {
+      .email-text {
+        border-radius: 4px;
+        border: 1px solid #ebeff3;
+        padding: 2px 4px;
+      }
+    }
+
+    .cc-email-container {
+    }
+
+    .bcc-email-container {
+    }
+
+    .email-list {
+      max-width: 320px;
+
+      .new-email {
+        .new-email-text {
+          border-radius: 4px;
+          border: 1px solid #ebeff3;
+          padding: 2px 4px;
+        }
+
+        .new-email-button {
+          width: 30px;
+          height: 30px;
+          line-height: 0;
+        }
+      }
+    }
+
+    .reply-files {
+      .file-container {
+        .file-detail {
+          padding: 0;
+          border-radius: 6px;
+          border: 1px #ebeff3 solid;
+          background-color: white;
+          margin: 2px;
+
+          .text-container {
+            max-width: 130px;
+            .file-name {
+              font-size: 13px;
+              line-height: 18px;
+            }
+          }
+        }
+
+        .mat-chip:not(.mat-basic-chip) {
+          background-color: white !important;
+        }
+      }
+    }
+  }
+
+  .no-line-h {
+    line-height: 0 !important;
+  }
+}

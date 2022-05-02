@@ -1,0 +1,945 @@
+<!--LOADER-->
+<div class="spinner-container" *ngIf="loading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+<!--END LOADER-->
+
+<div id="work-order-detail" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent px-16 py-8" fxLayout="row" fxLayoutAlign="start center">
+
+    <div fxLayout="column" fxLayoutAlign="space-between none" class="h-100-p">
+      <!--BREADCRUMB-->
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Work Orders</span>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Work Order Detail</span>
+      </div>
+      <!--End BREADCRUMB-->
+
+      <!-- TITLE -->
+      <div class="fuse-white-fg" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="budget-header-title" fxLayout="row">
+          <button class="mr-0 mr-sm-16" mat-icon-button (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+
+          <div fxLayout="column" fxLayoutAlign="space-around none">
+            <h2 class="m-0">
+              {{title}} Work Order
+              <span *ngIf="action==='edit' && workOrder">
+                {{ workOrder.originWorkOrderId ? workOrder.clonePath : workOrder.number }}
+              </span>
+            </h2>
+          </div>
+        </div>
+      </div>
+      <!-- END TITLE -->
+    </div>
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content primary-50-bg" *ngIf="workOrder !=null || this.action == 'new'">
+
+    <!-- CENTER -->
+    <div class="center">
+
+      <div fxLayout="row" fxLayoutAlign="start none" class="h-100-p w-100-p">
+        <!-- TASKS -->
+        <div fxFlex fxLayout="column" class="w-100-p h-100-p ps p-24">
+          <div class="w-100-p" fusePerfectScrollbar>
+            <!-- CARD -->
+            <mat-card>
+              <!-- HEADER -->
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+                <span class="h3 m-0"> Work Order Tasks </span>
+
+                <div>
+                  <button mat-icon-button (click)="addTask(true)" matTooltip="Add Billable Task"
+                    *ngIf="allowEdit && btnAddBillableTask">
+                    <mat-icon>attach_money</mat-icon>
+                  </button>
+                  <button mat-icon-button (click)="addTask(false)" matTooltip="Add Non-billable Task"
+                    *ngIf="allowEdit && btnAddTask">
+                    <mat-icon>money_off</mat-icon>
+                  </button>
+                </div>
+              </div>
+              <!-- HEADER -->
+
+              <!-- PROGRESS -->
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div class="pr-8">
+                  <span style="white-space: nowrap;" class="font-weight-500">
+                    {{ countTasksCompleted() }} / {{ workOrderTasks.length}}
+                  </span>
+                </div>
+                <mat-progress-bar class="mat-primary " mode="determinate"
+                  value="{{100 * countTasksCompleted() / workOrderTasks.length}}">
+                </mat-progress-bar>
+              </div>
+              <!-- PROGRESS -->
+
+              <!-- TABLE -->
+              <mat-card-content>
+                <mat-table #table [dataSource]="tasksDataSource">
+                  <!-- COMPLETED -->
+                  <ng-container matColumnDef="completed">
+                    <mat-header-cell *matHeaderCellDef fxFlex="40px"> </mat-header-cell>
+                    <mat-cell *matCellDef="let element" fxFlex="40px" class="m-0 p-0">
+                      <mat-checkbox [checked]="element.isComplete" (change)="completedTaskChanged($event)"
+                        [value]="element.id" [disabled]="!allowEdit"></mat-checkbox>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- COMPLETED -->
+
+                  <!-- LOCATION --
+                  <ng-container matColumnDef="location">
+                    <mat-header-cell fxFlex="80px" *matHeaderCellDef> Location </mat-header-cell>
+                    <mat-cell fxFlex="80px" *matCellDef="let element">
+                      <p class="m-0 text-truncate"> {{element.location}} </p>
+                    </mat-cell>
+                  </ng-container>
+                  -- LOCATION -->
+
+                  <!-- SERVICE -->
+                  <ng-container matColumnDef="service">
+                    <mat-header-cell fxFlex="120px" *matHeaderCellDef> Service </mat-header-cell>
+                    <mat-cell fxFlex="120px" *matCellDef="let element">
+                      <div fxLayout="column" fxFlex="100" fxLayoutAlign="start start">
+                        <p [ngClass]="{'m-0 text-truncate':true, 'amber-900-fg':element.oldVersion}">
+                          {{element.serviceName}}
+                        </p>
+                        <small class="secondary-text text-truncate"> {{element.categoryName}} </small>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- SERVICE -->
+
+                  <!-- DESCRIPTION -->
+                  <ng-container matColumnDef="description">
+                    <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
+                    <mat-cell *matCellDef="let element">
+                      <div fxLayout="column" fxFlex="100" fxLayoutAlign="start start">
+                        <span class="font-weight-500">
+                          {{element.location}}
+                        </span>
+                        <p class="m-0"> {{element.description}} </p>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- DESCRIPTION -->
+
+                  <!-- CATEGORY --
+                  <ng-container matColumnDef="category">
+                    <mat-header-cell fxFlex="120px" *matHeaderCellDef> Category </mat-header-cell>
+                    <mat-cell fxFlex="120px" *matCellDef="let element">
+                      <span> {{element.categoryName}} </span>
+                    </mat-cell>
+                  </ng-container>
+                  -- CATEGORY -->
+
+                  <!-- QUANTITY -->
+                  <ng-container matColumnDef="quantity">
+                    <mat-header-cell fxFlex="100px" *matHeaderCellDef> Quantity </mat-header-cell>
+                    <mat-cell fxFlex="100px" *matCellDef="let element">
+                      <p class="m-0 text-truncate"
+                        *ngIf="element.serviceId>0 || element.workOrderServiceId>0 && viewTaskBilling">
+                        {{element.quantity}} {{element.unitFactor}}
+                      </p>
+                      <p class="m-0 text-truncate secondary-text"
+                        *ngIf="element.quantityRequiredAtClose && element.isComplete">
+                        {{element.quantityExecuted}} {{element.unitFactor}}
+                      </p>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- QUANTITY -->
+
+                  <!-- RATE -->
+                  <ng-container matColumnDef="rate">
+                    <mat-header-cell fxFlex="80px" *matHeaderCellDef> Rate </mat-header-cell>
+                    <mat-cell fxFlex="80px" *matCellDef="let element">
+                      <div fxLayout="column" fxFlex="100" fxLayoutAlign="start start">
+                        <p class="m-0 text-truncate"
+                          *ngIf="element.serviceId>0 || element.workOrderServiceId>0 && viewTaskBilling">
+                          {{element.rate | currency:'USD':'symbol'}}
+                        </p>
+                        <span class="secondary-text" *ngIf="viewTaskBilling">
+                          {{element.frequencyName}}
+                        </span>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- RATE -->
+
+                  <!-- TOTAL -->
+                  <ng-container matColumnDef="total">
+                    <mat-header-cell fxFlex="80px" *matHeaderCellDef> Total </mat-header-cell>
+                    <mat-cell fxFlex="80px" *matCellDef="let element">
+                      <span *ngIf="element.serviceId>0 || element.workOrderServiceId>0 && viewTaskBilling">
+                        {{element.total | currency:'USD':'symbol'}}
+                      </span>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- TOTAL -->
+
+                  <!-- SUMMARY -->
+                  <!-- <ng-container matColumnDef="summary">
+                    <mat-header-cell fxFlex="120px" *matHeaderCellDef> Summary </mat-header-cell>
+                    <mat-cell fxFlex="120px" *matCellDef="let element">
+                      <div *ngIf="element.isComplete">
+                        <p class="m-0 font-size-12" *ngIf="element.epochCompletedDate > 0">
+                          Completed at {{ element.epochCompletedDate | fromEpoch | date:'shortDate' }}
+                        </p>
+                        <p class="m-0 font-size-12" *ngIf="element.quantityRequiredAtClose">
+                          Qty. {{ element.quantityExecuted }} {{ element.unitFactor }}
+                        </p>
+                        -- <p class="m-0 small" *ngIf="element.hoursRequiredAtClose">
+                          {{ element.hoursExecuted}} Hours
+                        </p> --
+                      </div>
+                    </mat-cell>
+                  </ng-container> -->
+                  <!-- SUMMARY -->
+
+                  <!-- OPTIONS -->
+                  <ng-container matColumnDef="options">
+                    <mat-header-cell fxFlex="40px" *matHeaderCellDef> </mat-header-cell>
+                    <mat-cell fxFlex="40px" *matCellDef="let element">
+                      <div>
+                        <button mat-icon-button [matMenuTriggerFor]="rowMenu" (click)="$event.stopPropagation();">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #rowMenu="matMenu" id="mat-menu">
+                          <button id="mat-menu-item" mat-menu-item (click)="editTask(element.id)">
+                            <!-- <mat-icon>edit</mat-icon> -->
+                            Edit
+                          </button>
+                          <button id="mat-menu-item" mat-menu-item (click)="removeTask(element.id)"
+                            [disabled]="!allowEdit" *ngIf="btnDeleteTask">
+                            <!-- <mat-icon>delete</mat-icon> -->
+                            Delete
+                          </button>
+                        </mat-menu>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!-- OPTIONS -->
+
+                  <mat-header-row *matHeaderRowDef="tasksDisplayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: tasksDisplayedColumns;"></mat-row>
+                </mat-table>
+              </mat-card-content>
+
+              <div class="text-center" *ngIf="workOrderTasks.length===0 && !loadingTasks">
+                No Tasks
+              </div>
+
+              <div fxLayout="row" fxLayoutAlign="center center" *ngIf="loadingTasks">
+                <mat-spinner></mat-spinner>
+              </div>
+              <!-- TABLE -->
+            </mat-card>
+            <!-- CARD -->
+          </div>
+        </div>
+        <!-- TASKS -->
+
+        <!-- DETAIL -->
+        <div fxFlex="40" fxLayout="column" class="fuse-white-bg h-100-p ps">
+          <!-- HEADER --
+          <div class="mgcap-accent-bg py-8 px-12" fxLayout="row" fxLayoutAlign="space-between center">
+            TITLE
+            <div fxFlex>
+              <h2 class="m-0 white-fg"> Detail </h2>
+            </div>
+            TITLE
+
+            SECTIONS
+            <div fxLayout="row">
+              ATTACHMENTS
+              <button mat-icon-button (click)="displayAttachmentArea()" matTooltip="Attachments">
+                <mat-icon [ngClass]="showAttachments?'white-fg':'green-400-fg'">attachment</mat-icon>
+              </button>
+              ATTACHMENTS
+
+              BILLING
+              <button mat-icon-button (click)="displayBillingArea()" matTooltip="Billing Information">
+                <mat-icon [ngClass]="showBilling?'white-fg':'green-400-fg'">credit_card</mat-icon>
+              </button>
+              BILLING
+
+              NOTIFICATIONS
+              <button mat-icon-button (click)="displayNotificationArea()" matTooltip="Set External Notifications">
+                <mat-icon [ngClass]="showNotifications?'white-fg':'green-400-fg'">add_alert</mat-icon>
+              </button>
+              NOTIFICATIONS
+
+              NOTES
+              <button mat-icon-button (click)="displayNotesArea()" matTooltip="Notes">
+                <mat-icon [ngClass]="showNotes?'white-fg':'green-400-fg'">speaker_notes</mat-icon>
+              </button>
+              NOTES
+
+              SCHEDULE
+              <button mat-icon-button (click)="displayScheduleArea()" matTooltip="Schedule Settings">
+                <mat-icon [ngClass]="showSchedule?'white-fg':'green-400-fg'">calendar_today</mat-icon>
+              </button>
+              SCHEDULE
+            </div>
+            SECTIONS
+          </div>
+          -- HEADER -->
+
+          <!-- CONTENT -->
+          <div fusePerfectScrollbar>
+            <!-- FORM -->
+            <div class="p-24">
+              <form [formGroup]="workOrderForm">
+                <!-- REQUEST -->
+                <section>
+                  <!-- Title -->
+                  <div class="header-section" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                      <mat-icon class="s-20">assignment</mat-icon>
+                      <h4 class="font-weight-500 m-0 ml-4">Request</h4>
+                    </div>
+
+                    <mat-divider fxFlex class="mx-8"></mat-divider>
+                  </div>
+                  <!-- Title -->
+
+                  <!-- Content -->
+                  <div fxLayout="row" fxLayoutGap="8px">
+                    <!-- Status -->
+                    <mat-form-field fxFlex>
+                      <mat-select placeholder="Status" [(value)]="woStatus" formControlName="statusId">
+                        <mat-option *ngFor="let status of workOrderStatus" [value]="status.id"
+                          [disabled]="status.disabled">
+                          {{ status.name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- Status -->
+
+                    <!-- Priority -->
+                    <mat-form-field fxFlex>
+                      <mat-select placeholder="Priority" formControlName="priority">
+                        <mat-option *ngFor="let priority of workOdersPriorities" [value]="priority.id">
+                          {{priority.name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- Priority -->
+
+                    <!-- WO Source -- -->
+                    <mat-form-field fxFlex *ngIf="roleLevelLoggedUser < 30">
+                      <mat-select placeholder="Source" formControlName="workOrderSourceId" required>
+                        <mat-option *ngFor="let woSource of woSources" [value]="woSource.id">
+                          {{woSource.name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- -- / End WO Source -->
+
+                    <!-- Type -->
+                    <mat-form-field fxFlex>
+                      <mat-select placeholder="Type" formControlName="type" (selectionChange)="typeChanged($event)">
+                        <mat-option *ngFor="let type of workOrderTypes" [value]="type.key">
+                          {{type.value}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- Type -->
+
+                    <!-- Due date -->
+                    <mat-form-field fxFlex floatLabel="always"
+                      *ngIf="(selectedScheduleFrequency===7) || action==='edit'">
+                      <input matInput formControlName="dueDate" placeholder="Due date" [owlDateTimeTrigger]="dt"
+                        [owlDateTime]="dt" autocomplete="off">
+                      <owl-date-time hour12Timer="true" #dt></owl-date-time>
+                    </mat-form-field>
+                    <!-- Due date -->
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="8px" *ngIf="showCategory">
+                    <!-- Category -->
+                    <mat-form-field fxFlex>
+                      <mat-select placeholder="Category" formControlName="scheduleCategoryId"
+                        (selectionChange)="categoryChanged($event)">
+                        <mat-option *ngFor="let category of scheduleCategories" [value]="category.id">
+                          {{category.description}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!--  Category -->
+
+                    <!-- SubCategory -->
+                    <mat-form-field fxFlex>
+                      <mat-select placeholder="Sub-Category" formControlName="scheduleSubCategoryId">
+                        <mat-option *ngFor="let subcategory of scheduleSubcategories" [value]="subcategory.id">
+                          {{subcategory.name}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- SubCategory -->
+                  </div>
+                  <div fxLayout="column">
+                    <!-- Building -->
+                    <mat-form-field>
+                      <mat-select placeholder="Building" formControlName="buildingId" required>
+                        <mat-option>
+                          <ngx-mat-select-search formControlName="buildingCtrl" placeholderLabel="Search"
+                            noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                        </mat-option>
+                        <mat-option *ngFor="let building of filteredBuildings$ | async" [value]="building.id">
+                          {{building.name +' - '+ building.fullAddress}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <!-- Building -->
+
+                    <!-- Location -->
+                    <mat-form-field fxFlex>
+                      <input matInput placeholder="Location" formControlName="location" required>
+                    </mat-form-field>
+                    <!-- Location -->
+                  </div>
+                  <div fxLayout="row" fxLayoutGap="8px">
+                    <!-- Requester Name -->
+                    <mat-form-field fxFlex>
+                      <input matInput placeholder="Requester name" formControlName="requesterFullName" required>
+                    </mat-form-field>
+                    <!-- Requester Name -->
+
+                    <!-- Requester Email -->
+                    <mat-form-field fxFlex>
+                      <input matInput placeholder="Requester email" formControlName="requesterEmail" required>
+                    </mat-form-field>
+                    <!-- Requester Email -->
+                  </div>
+                  <div fxLayout="row">
+                    <mat-form-field fxFlex>
+                      <textarea matInput formControlName="description" placeholder="Description" rows="3"
+                        required></textarea>
+                    </mat-form-field>
+                  </div>
+                  <!-- Content -->
+                </section>
+                <!-- REQUEST -->
+
+                <!-- EMPLOYEES -->
+                <section>
+                  <!-- Title -->
+                  <div class="header-section" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                      <mat-icon class="s-20">group</mat-icon>
+                      <h4 class="font-weight-500 m-0 ml-4">Assignee</h4>
+                    </div>
+
+                    <mat-divider fxFlex class="mx-8"></mat-divider>
+                  </div>
+                  <!-- Title -->
+
+                  <!-- Content -->
+                  <div fxLayout="row" fxLayoutGab="5px">
+                    <div fxFlex class="h-240 p-8" fxLayout="column" fusePerfectScrollbar>
+
+                      <!-- <mat-form-field>
+                        <mat-select placeholder="Type" [formControl]="employeeTypeFormControl">
+                          <mat-option value="all">
+                            All
+                          </mat-option>
+                          <mat-option value="operationManager">
+                            Operation Manager
+                          </mat-option>
+                          <mat-option value="inspector">
+                            Inspector
+                          </mat-option>
+                          <mat-option value="supervisor">
+                            Supervisor
+                          </mat-option>
+                          <mat-option value="subcontractor">
+                            Subcontractor
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field> -->
+
+
+                      <!-- Added Employees -->
+                      <mat-form-field class=" w-100-p">
+                        <mat-select placeholder="Add Assignee" [(ngModel)]="addedEmployees" [compareWith]="compareFn"
+                          [multiple]="true" formControlName="assignedEmployees">
+                          <mat-select-trigger>
+                            {{addedEmployees.length > 0 ? addedEmployees[0].name : ''}}
+                            <span *ngIf="addedEmployees?.length > 1">
+                              (+{{addedEmployees.length - 1}} others)
+                            </span>
+                          </mat-select-trigger>
+                          <mat-option>
+                            <ngx-mat-select-search [formControl]="employeeSearch" placeholderLabel="Search"
+                              noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                          </mat-option>
+                          <mat-option *ngFor="let employee of availableEmployees; let i = index" [value]="employee"
+                            (onSelectionChange)="onEmployeeSelectionChanged($event)">
+                            {{ employee.name }}
+                          </mat-option>
+                        </mat-select>
+                      </mat-form-field>
+                      <!-- Added Employees -->
+
+                      <!-- Selected Employees -->
+                      <div *ngFor="let employee of workOrderEmployees" fxLayout="row"
+                        fxLayoutAlign="space-between center">
+                        <p class="m-0 font-size-12">
+                          {{employee.name}} ({{employee.roleName}})
+                        </p>
+
+                        <button mat-icon-button (click)="removeEmployee(employee.id)">
+                          <mat-icon class="s-16">close</mat-icon>
+                        </button>
+                      </div>
+                      <!-- Selected Employees -->
+                    </div>
+
+                    <div fxFlex class="h-240 p-8" fxLayout="column" fusePerfectScrollbar>
+                      <!-- Building Employees -->
+                      <h4 class="mt-0 mb-4 secondary-text">Building Assignees ({{buildingEmployees.length}})</h4>
+                      <div *ngFor="let employee of buildingEmployees">
+                        <p class="mt-0">
+                          {{employee.name}} ({{employee.roleName}})
+                        </p>
+                      </div>
+                      <!-- Building Employees -->
+                    </div>
+                  </div>
+                  <!-- Content -->
+                </section>
+                <!-- EMPLOYEES -->
+
+                <!-- ATTACHMENTS -->
+                <section *ngIf="showAttachments">
+                  <!-- Title -->
+                  <div class="header-section" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                      <mat-icon class="s-20">attachment</mat-icon>
+                      <h4 class="font-weight-500 m-0 ml-4">Attachments</h4>
+                    </div>
+
+                    <mat-divider fxFlex class="mx-8"></mat-divider>
+
+                    <input #fileInput hidden type="file" multiple accept="image/*"
+                      (change)="fileChange($event.target.files)">
+                    <button mat-icon-button matTooltip="Add Attachment" (click)="fileInput.click()">
+                      <mat-icon>attach_file</mat-icon>
+                    </button>
+                  </div>
+                  <!-- Title -->
+
+                  <!-- Content -->
+                  <div *ngIf="woAttachments.length===0" class="text-center primary-50-bg py-12 px-8">
+                    No Attachments
+                  </div>
+                  <div fxLayout="column" fxLayoutAlign="start none" formArrayName="attachments">
+                    <div *ngFor="let attachment of woAttachments.controls; let i = index" class="p-8" fxLayout="row"
+                      fxLayoutAlign="start center" fxLayoutGap="8px" [formGroupName]="i">
+                      <div></div>
+                      <mat-card class="p-4">
+                        <a (click)="openAlbumImage(attachment.value.id)" style="cursor: pointer;">
+                          <img [src]="attachment.value.fullUrl" style="max-width: 160px;">
+                        </a>
+                      </mat-card>
+                      <div>
+                        <p>
+                          <mat-form-field class="w-100-p">
+                            <input matInput placeholder="Name" formControlName="description">
+                          </mat-form-field>
+                        </p>
+                        <p>
+                          <button mat-button (click)="removeAttachment(i)"
+                            *ngIf="btnDeleteWorkOrderAttachment">Remove</button>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Content -->
+                </section>
+                <!-- ATTACHMENTS -->
+
+                <!-- BILLING -->
+                <section *ngIf="showBilling">
+                  <!-- Title -->
+                  <div class="header-section" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                      <mat-icon class="s-20">credit_card</mat-icon>
+                      <h4 class="font-weight-500 m-0 ml-4">Bill to</h4>
+                    </div>
+
+                    <mat-divider fxFlex class="mx-8"></mat-divider>
+                  </div>
+                  <!-- Title -->
+
+                  <div fxLayout="row" fxLayoutGap="8px">
+                    <mat-form-field fxFlex>
+                      <input matInput formControlName="billingName" placeholder="Full Name">
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex>
+                      <input matInput type="email" formControlName="billingEmail" placeholder="Email">
+                    </mat-form-field>
+                  </div>
+
+                  <mat-form-field fxFill>
+                    <mat-select placeholder="Billing Date Type" formControlName="billingDateType">
+                      <mat-option *ngFor="let woType of workBillingType" [value]="woType.key">
+                        {{woType.value}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field fxFill>
+                    <textarea matInput formControlName="billingNote" placeholder="Note to billing" rows="2">
+                    </textarea>
+                  </mat-form-field>
+                </section>
+                <!-- BILLING -->
+
+                <!-- SCHEUDLE -->
+                <section *ngIf="showSchedule">
+                  <!-- Title -->
+                  <div class="header-section" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                      <mat-icon class="s-20">calendar_today</mat-icon>
+                      <h4 class="font-weight-500 m-0 ml-4">Schedule Settings</h4>
+                    </div>
+
+                    <mat-divider fxFlex class="mx-8"></mat-divider>
+                  </div>
+                  <!-- Title -->
+
+                  <!-- Content -->
+                  <div fxLayout="row" fxLayoutAlign="space-between start" *ngIf="action==='new'">
+                    <mat-form-field fxFlex="25">
+                      <mat-select placeholder="Frequency" [(value)]="selectedScheduleFrequency"
+                        (selectionChange)="scheduleFrequencyChanged($event)">
+                        <mat-option *ngFor="let frequency of scheduleFrequency" [value]="frequency.id">
+                          {{ frequency.name }}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                    <div fxFlex="73">
+                      <!-- DAILY -->
+                      <div fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="8px"
+                        *ngIf="selectedScheduleFrequency!=1 && selectedScheduleFrequency!=2 && selectedScheduleFrequency<6">
+                        <div fxLayout="column" fxFlex="40">
+                          <mat-form-field>
+                            <input matInput [matDatepicker]="pDailyStartDate" placeholder="Start date" required
+                              [value]="scheduleStartDate" (dateChange)="scheduleStartDateChanged($event)">
+                            <mat-datepicker-toggle matSuffix [for]="pDailyStartDate"></mat-datepicker-toggle>
+                            <mat-datepicker #pDailyStartDate></mat-datepicker>
+                          </mat-form-field>
+
+                          <mat-form-field>
+                            <input matInput [matDatepicker]="pDailyEndDate" placeholder="End date" required
+                              [value]="scheduleEndDate" (dateChange)="scheduleEndDateChanged($event)">
+                            <mat-datepicker-toggle matSuffix [for]="pDailyEndDate"></mat-datepicker-toggle>
+                            <mat-datepicker #pDailyEndDate></mat-datepicker>
+                          </mat-form-field>
+
+                          <mat-form-field fxFlex="30"
+                            *ngIf="selectedScheduleFrequency>1 && selectedScheduleFrequency<6">
+                            <input matInput placeholder="Quantity" [formControl]="scheduleQuantityCtrl">
+                          </mat-form-field>
+                        </div>
+                        <div fxFlex="58" fxLayout="column"
+                          *ngIf="selectedScheduleFrequency>2 && selectedScheduleFrequency<6">
+                          <mat-form-field>
+                            <button mat-button matPrefix mat-icon-button aria-label="Clear"
+                              (click)="revoveScheduleDateFrequency()">
+                              <mat-icon>close</mat-icon>
+                            </button>
+                            <input matInput [matDatepicker]="pScheduleDate" placeholder="Schedule date"
+                              [value]="scheduleDate" (dateChange)="scheduleDateChanged($event)">
+                            <mat-datepicker-toggle matSuffix [for]="pScheduleDate"></mat-datepicker-toggle>
+                            <mat-datepicker #pScheduleDate></mat-datepicker>
+                          </mat-form-field>
+
+                          <div class="h-140" fusePerfectScrollbar>
+                            <span>Scheduled Dates:</span>
+                            <div fxLayout="row" fxLayoutAlign="start center"
+                              *ngFor="let sdate of scheduleDates; let i = index">
+                              <button mat-icon-button (click)="removeScheduleDate(i)" [disabled]="i===0"
+                                [ngClass]="{'primary-50-fg':i===0}">
+                                <mat-icon>delete</mat-icon>
+                              </button>
+                              <span>
+                                {{sdate | date:'MMMM y'}}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- END DAILY -->
+
+                      <!-- WEEKLY -->
+                      <div *ngIf="selectedScheduleFrequency===1" fxLayout="row" fxLayoutAlign="start start">
+                        <div fxLayout="column" fxFlex="40">
+                          <mat-form-field fxFlex="40">
+                            <input matInput [matDatepicker]="pWeeklyStartDate" placeholder="Start date" required
+                              [value]="scheduleStartDate" (dateChange)="scheduleStartDateChanged($event)">
+                            <mat-datepicker-toggle matSuffix [for]="pWeeklyStartDate"></mat-datepicker-toggle>
+                            <mat-datepicker #pWeeklyStartDate></mat-datepicker>
+                          </mat-form-field>
+
+                          <mat-form-field>
+                            <input matInput [matDatepicker]="pWeeklyEndDate" placeholder="End date" required
+                              [value]="scheduleEndDate" (dateChange)="scheduleEndDateChanged($event)">
+                            <mat-datepicker-toggle matSuffix [for]="pWeeklyEndDate"></mat-datepicker-toggle>
+                            <mat-datepicker #pWeeklyEndDate></mat-datepicker>
+                          </mat-form-field>
+
+                          <mat-form-field>
+                            <input matInput placeholder="Quantity" [formControl]="scheduleQuantityCtrl">
+                          </mat-form-field>
+                        </div>
+
+                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayout="row wrap" class="ml-8">
+                          <div *ngFor="let day of scheduleDays" fxFlex="50">
+                            <mat-checkbox class="font-size-12 mr-4" [checked]="day.isSelected"
+                              (change)="checkDay($event, day.id)">
+                              {{day.name}}
+                            </mat-checkbox>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- END WEEKLY -->
+
+                      <!-- MONTHLY -->
+                      <div *ngIf="selectedScheduleFrequency===2" fxLayout="row" fxLayoutAlign="start start">
+                        <div fxLayout="column" fxFlex="40">
+                          <mat-form-field>
+                            <mat-select placeholder=" " [(value)]="selectedScheduleOrdinal">
+                              <mat-option *ngFor="let ordinal of scheduleOrdinal" [value]="ordinal.id">
+                                {{ ordinal.name }}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+
+                          <mat-form-field>
+                            <mat-select placeholder="Start Month" [(value)]="scheduleStartMonth">
+                              <mat-option *ngFor="let month of scheduleMonths" [value]="month.id">
+                                {{ month.name }}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+
+                          <mat-form-field>
+                            <mat-select placeholder="End Month" [(value)]="scheduleEndMonth">
+                              <mat-option *ngFor="let month of scheduleMonths" [value]="month.id">
+                                {{ month.name }}
+                              </mat-option>
+                            </mat-select>
+                          </mat-form-field>
+                        </div>
+
+                        <div fxLayout="row" fxLayoutAlign="space-between start" fxLayout="row wrap" class="ml-8">
+                          <div *ngFor="let day of scheduleDays" fxFlex="50">
+                            <mat-checkbox class="font-size-12 mr-4" [checked]="day.isSelected"
+                              (change)="checkDay($event, day.id)">
+                              {{day.name}}
+                            </mat-checkbox>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- END MONTHLY -->
+
+                      <!-- NOT REPEAT -->
+                      <div *ngIf="selectedScheduleFrequency===6" fxLayout="row" fxLayoutAlign="start center">
+                        <mat-form-field>
+                          <input matInput [value]="scheduleDate" [matDatepicker]="pNotRepeatDate"
+                            placeholder="Schedule date" (dateChange)="scheduleDateChanged($event)">
+                          <mat-datepicker-toggle matSuffix [for]="pNotRepeatDate"></mat-datepicker-toggle>
+                          <mat-datepicker #pNotRepeatDate></mat-datepicker>
+                        </mat-form-field>
+                      </div>
+                      <!-- END NOT REPEAT -->
+
+                      <!-- CUSTOM -->
+                      <div *ngIf="selectedScheduleFrequency===7" fxLayout="row" fxLayoutAlign="start center">
+
+                      </div>
+                      <!-- END CUSTOM -->
+                    </div>
+                  </div>
+
+                  <div fxLayout="row" fxLayoutAlign="start center">
+                    <mat-form-field *ngIf="unscheduledStatus && action === 'edit'">
+                      <input matInput [matDatepicker]="pUnscheduledDate" placeholder="Schedule date"
+                        (dateChange)="scheduleUpdateDateChanged($event)">
+                      <mat-datepicker-toggle matSuffix [for]="pUnscheduledDate"></mat-datepicker-toggle>
+                      <mat-datepicker #pUnscheduledDate></mat-datepicker>
+                    </mat-form-field>
+
+                    <!-- Schedule Date -->
+                    <div fxLayout="row" *ngIf="!showSnoozeDate && !unscheduledStatus && action != 'new'">
+                      <mat-form-field fxFlexFill>
+                        <input matInput placeholder="Schedule Date" formControlName="scheduleDate"
+                          [owlDateTimeTrigger]="dt" [owlDateTime]="dt">
+                        <owl-date-time hour12Timer="true" #dt></owl-date-time>
+                      </mat-form-field>
+                    </div>
+                    <!-- / End Schedule Date -->
+                  </div>
+
+                  <mat-slide-toggle *ngIf="action==='new'" formControlName="setStatusByStandBy">
+                    Set all WOs in sequence to Standby
+                  </mat-slide-toggle>
+
+                  <div *ngIf="roleLevelLoggedUser < 30" fxLayout="row" fxLayoutAlign="start center" fxFlexFill>
+                    <mat-slide-toggle class="pr-12" formControlName="clientApproved">Client Approved
+                    </mat-slide-toggle>
+
+                    <mat-slide-toggle formControlName="scheduleDateConfirmed">Schedule Date Confirmed
+                    </mat-slide-toggle>
+                  </div>
+                  <!-- Content -->
+                </section>
+                <!-- SCHEUDLE -->
+
+                <!-- SETTINGS -->
+                <section>
+                  <!-- Title -->
+                  <div class="header-section" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                      <mat-icon class="s-20">settings</mat-icon>
+                      <h4 class="font-weight-500 m-0 ml-4">Settings</h4>
+                    </div>
+
+                    <mat-divider fxFlex class="mx-8"></mat-divider>
+                  </div>
+                  <!-- Title -->
+
+                  <div fxLayout="row">
+                    <!-- Type -->
+                    <!-- <mat-form-field fxFlex="30">
+                      <mat-select placeholder="Type" formControlName="type" (selectionChange)="typeChanged($event)">
+                        <mat-option *ngFor="let type of workOrderTypes" [value]="type.key">
+                          {{type.value}}
+                        </mat-option>
+                      </mat-select>
+                    </mat-form-field> -->
+                    <!-- Type -->
+                  </div>
+
+                  <div *ngIf="showNotifications && roleLevelLoggedUser < 30">
+                    <mat-slide-toggle class="pr-12" formControlName="sendRequesterNotifications">Send Requester
+                      Notifications
+                    </mat-slide-toggle>
+
+                    <mat-slide-toggle formControlName="sendPropertyManagersNotifications">Send Property Managers
+                      Notifications
+                    </mat-slide-toggle>
+                  </div>
+
+                  <div fxLayout="column" fxLayoutAlign="start none" fxFlexFill
+                    *ngIf="action === 'edit' && workOrder.statusId === 3">
+                    <mat-form-field class="pt-24">
+                      <textarea matInput placeholder="Closing Notes" readonly="true" [value]="workOrder.closingNotes"
+                        [disabled]="roleLevelLoggedUser >= 40"></textarea>
+                    </mat-form-field>
+
+                    <mat-radio-group class="mt-24 mb-24" fxLayout="row">
+                      <mat-radio-button [disabled]="true" class="pr-24" value="true"
+                        [checked]="workOrder.followUpOnClosingNotes === true">Follow Up</mat-radio-button>
+                      <mat-radio-button [disabled]="true" value="false"
+                        [checked]="workOrder.followUpOnClosingNotes === false">No Follow Up Needed</mat-radio-button>
+                    </mat-radio-group>
+                  </div>
+                </section>
+                <!-- SETTINGS -->
+
+                <!-- NOTES -->
+                <section *ngIf="showNotes" class="comments">
+                  <!-- Title -->
+                  <div class="header-section" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                      <mat-icon class="s-20">speaker_notes</mat-icon>
+                      <h4 class="font-weight-500 m-0 ml-4">Notes</h4>
+                    </div>
+
+                    <mat-divider fxFlex class="mx-8"></mat-divider>
+                  </div>
+                  <!-- Title -->
+
+                  <!-- Content -->
+                  <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="8px">
+                    <mat-form-field fxFlex>
+                      <span matPrefix>
+                        <mat-icon class="mr-8">account_circle</mat-icon>
+                      </span>
+                      <input type="text" matInput placeholder="Write a note.." [(ngModel)]="textNote"
+                        [ngModelOptions]="{standalone: true}">
+                    </mat-form-field>
+
+                    <button mat-raised-button class="mat-accent" aria-label="Add" (click)="addNote(textNote)"
+                      *ngIf="btnAddWorkOrderNote">
+                      <span>Add Note</span>
+                    </button>
+                  </div>
+                  <div formArrayName="notes"
+                    *ngFor="let note of woNotes.controls; let i = index; let lst = last; let fst = first;">
+                    <div [formGroupName]="i">
+                      <div class="comment" fxLayout="row" fxLayoutAlign="start">
+                        <img class="comment-member-avatar" src="assets/images/avatars/profile.jpg">
+                        <div fxLayout="column">
+                          <div class="comment-member-name">
+                            {{ note.value.employeeFullName }}
+                          </div>
+                          <div class="comment-bubble">
+                            {{ note.value.note }}
+                          </div>
+                          <div class="comment-time secondary-text">
+                            {{ note.value.epochCreatedDate | fromEpoch }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Content -->
+                </section>
+                <!-- NOTES -->
+              </form>
+            </div>
+            <!-- FORM -->
+          </div>
+          <!-- CONTENT -->
+
+          <!-- ACTIONS -->
+          <div class="py-8 px-16">
+            <button mat-button [ngClass]="{'blue-bg fuse-white-fg w-100-p':true, 'grey-400-bg': workOrderForm.invalid}"
+              (click)="saveWorkOrder()" [disabled]="workOrderForm.invalid" *ngIf="action==='new'">
+              SAVE
+            </button>
+            <button mat-button
+              [ngClass]="{'blue-bg fuse-white-fg w-100-p':true, 'grey-400-bg': !allowEdit || workOrderForm.invalid}"
+              (click)="submit()" [disabled]="!allowEdit || workOrderForm.invalid || !btnUpdateWorkOrder"
+              *ngIf="action==='edit'">
+              UPDATE
+            </button>
+          </div>
+          <!-- ACTIONS -->
+        </div>
+        <!-- DETAIL -->
+      </div>
+
+    </div>
+    <!-- / CENTER -->
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

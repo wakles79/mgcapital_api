@@ -1,0 +1,85 @@
+
+<!-- SEARCH -->
+<div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="end center">
+  <label for="search" class="mr-8">
+    <mat-icon>search</mat-icon>
+  </label>
+  <mat-form-field floatLabel="never">
+    <input matInput [formControl]="searchInput" id="search" placeholder="Search for anything">
+  </mat-form-field>
+
+</div>
+<!-- / SEARCH -->
+
+<mat-table #table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+  <!-- Name -->
+  <ng-container cdkColumnDef="name">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Name</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <p class="font-weight-600 text-truncate">
+        {{ building.name }}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Full Address -->
+  <ng-container cdkColumnDef="fullAddress">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Address</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <p class="text-truncate">
+        {{ building.fullAddress }}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Operations Manager Full Name -->
+  <ng-container cdkColumnDef="operationsManagerFullName">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Operations Manager</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <p class="text-truncate">
+        {{ building.operationsManagerFullName }}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Emergency Phone -->
+  <ng-container cdkColumnDef="emergencyPhone">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Emergency Phone</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <p class="text-truncate">
+        {{ building.emergencyPhone }}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Is Complete -->
+  <ng-container cdkColumnDef="isComplete">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Complete</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <p>
+        {{ completeStatus(building.isComplete) | uppercase }}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Is Active -->
+  <ng-container cdkColumnDef="isActive">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header class="font-weight-600">Status</mat-header-cell>
+    <mat-cell *cdkCellDef="let building">
+      <p class="badge available" [ngClass]="{'not-available':building.isActive === 0}">
+        {{ activeStatus(building.isActive) | uppercase }}
+      </p>
+    </mat-cell>
+  </ng-container>
+
+  <!-- Buttons Column -->
+
+
+  <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *cdkRowDef="let building; columns: displayedColumns;" class="building" matRipple
+    [routerLink]="'/app/buildings-profile/buildings-profile-detail/' + building.id"
+    [@animate]="{value:'*',params:{y:'100%'}}">
+  </mat-row>
+</mat-table>
+
+<mat-paginator [length]="buildingsCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]"></mat-paginator>

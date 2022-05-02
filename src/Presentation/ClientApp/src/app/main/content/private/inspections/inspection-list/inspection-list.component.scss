@@ -1,0 +1,189 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/mat-table";
+
+app-inspection-list {
+  flex: 1;
+
+  .mat-table {
+    background: transparent;
+    box-shadow: none;
+    width: 100%;
+
+    .mat-column-buttons {
+      flex: 0 1 80px !important;
+    }
+
+    .mat-column-number {
+      flex: 0 1 48px !important;
+      margin-right: 1.5%;
+    }
+
+    .mat-column-beginNotes {
+      word-wrap: break-word !important;
+      white-space: unset !important;
+      flex: 0 0 150px !important;
+      width: 150px !important;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .mat-column-closingNotes {
+      word-wrap: break-word !important;
+      white-space: unset !important;
+      flex: 0 0 150px !important;
+      width: 150px !important;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .mat-column-items {
+      word-wrap: break-word !important;
+      white-space: unset !important;
+      flex: 0 0 50px !important;
+      width: 50px !important;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .mat-column-status {
+      word-wrap: break-word !important;
+      white-space: unset !important;
+      flex: 0 0 140px !important;
+      width: 140px !important;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+
+      .badge-icon {
+        display: inline-block;
+        padding: 2px;
+        font-size: 0.9em;
+        font-weight: 500;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 4px;
+        color: #fff;
+        margin-top: 2px;
+        margin-right: 4px;
+
+        &.enabled {
+          background-color: #28a745 !important;
+        }
+
+        &.disabled {
+          background-color: #d8d8d8 !important;
+        }
+      }
+
+      .badge-text {
+        display: inline-block;
+        padding-top: 5px;
+        padding-right: 4px;
+        padding-bottom: 4px;
+        padding-left: 4px;
+        font-size: 0.9em;
+        font-weight: 400;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: baseline;
+        border-radius: 4px;
+        color: #fff;
+        margin-top: 2px;
+        margin-right: 4px;
+        background-color: #333333;
+
+        &.items {
+          // background-color: #0288d1 !important;
+        }
+
+        &.tasks {
+          // background-color: #4caf50 !important;
+        }
+      }
+    }
+
+    .mat-row {
+      position: relative;
+      cursor: pointer;
+      padding: 8px 8px 8px 24px;
+
+      .mat-cell {
+        min-width: 0;
+
+        .badge {
+          display: inline-block;
+          padding: 5px 10px 5px 10px;
+          font-size: 75%;
+          font-weight: 500;
+          line-height: 1;
+          text-align: center;
+          white-space: nowrap;
+          vertical-align: baseline;
+          border-radius: 0.25rem;
+          color: #fff;
+
+          &.status-0 {
+            background-color: #ffc107 !important;
+          }
+
+          &.status-1 {
+            background-color: #ff7043 !important;
+          }
+
+          &.status-2 {
+            background-color: #0288d1 !important;
+          }
+
+          &.status-3 {
+            background-color: #0288d1 !important;
+          }
+
+          &.status-4 {
+            background-color: #28a745 !important;
+          }
+
+          &.status-5 {
+            background-color: #333333 !important;
+          }
+        }
+
+        &.mat-column-detail-button {
+          flex: 0 1 auto;
+          padding: 0 24px 0 0;
+
+          @include media-breakpoint("gt-md") {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  /* Absolute Center Spinner */
+  .spinner-container {
+    position: fixed;
+    z-index: 999;
+    height: 2em;
+    width: 2em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  /* Transparent Overlay */
+  .spinner-container:before {
+    content: "";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+}

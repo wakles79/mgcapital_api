@@ -1,0 +1,59 @@
+@import "src/@fuse/scss/fuse";
+
+.search-contact-form-dialog {
+  @include media-breakpoint('xs') {
+    width: 100%;
+  }
+  @include media-breakpoint('lt-xs') {
+    width: 600px;
+  }
+  .mat-dialog-container {
+    padding: 0;
+    overflow: hidden;
+    .mat-toolbar {
+      background: #049546 !important;
+      min-height: initial;
+      .mat-toolbar-row {
+        height: 64px;
+      }
+    }
+    .sections {
+      .section {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        margin-bottom: 20px;
+        &:last-child {
+          border-bottom: none;
+          margin-bottom: 0;
+          .section-content {
+            padding-bottom: 0;
+          }
+        }
+        margin-top: 30px;
+        font-size: 16px;
+        mat-icon {
+          margin-right: 8px;
+          color: rgba(0, 0, 0, 0.6);
+        }
+        .section-title {
+          font-weight: 400;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+          margin-bottom: 32px;
+        }
+      }
+      .section-content {
+        padding: 12px 0 32px 0;
+      }
+    }
+  }
+  .toolbar-bottom {
+    height: auto;
+  }
+}
+
+.dialog-content-wrapper {
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+

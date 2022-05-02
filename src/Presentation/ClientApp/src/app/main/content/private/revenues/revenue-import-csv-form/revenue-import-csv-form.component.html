@@ -1,0 +1,154 @@
+<div class="dialog-content-wrapper">
+  <!--TITLE-->
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">Import Csv Revenue</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END TITLE-->
+
+  <!--CONTENT-->
+  <div mat-dialog-content class="p-12 m-0" fusePerfectScrollbar>
+
+    <form [formGroup]="revenueForm">
+      <!-- #region BUILDING-->
+      <div fxLayout="row" fxLayoutAlign="start center" fxFill>
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-8 s-20 secondary-text">business</mat-icon>
+          <mat-select #sBuilding placeholder="Building" formControlName="buildingId" required
+            (selectionChange)="buildingChanged(sBuilding.value)">
+            <mat-option>
+              <ngx-mat-select-search formControlName="buildingFilter" placeholderLabel="Search"
+                noEntriesFoundLabel="No results"></ngx-mat-select-search>
+            </mat-option>
+
+            <mat-option *ngFor="let building of filteredBuildings | async" [value]="building.id">
+              {{building.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <!-- #endregion END BUILDING-->
+      <!-- #region CUSTOMER-->
+      <div fxLayout="row" fxLayoutAlign="star center" fxFill>
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-8 s-20 secondary-text">receipt</mat-icon>
+          <mat-select #sContract placeholder="N. Contract - Customer" formControlName="contractId" required
+            (selectionChange)="contractChanged(sContract.value)">
+            <mat-option>
+              <ngx-mat-select-search formControlName="contractsFilter" placeholderLabel="Search"
+                noEntriesFoundLabel="No results"></ngx-mat-select-search>
+            </mat-option>
+
+            <mat-option *ngFor="let contract of filteredContracts | async" [value]="contract.id">
+              {{contract.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <!-- #endregion CUSTOMER-->
+      <!-- #region IMPORT DOCUMENT CSV-->
+      <div>
+        <div class="section">
+          <div class="attachments">
+            <div class="section-header" fxLayout="row" fxLayoutAlign="start center">
+              <mat-icon class="s-20">attachment</mat-icon>
+              <span fxFlex class="section-title">Document CSV</span>
+            </div>
+            <div class="">
+              <button mat-button class="add-attachment-button" aria-label="add Document CSV"
+                (click)="FileUpload.click()">
+                <div fxLayout="row" fxLayoutAlign="start center">
+                  <mat-icon class="s-20">add</mat-icon>
+                  <span>Import an Document</span>
+                </div>
+              </button>
+              <!-- <input type="file" class="form-control" id="FileUpload" hidden
+                placeholder="CSV file with phone numbers and amount" ng-model="prd.bulk_direct_file" required
+                accept=".csv" (change)="uploadListener($event)" #FileUpload required> -->
+
+
+              <input type="file" id="FileUpload" name="files" class="form-control" #uploads
+                (change)="onChangeCSV($event)" required accept=".csv" hidden value="process" #FileUpload required />
+
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- #endregion IMPORT DOCUMENT CSV-->
+    </form>
+
+    <!-- #region DATA CSV-->
+    <div class="log">
+      <table style="width:100%;">
+        <thead>
+          <tr class="mat-header-row primary-600-bg">
+            <th class="mat-header-cell fuse-white-fg">Row</th>
+            <th class="mat-header-cell fuse-white-fg"># Transaction</th>
+            <th class="mat-header-cell fuse-white-fg">Description</th>
+            <th class="mat-header-cell fuse-white-fg">Date</th>
+            <th class="mat-header-cell fuse-white-fg">Sub-Total</th>
+            <th class="mat-header-cell fuse-white-fg">Tax</th>
+            <th class="mat-header-cell fuse-white-fg">Total</th>
+            <th class="mat-header-cell fuse-white-fg">Reference</th>
+            <th class="mat-header-cell fuse-white-fg">Option</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let record of records;let i = index;" class="mat-row">
+            <td class="mat-cell">
+              <span [style.color]="record.isRepeated ? 'red' : 'black'">
+                {{record.row}}</span>
+            </td>
+            <td class="mat-cell">
+              <span [style.color]="record.isRepeated ? 'red' : 'black'">
+                {{record.transactionNumber}}</span>
+            </td>
+            <td class="mat-cell">
+              <span [style.color]="record.isRepeated ? 'red' : 'black'">
+                {{record.description}}</span>
+            </td>
+            <td class="mat-cell">
+              <span [style.color]="record.isRepeated ? 'red' : 'black'">
+                {{ record.date | date: 'MM/dd/yyyy' }}</span>
+            </td>
+            <td class="mat-cell">
+              <span [style.color]="record.isRepeated ? 'red' : 'black'">
+                {{record.subTotal}}</span>
+            </td>
+            <td class="mat-cell">
+              <span [style.color]="record.isRepeated ? 'red' : 'black'">
+                {{record.tax}}%</span>
+            </td>
+            <td class="mat-cell">
+              <span [style.color]="record.isRepeated ? 'red' : 'black'">
+                {{record.total}}</span>
+            </td>
+            <td class="mat-cell">
+              <span [style.color]="record.isRepeated ? 'red' : 'black'">
+                {{record.reference}}</span>
+            </td>
+            <td>
+              <button mat-menu-item aria-label="edit" (click)="deleteRevenue(record.row)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- #endregion DATA CSV-->
+  </div>
+  <!--END CONTENT-->
+
+  <!-- #region ACTION BUTTONS-->
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between end">
+    <button mat-raised-button color="accent" aria-label="SAVE" [disabled]="ActiveSave()" (click)="ClickSave()">
+      SAVE
+    </button>
+  </div>
+  <!-- #endregion ACTION BUTTONS-->
+</div>

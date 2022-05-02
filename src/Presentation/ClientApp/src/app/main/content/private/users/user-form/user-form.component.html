@@ -1,0 +1,227 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+
+    <mat-toolbar-row class="toolbar-bottom py-8 py-sm-16" fxLayout="column" fxLayoutAlign="center center">
+      <div class="user-name" *ngIf="user">{{user.firstName}} {{user.lastName}} </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div mat-dialog-content class="p-24 m-0" fusePerfectScrollbar>
+
+    <form [formGroup]="userForm">
+
+      <!-- First Name -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">account_circle</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="firstName" formControlName="firstName" placeholder="First Name" matInput required>
+        </mat-form-field>
+      </div>
+
+      <!-- Middle Name -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start" *ngIf="action === 'edit'">
+        <mat-icon class="mr-12 mt-12">account_circle</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="middleName" formControlName="middleName" placeholder="Middle Name" matInput>
+        </mat-form-field>
+      </div>
+
+      <!-- Last Name -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">account_circle</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="lastName" formControlName="lastName" placeholder="Last Name" matInput required>
+        </mat-form-field>
+      </div>
+
+      <!-- Email -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">email</mat-icon>
+        <mat-form-field fxFlex>
+          <input name="email" formControlName="email" matInput type="email" placeholder="Email" required>
+        </mat-form-field>
+      </div>
+
+      <!-- Edition only fields -->
+      <ng-container *ngIf="action === 'edit'">
+        <!-- Salutation -->
+        <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+          <mat-icon class="mr-12 mt-12">person</mat-icon>
+          <mat-form-field fxFlex>
+            <input name="salutation" formControlName="salutation" placeholder="Salutation" matInput>
+          </mat-form-field>
+        </div>
+        <!-- DOB -->
+        <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+          <mat-icon class="mr-12 mt-12">cake</mat-icon>
+          <mat-form-field class="mr-24" fxFlex>
+            <input matInput [matDatepicker]="birthdayDatePicker" placeholder="DOB" formControlName="dob">
+            <mat-datepicker-toggle matSuffix [for]="birthdayDatePicker"></mat-datepicker-toggle>
+            <mat-datepicker #birthdayDatePicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <!-- Department -->
+        <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+          <mat-icon class="mr-12 mt-12">assignment_ind</mat-icon>
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Department" formControlName="departmentId">
+              <mat-option *ngFor="let dep of departments$ | async" [value]="dep.id">
+                {{dep.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <!-- Role -->
+        <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+          <mat-icon class="mr-12 mt-12">assignment_ind</mat-icon>
+          <mat-form-field fxFlex>
+            <mat-select placeholder="Role" formControlName="roleId" (change)="roleChanged($event)">
+              <mat-option *ngFor="let role of roles" [value]="role.id">
+                {{role.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Phones  -->
+        <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+          <button mat-button class="mat-icon-button mr-12 mt-12" (click)="newPhone(user.contactId)" aria-label="New"
+            matTooltip="Add" *ngIf="!readOnly">
+            <mat-icon>add</mat-icon>
+          </button>
+          <mat-accordion class="mr-24" fxFlex>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>Phones</mat-expansion-panel-header>
+              <mat-nav-list dense>
+                <mat-list-item *ngFor="let phone of phones$ | async">
+                  <a matLine (click)="editPhone(phone.id)">{{phone.type}} | {{phone.phone}}</a>
+                  <button mat-icon-button (click)="deletePhone(phone.id)" aria-label="Delete" matTooltip="Delete"
+                    *ngIf="!readOnly">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </mat-list-item>
+              </mat-nav-list>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+
+        <!-- Emails  -->
+        <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+          <button mat-button class="mat-icon-button mr-12 mt-12" (click)="newEmail(user.contactId)" aria-label="New"
+            matTooltip="Add" *ngIf="!readOnly">
+            <mat-icon>add</mat-icon>
+          </button>
+          <mat-accordion class="mr-24" fxFlex>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>Emails</mat-expansion-panel-header>
+              <mat-nav-list dense>
+                <mat-list-item *ngFor="let email of emails$ | async">
+                  <a matLine (click)="editEmail(email.id)">{{email.type}} | {{email.email}}</a>
+                  <button mat-icon-button (click)="deleteEmail(email.id)" aria-label="Delete" matTooltip="Delete"
+                    *ngIf="!readOnly">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </mat-list-item>
+              </mat-nav-list>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+
+        <!-- Addresses  -->
+        <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+          <button mat-button class="mat-icon-button mr-12 mt-12" (click)="newAddress(user.contactId)" aria-label="New"
+            matTooltip="Add" *ngIf="!readOnly">
+            <mat-icon>add</mat-icon>
+          </button>
+          <mat-accordion class="mr-24" fxFlex>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>Addresses</mat-expansion-panel-header>
+              <mat-nav-list dense>
+                <mat-list-item *ngFor="let address of addresses$ | async">
+                  <a matLine (click)="editAddress(user.contactId, address.addressId)">{{address.type}} |
+                    {{address.fullAddress}}</a>
+                  <button mat-icon-button (click)="deleteAddress(user.contactId, address.addressId)" aria-label="Delete"
+                    matTooltip="Delete" *ngIf="!readOnly">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </mat-list-item>
+              </mat-nav-list>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </div>
+
+        <!-- Send Notifications -->
+        <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+          <mat-slide-toggle class="pr-12" formControlName="sendNotifications">Send Notifications
+          </mat-slide-toggle>
+        </div>
+        <!-- Notes -->
+        <div fxLayout="row" class="textarea-wrapper" fxLayoutAlign="start start">
+          <mat-icon class="mr-12 mt-12">note</mat-icon>
+          <mat-form-field fxFlex>
+            <textarea name="notes" formControlName="notes" placeholder="Notes" matInput type="text"
+              max-rows="4"></textarea>
+          </mat-form-field>
+        </div>
+
+        <!-- Freshdesk -->
+        <div fxLayout="column" fxLayoutAlign="start start">
+          <mat-slide-toggle formControlName="hasFreshdeskAccount">Is Freshdesk User</mat-slide-toggle>
+          <div *ngIf="userForm.get('hasFreshdeskAccount').value" class="w-100-p mt-12">
+            <div fxLayout="row" fxLayoutAlign="space-between center" fxLayoutGap="8px" class="w-100-p mt-12">
+              <!-- Api Key -->
+              <mat-form-field class="w-100-p">
+                <input name="freshdeskApiKey" formControlName="freshdeskApiKey" placeholder="Api Key" matInput>
+              </mat-form-field>
+              <!-- Api Key -->
+
+              <!-- Agent Id -->
+              <mat-form-field class="w-100-p">
+                <input name="freshdeskAgentId" formControlName="freshdeskAgentId" placeholder="Agent Id" matInput>
+              </mat-form-field>
+              <!-- Agent Id -->
+            </div>
+
+            <div>
+              <app-verify-freshdesk [key]="freshdeskKey" [agentId]="freshdeskAgentId">
+              </app-verify-freshdesk>
+            </div>
+          </div>
+        </div>
+        <!-- Freshdesk -->
+
+        <div class="px-4 mt-8">
+          <b>Email Signature</b>
+          <kendo-editor [value]="user.emailSignature" formControlName="emailSignature"></kendo-editor>
+        </div>
+      </ng-container>
+      <!-- End of edition only fields -->
+    </form>
+
+  </div>
+
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="!readOnly">
+
+    <button *ngIf="action !=='edit'" mat-raised-button (click)="dialogRef.close(userForm)"
+      color="accent" [disabled]="userForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+
+    <button *ngIf="action ==='edit'" mat-raised-button (click)="dialogRef.close(['save',userForm])"
+      color="accent" [disabled]="userForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+
+    <button *ngIf="action ==='edit'" mat-button class="mat-icon-button" (click)="dialogRef.close(['delete',userForm])"
+      aria-label="Delete" matTooltip="Delete">
+      <mat-icon>delete</mat-icon>
+    </button>
+
+  </div>
+</div>

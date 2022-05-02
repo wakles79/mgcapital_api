@@ -1,0 +1,12 @@
+@import "src/@fuse/scss/fuse";
+
+.sidenav-content {
+  min-width: 250px !important;
+  max-width: 250px !important;
+
+  .line-divider {
+    border-top: 2px solid rgba(0, 0, 0, 0.1);
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+}

@@ -1,0 +1,184 @@
+<div class="spinner-container" *ngIf="loading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+
+<!-- SEARCH -->
+<div class="search-input-wrapper mt-16 ml-8 m-sm-0" fxLayout="row" fxLayoutAlign="end center">
+  <label for="search" class="mr-8">
+    <mat-icon>search</mat-icon>
+  </label>
+  <mat-form-field floatLabel="never">
+    <input matInput [formControl]="searchInput" placeholder="Search for anything">
+  </mat-form-field>
+
+</div>
+<!-- / SEARCH -->
+
+<mat-table #table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+
+  <!--Status Column-->
+  <ng-container cdkColumnDef="status">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header>Status</mat-header-cell>
+    <mat-cell *cdkCellDef="let contract">
+      <div [ngSwitch]="contract.status">
+        <span *ngSwitchCase="0" class="badge amber-400-bg" matTooltip="PENDING"></span>
+        <span *ngSwitchCase="1" class="badge green-bg" matTooltip="ACTIVE"></span>
+        <span *ngSwitchCase="2" class="badge fuse-black-bg" matTooltip="COMPLETED"></span>
+        <span *ngSwitchCase="3" class="badge red-500-bg" matTooltip="DECLINED"></span>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--End Status Column-->
+
+  <!--Contract Number Column-->
+  <ng-container cdkColumnDef="contractNumber">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header>Contract Number</mat-header-cell>
+    <mat-cell *cdkCellDef="let contract">
+      <div fxLayout="column" fxFlex="100">
+        <p>{{contract.contractNumber}}</p>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--End Contract Number Column-->
+
+  <!--Building Code Column-->
+  <ng-container cdkColumnDef="buildingCode">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header>Building Code</mat-header-cell>
+    <mat-cell *cdkCellDef="let contract">
+      <div fxLayout="column" fxFlex="100">
+        <p>{{ contract.buildingCode }}</p>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--End Building Code Column-->
+
+  <!--Client Location Column-->
+  <ng-container cdkColumnDef="buildingName">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header>Building Name</mat-header-cell>
+    <mat-cell *cdkCellDef="let contract">
+      <div fxLayout="column" fxFlex="100">
+        <p>{{ contract.buildingName }}</p>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--End Client Location Column-->
+
+  <!--Occupied SqFt Column-->
+  <ng-container cdkColumnDef="occupiedSqft">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="occupiedSquareFeets">Occupied Sqft.</mat-header-cell>
+    <mat-cell *cdkCellDef="let contract">
+      <div fxLayout="column" fxFlex="100">
+        {{contract.occupiedSquareFeets}}
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--End Occupied SqFt Column-->
+
+  <!--Profit Column-->
+  <ng-container cdkColumnDef="profit">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="monthlyProfitRatio">Profit %</mat-header-cell>
+    <mat-cell *cdkCellDef="let contract">
+      <div fxLayout="column" fxFlex="100">
+        <span
+          [ngClass]="{'green-fg': (contract.monthlyProfitRatio) > marginProfit, 'red-fg': (contract.monthlyProfitRatio) <= marginProfit}">
+          {{contract.monthlyProfitRatio | number:'1.2-2'}}%
+        </span>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--End Profit Column-->
+
+  <!--Profit Amount Column-->
+  <ng-container cdkColumnDef="profitAmount">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="monthlyProfit">Profit Amount</mat-header-cell>
+    <mat-cell *cdkCellDef="let contract">
+      <div fxLayout="column" fxFlex="100">
+        <span>
+          {{contract.monthlyProfit  | currency:'USD':'symbol'}}
+        </span>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--End Profit Amount Column-->
+
+  <!--Effective Date Column-->
+  <ng-container cdkColumnDef="effectiveDate">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="expirationDate">Effective Date</mat-header-cell>
+    <mat-cell *cdkCellDef="let contract">
+      <span *ngIf="contract.expirationDateEpoch > 0">
+        {{ contract.expirationDateEpoch | fromEpoch | date: 'MM/dd/yyyy' }}
+      </span>
+    </mat-cell>
+  </ng-container>
+  <!--End Effective Date Column-->
+
+  <!--Last Updated Column-->
+  <ng-container cdkColumnDef="lastChangeDate">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="updatedDate">Last Update Date</mat-header-cell>
+    <mat-cell *cdkCellDef="let contract">
+      {{ contract.updatedDate | date: 'MM/dd/yyyy'}}
+    </mat-cell>
+  </ng-container>
+  <!--End Last Updated Column-->
+
+  <!--Customer Column--
+  <ng-container cdkColumnDef="customer">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header="CustomerFullName">Customer</mat-header-cell>
+    <mat-cell *cdkCellDef="let contract">
+      <p class="text-truncate">{{ contract.customerFullName }}</p>
+    </mat-cell>
+  </ng-container>
+  --End Customer Column-->
+
+  <!--Customer Id Column--
+  <ng-container cdkColumnDef="customerId">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header>Customer Code</mat-header-cell>
+    <mat-cell *cdkCellDef="let contract">
+      <p>{{ contract.customerCode }}</p>
+    </mat-cell>
+  </ng-container>
+  --End Customer Id Column-->
+
+  <!--Buttons Column-->
+  <ng-container cdkColumnDef="buttons">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let contract">
+      <div fxFlex="row" fxLayoutAlign="end center">
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="editContract(contract.id)"
+            *ngIf="!readOnly">
+            <!-- <mat-icon>edit</mat-icon> -->
+            <span>Edit</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="print" (click)="displayBudgetDetail(contract.id)">
+            <!-- <mat-icon>visibility</mat-icon> -->
+            <span>View</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="print" (click)="displayBudgetTracking(contract.id)">
+            <!-- <mat-icon>equalizer</mat-icon> -->
+            <span>Tracking</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="delete" (click)="deleteContract(contract.id)"
+            *ngIf="!readOnly">
+            <!-- <mat-icon>delete</mat-icon> -->
+            <span>Delete</span>
+          </button>
+
+        </mat-menu>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!--End Buttons Column-->
+
+  <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *cdkRowDef="let contract; columns: displayedColumns;" class="contract" matRipple
+    [@animate]="{value:'*',params:{y:'100%'}}" (click)="displayBudgetDetail(contract.id)"></mat-row>
+</mat-table>
+<mat-paginator [length]="contractsCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]"></mat-paginator>

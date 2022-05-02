@@ -1,0 +1,35 @@
+<div class="sidenav-content">
+
+  <div class="card fuse-white-bg">
+
+    <div class="content py-16" fusePerfectScrollbar>
+
+      <div class="nav">
+
+        <!-- SIDENAV HEADER -->
+        <div class="header p-24 title" fxFlexFill fxLayout="row" fxLayoutAlign="start center">
+          <span class="h5">FILTERS</span>
+        </div>
+        <!-- / SIDENAV HEADER -->
+
+        <div class="nav-item">
+          <a class="nav-link" matRipple (click)="changeFilter('all')" [ngClass]="{'active mg-accent-bg':filterActive ==='all'}">
+            <span class="title">All Users</span>
+          </a>
+        </div>
+
+        <ng-container *ngFor="let role of roles">
+          <div class="nav-item" aria-label="frequently contacted" (click)="changeFilter(role.id)"
+            *ngIf="role.level != 110">
+            <a class="nav-link" matRipple [ngClass]="{'active mg-accent-bg':filterActive === role.id}">
+              <span class="title"> {{ role.name }} </span>
+            </a>
+          </div>
+        </ng-container>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- / SIDENAV CONTENT -->

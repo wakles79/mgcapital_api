@@ -1,0 +1,1 @@
+dotnet ef --startup-project ../../Presentation database update -c MGCapDbContext -e Development -v && dotnet ef --startup-project ../../Presentation database update -c MGCapIdentityDbContext -e Development -v

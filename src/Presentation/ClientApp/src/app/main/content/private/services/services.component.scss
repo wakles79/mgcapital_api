@@ -1,0 +1,26 @@
+@import "src/app/core/scss/custom/custom-theme";
+
+#services {
+
+  .content {
+      overflow: hidden;
+  }
+  .breadcrumb {
+    margin-top:10px;
+    margin-bottom: 20px;
+  }
+
+}
+
+#add-element-button {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}
+
+.section {
+  border-bottom: none !important;
+}
+

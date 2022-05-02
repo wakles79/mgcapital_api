@@ -1,0 +1,331 @@
+<div id="invoice" class="compact page-layout blank" fusePerfectScrollbar>
+
+  <div class="invoice-container" fxLayout="row">
+    <div class="no-print" fxHide.lt-lg fxFlex="20"></div>
+
+    <!--CONTRACT-->
+    <div class="card" fxFlex="100" fxFlex.gt-lg="60" *ngIf="contractDetail">
+      <div class="content">
+        <div class="report-list">
+          <!--HEADER-->
+          <div class="title-document" fxLayoutAlign="center center">
+            <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="center center">
+              <span class="mat-headline">MG Capital Contract Report</span>
+            </div>
+          </div>
+          <div class="print-no-margin print-no-padding mt-16 ml-32 m-sm-0 p-24" fxLayoutAlign="space-between stretch">
+            <div class="invoice-number print-no-padding pt-8" fxLayout="row" fxFlex="50" fxLayoutAlign="start center">
+              <div fxLayout="column">
+
+                <div fxLayout="row">
+                  <span class="title"> CONTRACT NUMBER </span>
+                  <span class="number number-date"> {{contractDetail.contractNumber}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> CUSTOMER </span>
+                  <span class="number number-date"> {{contractDetail.customerName}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> BUILDING </span>
+                  <span class="number number-date"> {{contractDetail.buildingName}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> DAYS PER MONTH </span>
+                  <span class="number number-date"> {{contractDetail.daysPerMonth}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> NUMBER OF PEOPLE </span>
+                  <span class="number number-date"> {{contractDetail.numberOfPeople}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> EXPIRATION DATE </span>
+                  <span class="number number-date"> {{contractDetail.expirationDate | date}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> STATUS </span>
+                  <span class="number number-date"> {{ getStatus(contractDetail.status) | uppercase }} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> DESCRIPTION </span>
+                  <span class="number number-date"> {{contractDetail.description}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> OCCUPIED SQUARE FEET </span>
+                  <span class="number number-date"> {{occupiedSquareFeet}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> UNOCCUPIED SQUARE FEET </span>
+                  <span class="number number-date"> {{contractDetail.unoccupiedSquareFeets}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> TOTAL SQUARE FEET </span>
+                  <span class="number number-date"> {{totalSquareFeet}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title">OFFICE SPACES</span>
+                </div>
+
+                <div fxLayout="row">
+                  <mat-list>
+                    <mat-list-item *ngFor="let officeSpace of contractDetail.officeSpaces">
+                      <mat-icon mat-list-icon>business</mat-icon>
+                      <h4 mat-line>{{officeSpace.officeTypeName}}</h4>
+                      <p mat-line> {{officeSpace.squareFeet}} Sqft. </p>
+                    </mat-list-item>
+                  </mat-list>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="invoice-number print-no-padding pl-24 pt-8 " fxLayout="row" fxFlex="50"
+              fxLayoutAlign="center center">
+              <div class="issuer" fxLayout="row" fxLayoutAlign="start center">
+                <div class="logo">
+                  <img src="assets/images/logos/MG Logo Black Text.png">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--END HEADER-->
+
+          <!--REVENUE-->
+          <div class="print-no-margin card-table m-24">
+            <!-- TITLE -->
+            <div class="sub-title-document green-400-bg" fxLayoutAlign="center center">
+              <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="start center">
+                <span class="mat-headline print-no-padding pl-8">Revenue</span>
+              </div>
+            </div>
+            <!-- /TITLE -->
+
+            <!--ITEMS-->
+            <table>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Quantity</th>
+                  <th>Rate</th>
+                  <th>Type</th>
+                  <th>Daily</th>
+                  <th>Monthly</th>
+                  <th>Yearly</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let cItem of contractDetail.contractItems">
+                  <td> {{cItem.description}} </td>
+                  <td> {{ cItem.rateType==3 ? cItem.squareFeet + ' Sqft.' : cItem.quantity}} </td>
+                  <td>
+                    <p class="m-0"> {{cItem.rate | currency:'USD':'symbol':'1.4'}}</p>
+                    <p class="m-0 font-size-12 secondary-text">{{cItem.ratePeriodicity}}</p>
+                  </td>
+                  <td> {{cItem.officeServiceTypeName}} </td>
+                  <td> {{cItem.dailyRate | currency:'USD':'symbol'}} </td>
+                  <td> {{cItem.monthlyRate | currency:'USD':'symbol'}} </td>
+                  <td> {{cItem.yearlyRate | currency:'USD':'symbol'}} </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="4" class="text-right"> <span class="font-weight-700">TOTAL</span> </td>
+                  <td>
+                    <span>
+                      {{ totalDailyRevenue | currency:'USD':'symbol' }}
+                    </span>
+                  </td>
+                  <td>
+                    <span>
+                      {{ totalMonthlyRevenue | currency:'USD':'symbol' }}
+                    </span>
+                  </td>
+                  <td>
+                    <span>
+                      {{ totalYearlyRevenue | currency:'USD':'symbol' }}
+                    </span>
+                  </td>
+                </tr>
+              </tfoot>
+            </table>
+            <!--END ITEMS-->
+          </div>
+          <!--END REVENUE-->
+
+          <!--EXPENSES-->
+          <div class="print-no-margin card-table m-24">
+            <!-- TITLE -->
+            <div class="sub-title-document red-400-bg" fxLayoutAlign="center center">
+              <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="start center">
+                <span class="mat-headline print-no-padding  pl-8">Expenses and Cost</span>
+              </div>
+            </div>
+            <!-- /TITLE -->
+
+            <!--ITEMS-->
+            <table>
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Quantity</th>
+                  <th>Rate</th>
+                  <th>Payroll Taxes and Insurance</th>
+                  <th>Type</th>
+                  <th>Daily</th>
+                  <th>Monthly</th>
+                  <th>Yearly</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngIf="hasLaborExpenses" class="row-category">
+                  <td colspan="8">Labor</td>
+                </tr>
+                <tr *ngFor="let row of getLaborExpenses()">
+                  <td> {{ row.description }} </td>
+                  <td> {{ row.rateType==3 || row.rateType==4 ? row.value : row.quantity}} </td>
+                  <td>
+                    <p class="m-0"> {{ row.rate | currency:'USD':'symbol':'1.4' }} </p>
+                    <p class="m-0 font-size-12 secondary-text"> {{ row.ratePeriodicity }} </p>
+                  </td>
+                  <td> {{row.taxesAndInsurance | currency:'USD':'symbol'}} ({{row.overheadPercent}}%) </td>
+                  <td>
+                    <p class="text-truncate">
+                      {{row.expenseSubcategoryName}}
+                    </p>
+                  </td>
+                  <td> {{row.dailyRate | currency:'USD':'symbol'}} </td>
+                  <td> {{row.monthlyRate | currency:'USD':'symbol'}} </td>
+                  <td> {{row.yearlyRate | currency:'USD':'symbol'}} </td>
+                </tr>
+                <tr *ngIf="hasEquipmentsExpenses" class="row-category">
+                  <td colspan="8">Equipments</td>
+                </tr>
+                <tr *ngFor="let row of getEquipmentsExpenses()">
+                  <td> {{ row.description }} </td>
+                  <td> {{ row.rateType==3 || row.rateType==4 ? row.value : row.quantity}} </td>
+                  <td>
+                    <p class="m-0"> {{ row.rate | currency:'USD':'symbol':'1.4' }} </p>
+                    <p class="m-0 font-size-12 secondary-text"> {{ row.ratePeriodicity }} </p>
+                  </td>
+                  <td> {{row.taxesAndInsurance | currency:'USD':'symbol'}} ({{row.overheadPercent}}%) </td>
+                  <td>
+                    <p class="text-truncate">
+                      {{row.expenseSubcategoryName}}
+                    </p>
+                  </td>
+                  <td> {{row.dailyRate | currency:'USD':'symbol'}} </td>
+                  <td> {{row.monthlyRate | currency:'USD':'symbol'}} </td>
+                  <td> {{row.yearlyRate | currency:'USD':'symbol'}} </td>
+                </tr>
+                <tr *ngIf="hasSuppliesExpenses" class="row-category">
+                  <td colspan="8">Supplies</td>
+                </tr>
+                <tr *ngFor="let row of getSuppliesExpenses()">
+                  <td> {{ row.description }} </td>
+                  <td> {{ row.rateType==3 || row.rateType==4 ? row.value : row.quantity}} </td>
+                  <td>
+                    <p class="m-0"> {{ row.rate | currency:'USD':'symbol':'1.4' }} </p>
+                    <p class="m-0 font-size-12 secondary-text"> {{ row.ratePeriodicity }} </p>
+                  </td>
+                  <td> {{row.taxesAndInsurance | currency:'USD':'symbol'}} ({{row.overheadPercent}}%) </td>
+                  <td>
+                    <p class="text-truncate">
+                      {{row.expenseSubcategoryName}}
+                    </p>
+                  </td>
+                  <td> {{row.dailyRate | currency:'USD':'symbol'}} </td>
+                  <td> {{row.monthlyRate | currency:'USD':'symbol'}} </td>
+                  <td> {{row.yearlyRate | currency:'USD':'symbol'}} </td>
+                </tr>
+                <tr *ngIf="hasOtherExpenses" class="row-category">
+                  <td colspan="8">Others</td>
+                </tr>
+                <tr *ngFor="let row of getOtherExpenses()">
+                  <td> {{ row.description }} </td>
+                  <td> {{ row.rateType==3 || row.rateType==4 ? row.value : row.quantity}} </td>
+                  <td>
+                    <p class="m-0"> {{ row.rate | currency:'USD':'symbol':'1.4' }} </p>
+                    <p class="m-0 font-size-12 secondary-text"> {{ row.ratePeriodicity }} </p>
+                  </td>
+                  <td> {{row.taxesAndInsurance | currency:'USD':'symbol'}} ({{row.overheadPercent}}%) </td>
+                  <td>
+                    <p class="text-truncate">
+                      {{row.expenseSubcategoryName}}
+                    </p>
+                  </td>
+                  <td> {{row.dailyRate | currency:'USD':'symbol'}} </td>
+                  <td> {{row.monthlyRate | currency:'USD':'symbol'}} </td>
+                  <td> {{row.yearlyRate | currency:'USD':'symbol'}} </td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="5" class="text-right"> <span class="font-weight-700">Overhead (14%)</span> </td>
+                  <td> <span> {{ totalExpensesOverheadDaily | currency:'USD':'symbol' }} </span> </td>
+                  <td> <span> {{ totalExpensesOverheadMonthly | currency:'USD':'symbol' }} </span> </td>
+                  <td> <span> {{ totalExpensesOverheadYearly | currency:'USD':'symbol' }} </span> </td>
+                </tr>
+                <tr>
+                  <td colspan="5" class="text-right"> <span class="font-weight-700">TOTAL</span> </td>
+                  <td> <span> {{ totalDailyExpenses | currency:'USD':'symbol' }} </span> </td>
+                  <td> <span> {{ totalMonthlyExpenses | currency:'USD':'symbol' }} </span> </td>
+                  <td> <span> {{ totalYearlyExpenses | currency:'USD':'symbol' }} </span> </td>
+                </tr>
+              </tfoot>
+            </table>
+            <!--END ITEMS-->
+          </div>
+          <!--END EXPENSES-->
+
+          <!--TOTAL-->
+          <div class="print-no-margin card-table m-24 pt-16">
+            <table style="width:100%;">
+              <tr>
+                <td><span class="mat-title">Net Profit</span></td>
+                <td class="text-center">
+                  <span [ngClass]="{'mat-title': true,'red-fg':  dailyProfit < 0 }">
+                    {{ dailyProfit | currency:'USD':'symbol' }} </span>
+                </td>
+                <td class="text-center">
+                  <span [ngClass]="{'mat-title': true,'red-fg':  monthlyProfit < 0 }">
+                    {{ monthlyProfit | currency:'USD':'symbol' }} </span>
+                </td>
+                <td class="text-center">
+                  <span [ngClass]="{'mat-title': true,'red-fg':  yearlyProfit < 0 }">
+                    {{ yearlyProfit | currency:'USD':'symbol' }} </span>
+                </td>
+              </tr>
+              <tr>
+                <td><span class="mat-title">Profit Ratio</span></td>
+                <td class="text-center">
+                  <span class="mat-title"> {{ dailyProfitRatio | percent:'2.2-2' }} </span>
+                </td>
+                <td class="text-center">
+                  <span class="mat-title"> {{ monthlyProfitRatio | percent:'2.2-2' }} </span>
+                </td>
+                <td class="text-center">
+                  <span class="mat-title"> {{ yearlyProfitRatio | percent:'2.2-2' }} </span>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <!--END TOTAL-->
+        </div>
+      </div>
+    </div>
+    <!--END CONTRACT-->
+
+    <div class="no-print" fxHide.lt-lg fxFlex="20"></div>
+  </div>
+
+</div>

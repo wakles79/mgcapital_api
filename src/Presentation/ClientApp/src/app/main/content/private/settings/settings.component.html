@@ -1,0 +1,312 @@
+<div id="settings-page" class="page-layout simple fullwidth">
+
+  <!--LOADER-->
+  <div class="spinner-container" *ngIf="loading$ | async">
+    <mat-spinner></mat-spinner>
+  </div>
+  <!--END LOADER-->
+
+  <!--HEADER-->
+  <div class="header accent p-16 p-sm-24">
+    <!--CONTENT-->
+    <div class="header-content" fxLayout="column" fxLayoutAlign="space-between none">
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Settings</span>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Company Settings</span>
+      </div>
+
+      <div class="logo" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="header-title">
+          <mat-icon class="logo-icon mr-16" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'50ms',scale:'0.2'}}">
+            business_center</mat-icon>
+          <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Company
+            Settings</span>
+        </div>
+
+        <div class="header-options">
+          <button mat-icon-button class="fuse-white-fg" matTooltip="Edit Settings" *ngIf="editMode==false && !readOnly"
+            (click)="enableEditMode()">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button class="fuse-white-fg" matTooltip="Save Changes" *ngIf="editMode"
+            (click)="saveChanges()">
+            <mat-icon>check_circle</mat-icon>
+          </button>
+          <button mat-icon-button class="fuse-white-fg" matTooltip="Cancel" *ngIf="editMode" (click)="cancelEditMode()">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <!--END HEADER-->
+
+  <!--CONTAINER-->
+  <mat-sidenav-container>
+
+    <!--CONTENT-->
+    <div class="center p-20" fusePerfectScrollbar>
+      <form [formGroup]="settingsForm">
+
+        <div fxLayout="row" fxLayout.lt-sm="column" class="mb-16" fxLayoutGap="16px">
+          <mat-card style="background: none; box-shadow: none;" fxFlex="250px" class="p-0">
+            <div fxLayout="column" fxLayoutAlign="center center" class="logo-container">
+              <div>
+                <img class="logo-image" [src]="logoUrl" alt="company-logo">
+              </div>
+
+              <input #logoFileInput hidden type="file" accept="image/*" (change)="fileChange($event.target.files)">
+              <button class="logo-upload-button" mat-raised-button (click)="logoFileInput.click()">Upload</button>
+            </div>
+          </mat-card>
+
+          <mat-card class="setting-box p-0" fxFlex>
+            <div class="box-header">
+              Company Detail
+            </div>
+            <div class="box-content">
+              <div class="info-line">
+                <div class="title">Company Name</div>
+                <div class="info"> {{companySettings.companyName}} </div>
+              </div>
+            </div>
+          </mat-card>
+        </div>
+
+        <div class="content" fxLayout="row" fxLayoutAlign="space-between start" fxLayout.xs="column"
+          fxLayoutAlign.xs="start none" fxLayout.sm="column" fxLayoutAlign.sm="start none" fxLayout.md="column"
+          fxLayoutAlign.md="start none" fxLayoutGap="15px">
+          <div fxFlex="68" fxLayout="column" fxLayoutGap="15px">
+
+            <mat-card class="setting-box p-0" *mgcapRemoveIfFeatureOff="'company-settings-rate'">
+              <mat-card-header class="box-header">
+                <mat-card-title class="m-0">Rate Settings</mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="box-content">
+                <!--FICA-->
+                <div class="info-line">
+                  <div class="title">FICA (Federal Insurance Contributions Act)</div>
+                  <div class="info">
+                    <span *ngIf="editMode === false">{{companySettings.federalInsuranceContributionsAct | number:'1.2'}}
+                      %</span>
+                    <mat-form-field fxFlex *ngIf="editMode">
+                      <input matInput formControlName="federalInsuranceContributionsAct">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <!--END-->
+
+                <!--MEDICARE-->
+                <div class="info-line">
+                  <div class="title">MEDICARE</div>
+                  <div class="info">
+                    <span *ngIf="editMode === false">{{companySettings.medicare | number:'1.2'}} %</span>
+                    <mat-form-field fxFlex *ngIf="editMode">
+                      <input matInput formControlName="medicare">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <!--END MEDICARE-->
+
+                <!--FUTA-->
+                <div class="info-line">
+                  <div class="title">FUTA (Federal Unemployment Tax Act)</div>
+                  <div class="info">
+                    <span *ngIf="editMode === false">{{companySettings.federalUnemploymentTaxAct | number:'1.2'}}
+                      %</span>
+                    <mat-form-field fxFlex *ngIf="editMode">
+                      <input matInput formControlName="federalUnemploymentTaxAct">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <!--END FUTA-->
+
+                <!--SUI-->
+                <div class="info-line">
+                  <div class="title">SUI (State Unemployment Insurance)</div>
+                  <div class="info">
+                    <span *ngIf="editMode === false">{{companySettings.stateUnemploymentInsurance | number:'1.2'}}
+                      %</span>
+                    <mat-form-field fxFlex *ngIf="editMode">
+                      <input matInput formControlName="stateUnemploymentInsurance">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <!--END SUI-->
+
+                <!--WC-->
+                <div class="info-line">
+                  <div class="title">WC (Worker's Compensation)</div>
+                  <div class="info">
+                    <span *ngIf="editMode === false">{{companySettings.workersCompensation | number:'1.2'}} %</span>
+                    <mat-form-field fxFlex *ngIf="editMode">
+                      <input matInput formControlName="workersCompensation">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <!--END WC-->
+
+                <!--GL-->
+                <div class="info-line">
+                  <div class="title">GL (General Ledger)</div>
+                  <div class="info">
+                    <span *ngIf="editMode === false">{{companySettings.generalLedger | number:'1.2'}} %</span>
+                    <mat-form-field fxFlex *ngIf="editMode">
+                      <input matInput formControlName="generalLedger">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <!--END GL-->
+
+                <!--TOTAL-->
+                <div class="info-line">
+                  <div class="title black-fg">TOTAL</div>
+                  <div class="info">
+                    <span>{{totalBudgetPercentage}} %</span>
+                  </div>
+                </div>
+                <!--END TOTAL-->
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="setting-box p-0">
+              <mat-card-header class="box-header">
+                <mat-card-title class="m-0">Default Email Signature</mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="box-content">
+                <kendo-editor [readonly]="!editMode" [value]="companySettings.emailSignature"
+                  formControlName="emailSignature" style="height: 570px;"></kendo-editor>
+              </mat-card-content>
+            </mat-card>
+          </div>
+          <div fxFlex="30" fxLayout="column" fxLayoutGap="15px">
+            <mat-card class="setting-box p-0">
+              <mat-card-header class="box-header">
+                <mat-card-title class="m-0">Freshdesk</mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="box-content">
+                <!--KEY-->
+                <div class="info-line">
+                  <div class="title">Api Key</div>
+                  <div class="info">
+                    <span *ngIf="editMode === false"> {{companySettings.freshdeskDefaultApiKey}} </span>
+                    <mat-form-field fxFlex *ngIf="editMode">
+                      <input matInput formControlName="freshdeskDefaultApiKey">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <!--END KEY-->
+
+                <!--AGENT-->
+                <div class="info-line">
+                  <div class="title">Agent Id</div>
+                  <div class="info">
+                    <span *ngIf="editMode === false"> {{companySettings.freshdeskDefaultAgentId }} </span>
+                    <mat-form-field fxFlex *ngIf="editMode">
+                      <input matInput formControlName="freshdeskDefaultAgentId">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <!--END AGENT-->
+
+                <app-verify-freshdesk [key]="freshdeskKey" [agentId]="freshdeskAgentId" *ngIf="editMode">
+                </app-verify-freshdesk>
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="setting-box p-0">
+              <mat-card-header class="box-header">
+                <mat-card-title class="m-0">GMail</mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="box-content">
+                <!--GMAIL-->
+                <div class="info-line">
+                  <div class="info">
+                    <span *ngIf="editMode === false">
+                      <mat-checkbox [checked]="companySettings.gmailEnabled" [disabled]="true">
+                        <span *ngIf="companySettings.gmailEnabled === true">Enabled</span>
+                        <span *ngIf="companySettings.gmailEnabled === false">Disabled</span>
+                      </mat-checkbox>
+                    </span>
+
+                    <mat-form-field fxFlex *ngIf="editMode">
+                      <mat-slide-toggle formControlName="gmailEnabled" color="primary"></mat-slide-toggle>
+                      <textarea matInput hidden></textarea>
+                      <mat-hint>
+                        <span *ngIf="companySettings.gmailEnabled === true">Disable Gmail</span>
+                        <span *ngIf="companySettings.gmailEnabled === false">Enable Gmail</span>
+                      </mat-hint>
+                    </mat-form-field>
+
+                  </div>
+                </div>
+                <!--END GMAIL-->
+
+                <div class="info-line">
+                  <div class="title">Email</div>
+                  <div class="info">
+                    <span *ngIf="editMode === false"> {{companySettings.gmailEmail }} </span>
+                    <mat-form-field fxFlex *ngIf="editMode">
+                      <input matInput formControlName="gmailEmail">
+                    </mat-form-field>
+                  </div>
+                </div>
+
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="setting-box p-0" *mgcapRemoveIfFeatureOff="'company-settings-profit'">
+              <mat-card-header class="box-header">
+                <mat-card-title class="m-0">Profit Settings</mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="box-content">
+                <!--MINIMUM PROFIT-->
+                <div class="info-line">
+                  <div class="title">Minimum Profit Margin Percentage</div>
+                  <div class="info">
+                    <span *ngIf="editMode === false">{{companySettings.minimumProfitMarginPercentage | number:'1.2'}}
+                      %</span>
+                    <mat-form-field fxFlex *ngIf="editMode">
+                      <input matInput formControlName="minimumProfitMarginPercentage">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <!--END MINIMUM PROFIT-->
+              </mat-card-content>
+            </mat-card>
+
+            <mat-card class="setting-box p-0" *mgcapRemoveIfFeatureOff="'company-settings-tax'">
+              <mat-card-header class="box-header">
+                <mat-card-title class="m-0">State Tax</mat-card-title>
+              </mat-card-header>
+              <mat-card-content class="box-content">
+                <!--STATE TAX-->
+                <div class="info-line">
+                  <div class="title">State Tax</div>
+                  <div class="info">
+                    <span *ngIf="editMode === false">{{companySettings.stateTax | number:'1.2'}}
+                      %</span>
+                    <mat-form-field fxFlex *ngIf="editMode">
+                      <input matInput formControlName="stateTax">
+                    </mat-form-field>
+                  </div>
+                </div>
+                <!--END STATE TAX-->
+              </mat-card-content>
+            </mat-card>
+          </div>
+
+        </div>
+      </form>
+    </div>
+    <!--END CONTENT-->
+
+  </mat-sidenav-container>
+  <!--END CONTAINER-->
+
+</div>

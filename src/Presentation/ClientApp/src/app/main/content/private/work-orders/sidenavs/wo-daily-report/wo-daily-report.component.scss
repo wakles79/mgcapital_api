@@ -1,0 +1,48 @@
+@import "src/@fuse/scss/fuse";
+
+:host {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  height: 100%;
+
+  .sidenav-content {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+
+    .content {
+      padding-top: 0px !important;
+
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      flex: 0 1 auto;
+      padding: 0;
+      font-weight: 500;
+
+      .header {
+        flex: 0 1 auto;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+        margin-bottom: 10px;
+        margin-top: 0px;
+        background: #2D323E !important;
+        font-weight: 500;
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.87);
+        margin-bottom: 5px !important;
+      }
+
+      .woFilterButton {
+        background-color: #049546;
+      }
+
+      >.content {
+        flex: 0 1 auto;
+      }
+    }
+
+  }
+}

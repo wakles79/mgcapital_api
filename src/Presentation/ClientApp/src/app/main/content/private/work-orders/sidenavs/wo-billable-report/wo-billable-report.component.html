@@ -1,0 +1,61 @@
+<div class="sidenav-content">
+
+  <div class="card fuse-white-bg">
+    <!-- SIDENAV CONTENT -->
+    <div class="content py-16" fusePerfectScrollbar>
+
+      <!-- SIDENAV HEADER -->
+      <div class="header p-24 title" fxLayout="row" fxLayoutAlign="start center">
+        <span class="h5">FILTERS</span>
+      </div>
+      <!-- / SIDENAV HEADER -->
+
+      <div class="p-12">
+        <!-- Date From -->
+        <mat-form-field fxLayout="row" fxLayoutAlign="start start" class="dates mt-12 ml-8">
+          <input matInput [matDatepicker]="dateFrom" placeholder="From" [formControl]="dateFromCtrl"
+            (dateChange)="changeDates($event)">
+          <mat-datepicker-toggle matSuffix [for]="dateFrom"></mat-datepicker-toggle>
+          <mat-datepicker #dateFrom></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Date To -->
+        <mat-form-field fxLayout="row" fxLayoutAlign="start start" class="dates ml-8">
+          <input matInput [matDatepicker]="dateTo" placeholder="To" [formControl]="dateToCtrl"
+            (dateChange)="changeDates($event)">
+          <mat-datepicker-toggle matSuffix [for]="dateTo"></mat-datepicker-toggle>
+          <mat-datepicker #dateTo></mat-datepicker>
+        </mat-form-field>
+
+        <!-- Management Co. -->
+        <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+          <mat-form-field fxFlex>
+            <mat-icon matPrefix class="mr-12 s-20 secondary-text">domain</mat-icon>
+            <mat-select placeholder="Management Co." [formControl]="customerId"
+              (selectionChange)="onChangeManagementCo($event)">
+              <mat-option>
+                <ngx-mat-select-search [formControl]="customerIdCtrl" placeholderLabel="Search"
+                  noEntriesFoundLabel="No results">
+                </ngx-mat-select-search>
+              </mat-option>
+              <mat-option *ngFor="let item of customers" [value]="item.id">
+                {{item.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!--Buildings-->
+        <div *mgcapRemoveIfFeatureOff="'building-filter-to-billable-report'" fxLayout="row" fxLayoutAlign="start start"
+          fxFill>
+          <app-element-selector-filter [filterData]="buildingFilter" fxFlex="210px"
+            (selectedValuesChanged)="filterOnChanged($event)">
+          </app-element-selector-filter>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- / SIDENAV CONTENT -->

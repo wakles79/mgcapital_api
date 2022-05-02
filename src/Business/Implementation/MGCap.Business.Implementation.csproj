@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\..\_stylecop\StyleCopeRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="$(SolutionDir)src\_stylecop\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+    <ItemGroup>
+    <ProjectReference Include="..\..\DataAccess\Abstract\MGCap.DataAccess.Abstract.csproj" />
+    <ProjectReference Include="..\..\DataAccess\Implementation\MGCap.DataAccess.Implementation.csproj" />
+    <ProjectReference Include="..\Abstract\MGCap.Business.Abstract.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="3.2.0" />
+    <PackageReference Include="Dapper" Version="1.50.5" />
+    <PackageReference Include="Geocoding.Google" Version="4.0.1" />
+    <PackageReference Include="Google.Apis" Version="1.54.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.54.0" />
+    <PackageReference Include="Google.Apis.Auth.AspNetCore" Version="1.54.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.54.0" />
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.54.0.2356" />
+    <PackageReference Include="MailKit" Version="2.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="2.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="OneSignal.RestAPIv3.Client" Version="1.0.3" />
+    <PackageReference Include="Serilog" Version="2.6.0" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.2" />
+  </ItemGroup>
+</Project>

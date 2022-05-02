@@ -1,0 +1,67 @@
+<div class="sidenav-content">
+
+  <div class="card fuse-white-bg">
+    <!-- SIDENAV CONTENT -->
+    <div class="content py-16" fusePerfectScrollbar>
+
+      <!-- SIDENAV HEADER -->
+      <div class="header p-24 title" fxLayout="row" fxLayoutAlign="start center">
+        <span class="h5">FILTERS</span>
+      </div>
+      <!-- / SIDENAV HEADER -->
+
+      <div class="p-12">
+        <span class="title">Due Date</span>
+        <!-- Date From -->
+        <div fxLayout="row" fxLayoutAlign="space-between start">
+          <mat-form-field fxFill>
+            <input matInput [matDatepicker]="dateFrom" placeholder="From" [formControl]="dateFromCtrl"
+              (dateChange)="changeDates($event)">
+            <mat-datepicker-toggle matSuffix [for]="dateFrom"></mat-datepicker-toggle>
+            <mat-datepicker #dateFrom></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <!-- Date To -->
+        <div fxLayout="row" fxLayoutAlign="space-between start">
+          <mat-form-field fxFill>
+            <input matInput [matDatepicker]="dateTo" placeholder="To" [formControl]="dateToCtrl"
+              (dateChange)="changeDates($event)">
+            <mat-datepicker-toggle matSuffix [for]="dateTo"></mat-datepicker-toggle>
+            <mat-datepicker #dateTo></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <!--Operation Manager-->
+        <div fxLayout="column" fxLayoutAlign="space-between start">
+          <!--  <span class="title">By Operations Manager</span> -->
+          <mat-form-field fxFill>
+            <mat-select placeholder="Operations Manager" [formControl]="searchOperationsManager"
+              (selectionChange)="onChangeOperationsManager($event)">
+              <mat-option value="All">All</mat-option>
+              <mat-option *ngFor="let operationsManager of operationsManagers" [value]="operationsManager.id">
+                {{operationsManager.fullName}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!--Building-->
+        <div fxLayout="row" fxLayoutAlign="space-between start">
+          <app-element-selector-filter [filterData]="buildingFilter" fxFill
+            (selectedValuesChanged)="filterOnChanged($event)">
+          </app-element-selector-filter>
+        </div>
+
+        <!--Status-->
+        <div fxLayout="row" fxLayoutAlign="space-between start">
+          <app-element-selector-filter [filterData]="statusFilter" fxFill
+            (selectedValuesChanged)="filterOnChanged($event)">
+          </app-element-selector-filter>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- / SIDENAV CONTENT -->

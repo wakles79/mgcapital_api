@@ -1,0 +1,6 @@
+<div class="spinner-container" *ngIf="loadingList$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+<div fxLayoutAlign="row" fxFlex="100">
+  <app-work-order-form-template #workOrderTemplate [data]="data" fxFlex></app-work-order-form-template>
+</div>

@@ -1,0 +1,148 @@
+<div class="cleaning-item-form-template dialog-content-wrapper">
+  <div class="mat-dialog-container">
+    <mat-toolbar matDialogTitle class="mg-accent-bg m-0">
+      <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+
+        <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+
+          <mat-icon>note_add</mat-icon>
+          <span class="title dialog-title">{{dialogTitle}}</span>
+
+        </div>
+
+        <!-- CLOSE DIALOG BUTTON -->
+        <button mat-icon-button (click)="closeDialog()" aria-label="Close Dialog" *ngIf="showCloseButton">
+          <mat-icon>close</mat-icon>
+        </button>
+        <!-- / CLOSE DIALOG BUTTON -->
+      </div>
+    </mat-toolbar>
+
+    <div mat-dialog-content class="p-24 m-0" fusePerfectScrollbar>
+
+      <form [formGroup]="cleaningReportItemForm">
+        <div class="sections">
+
+          <!-- Building, Location and Time-->
+          <div fxLayout="row" class="pt-24">
+            <!-- Building-->
+            <div fxFlex="75">
+              <mat-form-field class="mr-sm-24" fxFlex>
+                <mat-icon matPrefix class="mr-12 s-20 secondary-text">location_city</mat-icon>
+                <mat-select placeholder="Buildings" formControlName="buildingId" required #buildingSelect>
+                  <ngx-mat-select-search formControlName="buildingCtrl" placeholderLabel="Search" noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                  <mat-option *ngFor="let building of filteredBuildings$ | async" [value]="building.id">
+                    {{building.name +' - '+ building.fullAddress}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <!-- / End Building-->
+
+            <!-- Location -->
+            <mat-form-field fxFlex="25" class="mr-sm-24" fxFlex>
+              <mat-icon matPrefix class="mr-12 s-20 secondary-text">label</mat-icon>
+              <input matInput placeholder="Suite/Location" formControlName="location" required>
+            </mat-form-field>
+            <!-- / End Location -->
+          </div>
+          <!-- / Building and Location->
+
+         <!-- Time -->
+          <mat-form-field fxFill *ngIf="itemType.value === 'cleaningItem'">
+            <mat-icon matPrefix class="mr-12 s-20 secondary-text">access_time</mat-icon>
+            <input matInput placeholder="Time" formControlName="time">
+          </mat-form-field>
+          <!-- / End Time -->
+
+          <!-- Observances -->
+          <mat-form-field class="" fxFill>
+            <textarea matInput name="observances" formControlName="observances" placeholder="Observances" rows="4"
+              required>
+          </textarea>
+          </mat-form-field>
+          <!-- / End Observances -->
+
+          <!-- Attachment Section -->
+          <div class="section">
+
+            <div class="attachments">
+
+              <div class="section-header" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon class="s-20">attachment</mat-icon>
+                <span fxFlex class="section-title">Attachments</span>
+              </div>
+
+              <div class="">
+
+                <div class="attachment" formArrayName="attachments" *ngFor="let item of attachments.controls; let i = index; let lst = last; let fst = first;">
+                  <div [formGroupName]="i" fxFlex fxLayout="row" fxLayoutAlign="start center">
+
+                    <div fxLayout.gt-xs="row" fxLayoutAlign.gt-xs="start center" fxLayout="column" fxLayoutAlign="center start">
+
+                      <div class="attachment-preview mat-elevation-z2" [ngStyle]="{'background-image': 'url('+this.attachments.at(i).get('fullUrl').value+')'}"
+                        (click)="open(i)">
+
+                      </div>
+
+                      <div class="attachment-content" fxLayout="column">
+
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                          <mat-form-field fxFill>
+                            <input matInput type="text" placeholder="Image Description" formControlName="title">
+                          </mat-form-field>
+                        </div>
+
+                        <div>
+                          <button mat-button class="add-attachment-button" aria-label="remove attachment" (click)="removeAttachment(i)"
+                            [disabled]="disableButtons">
+                            Remove Attachment
+                          </button>
+                        </div>
+
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <button mat-button class="add-attachment-button" aria-label="add attachment" (click)="openInputFile()"
+                  [disabled]="disableButtons">
+                  <div fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="s-20">add</mat-icon>
+                    <span>Add an attachment</span>
+                  </div>
+                </button>
+                <input id="fileInput" hidden type="file" multiple accept="image/*" (change)="fileChange($event.target.files)">
+
+              </div>
+
+            </div>
+
+          </div>
+          <!-- / End Attachment Section -->
+
+        </div>
+      </form>
+    </div>
+
+    <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center">
+
+      <button *ngIf="action !=='edit'" mat-raised-button (click)="submit('save')" color="accent"
+        [disabled]="cleaningReportItemForm.invalid || buttonSaveDisabled || disableButtons" aria-label="SAVE">
+        SAVE
+      </button>
+
+      <button *ngIf="action ==='edit'" mat-raised-button (click)="submit('save')" color="accent"
+        [disabled]="cleaningReportItemForm.invalid" aria-label="SAVE">
+        SAVE
+      </button>
+
+      <button *ngIf="action ==='edit'" mat-button class="mat-icon-button" (click)="submit('delete')" aria-label="Delete"
+        matTooltip="Delete">
+        <mat-icon>delete</mat-icon>
+      </button>
+
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,419 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/lightbox";
+
+#invoice {
+  background: url("/assets/images/backgrounds/dark-material-bg.jpg") no-repeat;
+  background-size: cover;
+
+  @include media-breakpoint('xs') {
+    .text-sm-break {
+      font-size: 9px;
+    }
+    .text-title-break {
+      font-size: 12px;
+    }
+    .text-subtitle-break {
+      font-size: 11px;
+    }
+    .sm-no-padding {
+      padding: 0px !important;
+    }
+  }
+  @include media-breakpoint('lt-xs') {
+    .text-sm-break {
+      font-size: 12px;
+    }
+    .text-title-break {
+      font-size: 14px;
+    }
+    .text-subtitle-break {
+      font-size: 14px;
+    }
+  }
+
+  &.compact {
+    padding: 0;
+    overflow: auto;
+
+    .invoice-container {
+      padding: 20px;
+
+      .card {
+        width: 100%;
+        overflow: hidden;
+        background: #ffffff;
+        @include mat-elevation(7);
+
+        .content {
+          .report-list {
+            flex: 1;
+
+            .card-table {
+              overflow: hidden;
+              background: #ffffff;
+              @include mat-elevation(1);
+
+              .inspection-item-box {
+                .item-box-header {
+                  background-color: #f5f5f5;
+
+                  .item-box-title {
+                    .icon-type {
+                      width: 8px;
+                      height: 8px;
+                      border-radius: 4px;
+                      margin-right: 8px;
+
+                      // Request
+                      &.type-0 {
+                        background-color: #039be5;
+                      }
+                      // Complaint
+                      &.type-1 {
+                        background-color: #ffeb3b;
+                      }
+                      // Important
+                      &.type-2 {
+                        background-color: #f44336;
+                      }
+                      // Other
+                      &.type-3 {
+                        background-color: #eeeeee;
+                      }
+                      // Specialist
+                      &.type-4 {
+                        background-color: #4caf50;
+                      }
+                      // Observation
+                      &.type-5 {
+                        background-color: #3c4252;
+                      }
+                    }
+
+                    .text-boxed {
+                      color: #ffffff;
+
+                      &.open {
+                        color: #000;
+                        background-color: #ffffff !important;
+                      }
+
+                      &.active {
+                        background-color: #ffc107 !important;
+                      }
+
+                      &.stand {
+                        background-color: #f44336 !important;
+                      }
+
+                      &.closed {
+                        background-color: #28a745 !important;
+                      }
+
+                      &.cancelled {
+                        background-color: #334455 !important;
+                      }
+
+                      &.draft {
+                        background-color: #999999 !important;
+                      }
+
+                      &.finding {
+                        background-color: #009688 !important;
+                      }
+
+                      &.item {
+                        background-color: #009688 !important;
+                      }
+
+                      &.ticket {
+                        background-color: #01579b !important;
+                      }
+
+                      // High
+                      &.priority-1 {
+                        background-color: #f44336 !important;
+                      }
+
+                      // Medium
+                      &.priority-2 {
+                        background-color: #ffc107 !important;
+                      }
+
+                      // Medium
+                      &.priority-3 {
+                        background-color: #28a745 !important;
+                      }
+                    }
+                  }
+                }
+                .item-box-content {
+                  .item-box-attachment {
+                    .attachment-container {
+                      .attach_file {
+                        .item-image {
+                          padding: 4px;
+                          widows: 160px !important;
+                          height: 128px !important;
+                          cursor: pointer;
+
+                          &:hover {
+                            background-color: #efefef;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+
+              .mat-header-cell {
+                font-size: 14px;
+                font-weight: 500;
+                padding: 12px 4px;
+              }
+
+              .mat-row {
+                min-height: 28px;
+              }
+
+              .mat-column-number {
+                flex: 0 1 30px;
+              }
+
+              .mat-column-position {
+                flex: 0 1 140px;
+              }
+
+              .mat-column-description {
+                word-wrap: break-word !important;
+                white-space: unset !important;
+                flex: 0 0 200px !important;
+                width: 250px !important;
+                overflow-wrap: break-word;
+                word-wrap: break-word;
+              }
+
+              .attachments {
+                .attachment {
+                  margin-bottom: 16px;
+
+                  .attachment-preview {
+                    background-color: rgb(238, 240, 242);
+                    width: 160px;
+                    height: 128px;
+                    background-size: contain;
+                    background-position: 50% 50%;
+                    background-repeat: no-repeat;
+                    font-weight: 500;
+                    color: rgba(0, 0, 0, 0.6);
+
+                    @include media-breakpoint('xs') {
+                      margin-bottom: 24px;
+                    }
+
+                    @include media-breakpoint('lt-xs') {
+                      margin-right: 24px;
+                    }
+                  }
+
+                  .attachment-content {
+                    flex: 0 1 40px;
+                    .attachment-url,
+                    .attachment-name {
+                      font-weight: 500;
+                      font-size: 14px;
+                    }
+
+                    .attachment-description {
+                      font-weight: 400;
+                      font-size: 14px;
+                      color: rgba(0, 0, 0, 0.6);
+                    }
+
+                    .attachment-is-cover {
+                      margin-left: 6px;
+                    }
+
+                    .attachment-time {
+                      color: rgba(0, 0, 0, 0.6);
+                    }
+
+                    .attachment-actions-button {
+                      background-color: white;
+                      text-transform: capitalize;
+                      margin: 12px 0 0 0;
+                      padding-left: 12px;
+
+                      mat-icon {
+                        margin-left: 8px;
+                        color: rgba(0, 0, 0, 0.6);
+                      }
+                    }
+                  }
+                }
+              }
+              .mat-cell {
+                font-size: 12px;
+                padding-right: 4px;
+              }
+            }
+
+            .title-document {
+              min-height: 60px;
+              max-height: 60px;
+              background-color: #049546 !important;
+              color: white !important;
+            }
+
+            .sub-title-document {
+              min-height: 35px;
+              max-height: 35px;
+              color: white !important;
+            }
+
+            .sub-title-document {
+              min-height: 35px;
+              max-height: 35px;
+              color: white !important;
+            }
+
+            .invoice-number {
+              font-size: 16px;
+              padding-bottom: 5px;
+              line-height: 22px;
+
+              //font-size: 20px;
+              font-weight: 400;
+              color: rgba(0, 0, 0, 0.54);
+
+              .title {
+                font-weight: 400;
+                color: rgba(0, 0, 0, 0.54);
+                font-size: 0.9em;
+              }
+
+              .number {
+                font-size: 14px;
+                padding-left: 10px;
+              }
+
+              .padding {
+                font-size: 14px;
+                padding-left: 130px;
+              }
+
+              .number-text {
+                color: rgba(0, 0, 0, 0.87) !important;
+              }
+
+              .issuer {
+                .logo {
+                  width: 80%;
+                  padding: 0 8px;
+                }
+
+                .info {
+                  padding: 16px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .mat-table {
+    background: transparent;
+    box-shadow: none;
+
+    .mat-header-row {
+      font-weight: 500;
+    }
+
+    .mat-row {
+      position: relative;
+      cursor: pointer;
+      padding: 8px 8px 12px 24px;
+
+      .mat-cell {
+        min-width: 0;
+      }
+    }
+  }
+}
+
+/* PRINT STYLES */
+@media print {
+  #invoice {
+    background: white;
+    background-size: cover;
+    padding: 0 !important;
+
+    .mat-headline {
+      font-size: 14px;
+      color: black;
+    }
+
+    &.compact {
+      padding: 0 !important;
+
+      .invoice-container {
+        padding: 0 !important;
+
+        .card {
+          .content {
+            .report-list {
+              .card-table {
+                overflow: hidden;
+                .mat-cell {
+                  font-size: 9px;
+                }
+
+                .mat-title {
+                  font-size: 12px;
+                }
+              }
+
+              .invoice-number {
+                font-size: 12px;
+                padding-bottom: 0px;
+                line-height: 15px;
+
+                .title {
+                  font-size: 8px;
+                }
+
+                .number {
+                  font-size: 12px;
+                  padding-left: 10px;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-no-margin {
+    margin: 0 !important;
+  }
+
+  .print-no-padding {
+    padding: 0 !important;
+  }
+
+  .text-sm-break {
+    font-size: 9px;
+  }
+
+  .text-subtitle-break {
+    font-size: 11px;
+  }
+}

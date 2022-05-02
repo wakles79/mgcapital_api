@@ -1,0 +1,119 @@
+<div class="dialog-content-wrapper">
+  <!--TITLE-->
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <!--END TITLE-->
+
+  <!--CONTENT-->
+  <div mat-dialog-content class="p-12 m-0" fusePerfectScrollbar>
+    <form [formGroup]="expenseForm">
+
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <!--IS DIRECT-->
+        <mat-slide-toggle fxFlex="30" formControlName="isDirect"> Is Direct</mat-slide-toggle>
+        <!--END IS DIRECT-->
+
+        <!--BUILDING-->
+        <mat-form-field fxFlex="70">
+          <mat-icon matPrefix class="mr-8 s-20 secondary-text">business</mat-icon>
+          <mat-select #sBuilding placeholder="Building" formControlName="buildingId" required (selectionChange)="getBuildingContracts(sBuilding.value)">
+            <mat-option>
+              <ngx-mat-select-search formControlName="buildingFilter" placeholderLabel="Search"
+              noEntriesFoundLabel="No results"></ngx-mat-select-search>
+            </mat-option>
+            <mat-option *ngFor="let building of filteredBuildings | async" [value]="building.id">
+              {{building.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!--END BUILDING-->
+      </div>
+
+      <!--CONTRACT-->
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-8 s-20 secondary-text">business</mat-icon>
+          <mat-select #sContract placeholder="Contract" formControlName="contractId" required (selectionChange)="contractChanged(sContract.value)">
+            <mat-option *ngFor="let contract of contracts" [value]="contract.id">
+              {{contract.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <!--END CONTRACT-->
+
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <!--TYPE-->
+        <mat-form-field fxFlex="50" class="pr-4">
+          <mat-icon matPrefix class="mr-8 s-20 secondary-text">apps</mat-icon>
+          <mat-select placeholder="Type" formControlName="type" required>
+            <mat-option *ngFor="let category of categories" [value]="category.id">
+              {{category.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!--END TYPE-->
+
+        <!--AMOUNT-->
+        <mat-form-field floatLabel="always" fxFlex="50" class="pl-4">
+          <input matInput formControlName="date" [matDatepicker]="pickerDate" placeholder="Date" required>
+          <mat-datepicker-toggle matSuffix [for]="pickerDate"></mat-datepicker-toggle>
+          <mat-datepicker #pickerDate></mat-datepicker>
+        </mat-form-field>
+        <!--END AMOUNT-->
+      </div>
+
+      <!--AMOUNT-->
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-8 s-20 secondary-text">attach_money</mat-icon>
+          <input matInput formControlName="amount" placeholder="Amount" type="number" required>
+        </mat-form-field>
+      </div>
+      <!--END AMOUNT-->
+
+      <!--VENDOR-->
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-8 s-20 secondary-text">contacts</mat-icon>
+          <input matInput formControlName="vendor" placeholder="Vendor" type="text">
+        </mat-form-field>
+      </div>
+      <!--END VENDOR-->
+
+      <!--DESCRIPTION-->
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <mat-form-field fxFlex>
+          <textarea matInput formControlName="description" placeholder="Description" rows="2"></textarea>
+        </mat-form-field>
+      </div>
+      <!--DESCRIPTION-->
+
+      <!--REFERENCE-->
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-8 s-20 secondary-text">insert_link</mat-icon>
+          <input matInput formControlName="reference" placeholder="Reference" type="text">
+        </mat-form-field>
+      </div>
+      <!--END REFERENCE-->
+
+    </form>
+  </div>
+  <!--END CONTENT-->
+
+  <!--ACTION BUTTONS-->
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between end" *ngIf="!readOnly">
+    <button mat-raised-button color="accent" aria-label="SAVE" [disabled]="expenseForm.invalid"
+      (click)="dialogRef.close(expenseForm)">
+      SAVE
+    </button>
+  </div>
+  <!--END ACTION BUTTONS-->
+</div>

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\..\_stylecop\StyleCopeRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="$(SolutionDir)src\_stylecop\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Google.Apis" Version="1.54.0" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.54.0" />
+    <PackageReference Include="Google.Apis.Auth.AspNetCore" Version="1.54.0" />
+    <PackageReference Include="Google.Apis.Core" Version="1.54.0" />
+    <PackageReference Include="Google.Apis.Gmail.v1" Version="1.54.0.2356" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Domain\MGCap.Domain.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,99 @@
+<div id="inbox" class="page-layout carded left-sidebar inner-scroll">
+
+  <!-- TOP BACKGROUND -->
+  <div class="top-bg mg-accent-bg"></div>
+  <!-- / TOP BACKGROUND -->
+
+  <!-- SIDEBAR -->
+  <fuse-sidebar class="sidebar" name="inbox-mail-main-sidebar" position="left" lockedOpen="gt-md">
+    <app-inbox-main-sidenav></app-inbox-main-sidenav>
+  </fuse-sidebar>
+  <!-- / SIDEBAR -->
+
+  <!-- CENTER -->
+  <div class="center">
+    <!-- CONTENT HEADER -->
+    <div class="header" fxLayout="row" fxLayoutAlign="start center">
+
+      <div class="search-wrapper" fxFlex fxLayout="row" fxLayoutAlign="start center">
+
+        <button mat-icon-button class="sidebar-toggle" fxHide.gt-md (click)="toggleSidebar('inbox-mail-main-sidebar')">
+          <mat-icon>menu</mat-icon>
+        </button>
+
+        <div class="search" fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon class="secondary-text">search</mat-icon>
+          <input [formControl]="searchInput" placeholder="Search" fxFlex>
+        </div>
+
+      </div>
+
+    </div>
+    <!-- CONTENT HEADER -->
+
+    <!-- CONTENT CARD -->
+    <div class="content-card">
+
+      <!-- CONTENT TOOLBAR -->
+      <div class="toolbar px-24 py-8" fxLayoutAlign="space-between center" fxLayout="row">
+
+        <div class="mail-selection" fxFlex="row" fxLayoutAlign="start center">
+          <mat-checkbox (click)="toggleSelectAll()" [checked]="hasSelectedTickets" [indeterminate]="isIndeterminate">
+          </mat-checkbox>
+
+          <button mat-icon-button [matMenuTriggerFor]="selectMenu">
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+          <mat-menu #selectMenu="matMenu">
+            <button mat-menu-item (click)="selectTickets()">All</button>
+            <button mat-menu-item (click)="deselectTickets()">None</button>
+          </mat-menu>
+
+          <div class="toolbar-separator" *ngIf="hasSelectedTickets"></div>
+
+          <button mat-icon-button *ngIf="!readOnly" (click)="deleteSelectedTickets()" [disabled]="!hasSelectedTickets || this.routeParams.value.folderHandle === 'delete'"
+            matTooltip="Delete selected tickets" matTooltipPosition="below">
+            <mat-icon class="secondary-text">delete</mat-icon>
+          </button>
+
+          <button mat-icon-button *ngIf="!readOnly" (click)="updateStatusSelectedTickets(REF.TicketStatus.closed)" [disabled]="!hasSelectedTickets || areResolvedTickets || this.routeParams.value.folderHandle === 'delete'"
+            matTooltip="Close selected tickets" matTooltipPosition="below">
+            <mat-icon class="secondary-text">check_circle_outline</mat-icon>
+          </button>
+
+          <span *ngIf="loading$ | async">Loading...</span>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="start center">
+          <mat-form-field class="mt-16 mr-8">
+            <mat-select placeholder="Sort By" [formControl]="sortControl">
+              <mat-option *ngFor="let sort of sortOptions" [value]="sort.key">
+                {{ sort.title }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button mat-icon-button *ngIf="sortDirection==='DESC'" matTooltip="Descending"
+            (click)="updateSortDirection()">
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+          <button mat-icon-button *ngIf="sortDirection==='ASC'" matTooltip="Ascending" (click)="updateSortDirection()">
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+        </div>
+      </div>
+      <!-- CONTENT TOOLBAR -->
+
+      <!-- CONTENT -->
+      <div class="content" fxLayout="row">
+
+        <app-ticket-list fusePerfectScrollbar fxFlex></app-ticket-list>
+
+      </div>
+      <!-- CONTENT -->
+
+    </div>
+    <!-- CONTENT CARD -->
+  </div>
+  <!-- CENTER -->
+</div>

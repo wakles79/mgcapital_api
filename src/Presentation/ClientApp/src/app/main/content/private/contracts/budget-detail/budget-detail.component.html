@@ -1,0 +1,1062 @@
+<div id="budget-detail-page" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent px-24 py-12">
+
+    <div fxLayout="column" fxLayoutAlign="space-between none" class="h-100-p">
+      <!--Breadcrumb-->
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Budgets</span>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Budgets List</span>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Budgets Detail</span>
+      </div>
+      <!--End Breadcrumb-->
+
+      <!--Title Bar-->
+      <div class="fuse-white-fg" fxLayout="row" fxLayoutAlign="space-between center">
+        <div class="budget-header-title" fxLayout="row">
+          <button class="mr-0 mr-sm-16" mat-icon-button (click)="goBack()">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+
+          <div fxLayout="column" fxLayoutAlign="space-around none">
+            <h1 class="m-0">Budget Details</h1>
+            <small>Minimum Profit Margin Percentage: {{profitMargin}} % </small>
+          </div>
+        </div>
+
+        <button mat-icon-button (click)="editBudget()">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </div>
+      <!--End Title Bar-->
+    </div>
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content primary-50-bg">
+    <!--LOADER-->
+    <div class="spinner-container" *ngIf="loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
+    <!--END LOADER-->
+
+    <!-- SIDEBAR -->
+
+    <!-- / SIDEBAR -->
+
+    <!-- CENTER -->
+    <div class="center" fusePerfectScrollbar>
+
+      <!-- CONTENT -->
+      <div class="content p-24 pr-sm-92" fxLayout="column">
+        <mat-card class="report fuse-white-bg p-40">
+          <div class="document-title text-center">
+            <span class="mat-headline fuse-black-fg">MG Capital Budget Report</span>
+          </div>
+
+          <div fxLayout="row" class="mt-12">
+            <div fxFlex="60">
+              <div fxLayout="column" fxLayoutAlign="space-around none">
+
+                <!-- CONTRACT NUMBER -->
+                <div fxLayout="row">
+                  <span class="secondary-text">CONTRACT NUMBER</span>
+                  <span class="ml-8"> {{budgetDetail.contractNumber}} </span>
+                </div>
+                <!-- END CONTRACT NUMBER -->
+
+                <!-- CUSTOMER -->
+                <div fxLayout="row">
+                  <span class="secondary-text">CUSTOMER</span>
+                  <span class="ml-8"> {{budgetDetail.customerName}}</span>
+                </div>
+                <!-- END CUSTOMER -->
+
+                <!-- BUILDING -->
+                <div fxLayout="row">
+                  <span class="secondary-text">BUILDING</span>
+                  <span class="ml-8">{{budgetDetail.buildingName}}</span>
+                </div>
+                <!-- END BUILDING -->
+
+                <!-- PRODUCTION RATE -->
+                <div fxLayout="row">
+                  <span class="secondary-text">PRODUCTION RATE</span>
+                  <span class="ml-8">{{budgetDetail.productionRate}}</span>
+                </div>
+                <!-- END PRODUCTION RATE -->
+
+                <!-- DAYS PER MONTH -->
+                <div fxLayout="row">
+                  <span class="secondary-text">DAYS PER MONTH</span>
+                  <span class="ml-8">{{budgetDetail.daysPerMonth}}</span>
+                </div>
+                <!-- END DAYS PER MONTH -->
+
+                <!-- NUMBER OF PEOPLE -->
+                <div fxLayout="row">
+                  <span class="secondary-text">NUMBER OF PEOPLE</span>
+                  <span class="ml-8">{{budgetDetail.numberOfPeople}}</span>
+                </div>
+                <!-- END NUMBER OF PEOPLE -->
+
+                <!-- EXPIRATION DATE -->
+                <div fxLayout="row">
+                  <span class="secondary-text">EXPIRATION DATE</span>
+                  <span class="ml-8"
+                    *ngIf="budgetDetail.epochExpirationDate>0">{{budgetDetail.epochExpirationDate | fromEpoch | date}}</span>
+                </div>
+                <!-- END EXPIRATION DATE -->
+
+                <!-- STATUS -->
+                <div fxLayout="row">
+                  <span class="secondary-text">STATUS</span>
+                  <span class="ml-8">{{budgetDetail.statusName}}</span>
+                </div>
+                <!-- END STATUS -->
+
+                <!-- DESCRIPTION -->
+                <div fxLayout="row">
+                  <span class="secondary-text">DESCRIPTION</span>
+                  <span class="ml-8">{{budgetDetail.description}}</span>
+                </div>
+                <!-- END DESCRIPTION -->
+
+                <!-- OCCUPIED SQUARE FEET -->
+                <div fxLayout="row">
+                  <span class="secondary-text">OCCUPIED SQUARE FEET</span>
+                  <span class="ml-8"> {{occupiedSquareFeet}} </span>
+                </div>
+                <!-- END OCCUPIED SQUARE FEET -->
+
+                <!-- UNOCCUPIED SQUARE FEET -->
+                <div fxLayout="row">
+                  <span class="secondary-text">UNOCCUPIED SQUARE FEET</span>
+                  <span class="ml-8">{{budgetDetail.unoccupiedSquareFeets}}</span>
+                </div>
+                <!-- END UNOCCUPIED SQUARE FEET -->
+
+                <!-- TOTAL SQUARE FEET -->
+                <div fxLayout="row">
+                  <span class="secondary-text">TOTAL SQUARE FEET</span>
+                  <span class="ml-8"> {{occupiedSquareFeet + budgetDetail.unoccupiedSquareFeets}} </span>
+                </div>
+                <!-- END TOTAL SQUARE FEET -->
+
+                <!-- OFFICE SPACES -->
+                <div fxLayout="row">
+                  <span class="secondary-text">OFFICE SPACES</span>
+                </div>
+                <div fxLayout="row">
+                  <mat-list>
+                    <mat-list-item *ngFor="let officeSpace of officeSpaces">
+                      <mat-icon mat-list-icon>business</mat-icon>
+                      <h4 mat-line>{{officeSpace.officeTypeName}}</h4>
+                      <p mat-line> {{officeSpace.squareFeet}} Sqft. </p>
+                    </mat-list-item>
+                  </mat-list>
+                </div>
+                <!-- END OFFICE SPACES -->
+
+              </div>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start center" fxFlex="40">
+              <div class="logo">
+                <img src="assets/images/logos/MG Logo Black Text.png">
+              </div>
+            </div>
+          </div>
+
+          <!-- REVENUES -->
+          <div class="revenues-section my-24 w-100-p">
+            <!-- HEADER -->
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="green-400-bg fuse-white-fg px-12">
+              <span class="mat-headline m-0">REVENUE</span>
+
+              <mat-icon (click)="newRevenue()" class="cursor-pointer" *ngIf="!readOnly">add_circle</mat-icon>
+            </div>
+            <!-- END HEADER -->
+
+            <!-- CONTENT -->
+            <div class="estimated-revenue-table-section">
+              <table>
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th>
+                      <div class="t-sort-header">
+                        Description
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Quantity
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Rate
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Type
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Daily
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Monthly
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Yearly
+                      </div>
+                    </th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let revenue of estimatedRevenue">
+                    <td>
+                      <div fxLayout="column" fxLayoutAlign="space-between center">
+                        <mat-icon class="s-16 mb-4" (click)="moveRevenueUp(revenue.id, revenue.order)"
+                          matTooltip="Move Up" style="cursor: pointer;">
+                          keyboard_arrow_up
+                        </mat-icon>
+
+                        <mat-icon class="s-16 mt-4" (click)="moveRevenueDown(revenue.id, revenue.order)"
+                          matTooltip="Move Down" style="cursor: pointer;">
+                          keyboard_arrow_down
+                        </mat-icon>
+                      </div>
+                    </td>
+                    <td>
+                      <mat-icon class="s-16 mr-4" *ngIf="revenue.defaultType > 0" matTooltip="Pre Populated">bookmark
+                      </mat-icon>
+                      <span>{{revenue.description}}</span>
+                    </td>
+                    <td>
+                      <span>{{ revenue.rateType==3 ? revenue.squareFeet + ' Sqft.' : revenue.quantity}}</span>
+                    </td>
+                    <td>
+                      <p class="m-0"> {{revenue.rate | currency:'USD':'symbol':'1.4'}}</p>
+                      <p class="m-0 font-size-12 secondary-text"> {{revenue.ratePeriodicity}} </p>
+                    </td>
+                    <td>
+                      <span> {{revenue.officeServiceTypeName}} </span>
+                    </td>
+                    <td>
+                      <span [matTooltip]="revenue.dailyRateFormula">
+                        {{revenue.dailyRate | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <td>
+                      <span [matTooltip]="revenue.monthlyRateFormula">
+                        {{revenue.monthlyRate | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <td>
+                      <span [matTooltip]="revenue.yearlyRateFormula">
+                        {{revenue.yearlyRate | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <td>
+                      <div fxFlex="row" fxLayoutAlign="end center">
+                        <button mat-icon-button [matMenuTriggerFor]="matRevenueMenu" aria-label="More">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #matRevenueMenu="matMenu" id="mat-menu">
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="edit"
+                            (click)="updateRevenue(revenue.id)">
+                            <!-- <mat-icon>edit</mat-icon> -->
+                            <span>Edit</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="delete"
+                            (click)="deleteRevenue(revenue.id)" *ngIf="!readOnly">
+                            <!-- <mat-icon>delete</mat-icon> -->
+                            <span>Delete</span>
+                          </button>
+
+                        </mat-menu>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="5" class="text-right">
+                      <span class="mat-subheading-1">Total</span>
+                    </td>
+                    <td> {{totalDailyRevenue | currency:'USD':'symbol'}} </td>
+                    <td> {{totalMonthlyRevenue | currency:'USD':'symbol'}} </td>
+                    <td> {{totalYearlyRevenue | currency:'USD':'symbol'}} </td>
+                    <td></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- END CONTENT -->
+          </div>
+          <!-- END REVENUES -->
+
+          <!-- EXPENSES -->
+          <div class="expenses-section my-24 w-100-p">
+            <!-- HEADER -->
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="red-400-bg fuse-white-fg px-12">
+              <span class="mat-headline m-0">EXPENSES & COST</span>
+
+              <mat-icon (click)="newExpense()" class="cursor-pointer" *ngIf="!readOnly">add_circle</mat-icon>
+            </div>
+            <!-- END HEADER -->
+            <!-- CONTENT -->
+            <div class="estimated-expense-table-section">
+              <table>
+                <thead>
+                  <tr>
+                    <th>
+                      <div class="t-sort-header">
+                        Description
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Quantity
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Rate
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Payroll Taxes and Insurance
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Type
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Daily
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Monthly
+                      </div>
+                    </th>
+                    <th>
+                      <div class="t-sort-header">
+                        Yearly
+                      </div>
+                    </th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngIf="estimatedLaborExpenses.length > 0" class="primary-50-bg">
+                    <td colspan="9">
+                      Labor
+                    </td>
+                  </tr>
+                  <tr *ngFor="let expense of estimatedLaborExpenses">
+                    <!-- DESCRIPTION -->
+                    <td>
+                      <mat-icon class="s-16 mr-4" *ngIf="expense.defaultType > 0" matTooltip="Pre Populated">bookmark
+                      </mat-icon>
+                      <span>{{expense.description}}</span>
+                    </td>
+                    <!-- END DESCRIPTION -->
+
+                    <!-- QUANTITY -->
+                    <td>
+                      <span>
+                        {{ expense.rateType==3 || expense.rateType==4 ? expense.value : expense.quantity | number: '1.2-4'}}
+                      </span>
+                    </td>
+                    <!-- END QUANTITY -->
+
+                    <!-- RATE -->
+                    <td>
+                      <p class="m-0"> {{expense.rate | currency:'USD':'symbol':'1.4'}}</p>
+                      <p class="m-0 font-size-12 secondary-text">{{expense.ratePeriodicity}}</p>
+                    </td>
+                    <!-- END RATE -->
+
+                    <!-- TAXES -->
+                    <td>
+                      <span>
+                        {{expense.taxesAndInsurance | currency:'USD':'symbol'}} ({{expense.overheadPercent}}%)
+                      </span>
+                    </td>
+                    <!-- END TAXES -->
+
+                    <!-- TYPE -->
+                    <td>
+                      <p class="text-truncate">
+                        {{expense.expenseSubcategoryName}}
+                      </p>
+                    </td>
+                    <!-- END TYPE -->
+
+                    <!-- DAILY -->
+                    <td>
+                      <span [matTooltip]="expense.dailyRateFormula">
+                        {{expense.dailyRate | currency:'USD':'symbol'}}
+                      </span>
+                      <span matTooltip="tax-free daily rate" *ngIf="expense.expenseCategory === 0">
+                        ({{expense.dailyTaxRate | currency:'USD':'symbol'}})
+                      </span>
+                    </td>
+                    <!-- END DAILY -->
+
+                    <!-- MONTHLY -->
+                    <td>
+                      <span [matTooltip]="expense.monthlyRateFormula">
+                        {{expense.monthlyRate | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <!-- END MONTHLY -->
+
+                    <!-- YEARLY -->
+                    <td>
+                      <span [matTooltip]="expense.yearlyRateFormula">
+                        {{expense.yearlyRate | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <!-- END YEARLY -->
+
+                    <!-- OPTIONS -->
+                    <td>
+                      <div>
+                        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="updateExpense(expense)">
+                            <!-- <mat-icon>edit</mat-icon> -->
+                            <span>Edit</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="delete"
+                            (click)="deleteExpense(expense.id)" *ngIf="!readOnly">
+                            <!-- <mat-icon>delete</mat-icon> -->
+                            <span>Delete</span>
+                          </button>
+
+                        </mat-menu>
+                      </div>
+                    </td>
+                    <!-- END OPTIONS -->
+                  </tr>
+
+                  <tr *ngIf="estimatedEquipmentsExpenses.length > 0" class="primary-50-bg">
+                    <td colspan="9">
+                      Equipments
+                    </td>
+                  </tr>
+                  <tr *ngFor="let expense of estimatedEquipmentsExpenses">
+                    <!-- DESCRIPTION -->
+                    <td>
+                      <mat-icon class="s-16 mr-4" *ngIf="expense.defaultType > 0" matTooltip="Pre Populated">bookmark
+                      </mat-icon>
+                      <span>{{expense.description}}</span>
+                    </td>
+                    <!-- END DESCRIPTION -->
+
+                    <!-- QUANTITY -->
+                    <td>
+                      <span>
+                        {{ expense.rateType==3 || expense.rateType==4 ? expense.value : expense.quantity | number: '1.2-4'}}
+                      </span>
+                    </td>
+                    <!-- END QUANTITY -->
+
+                    <!-- RATE -->
+                    <td>
+                      <p class="m-0"> {{expense.rate | currency:'USD':'symbol':'1.4'}}</p>
+                      <p class="m-0 font-size-12 secondary-text">{{expense.ratePeriodicity}}</p>
+                    </td>
+                    <!-- END RATE -->
+
+                    <!-- TAXES -->
+                    <td>
+                      <span>
+                        {{expense.taxesAndInsurance | currency:'USD':'symbol'}} ({{expense.overheadPercent}}%)
+                      </span>
+                    </td>
+                    <!-- END TAXES -->
+
+                    <!-- TYPE -->
+                    <td>
+                      <p class="text-truncate">
+                        {{expense.expenseSubcategoryName}}
+                      </p>
+                    </td>
+                    <!-- END TYPE -->
+
+                    <!-- DAILY -->
+                    <td>
+                      <span [matTooltip]="expense.dailyRateFormula">
+                        {{expense.dailyRate | currency:'USD':'symbol'}}
+                      </span>
+                      <span matTooltip="tax-free daily rate" *ngIf="expense.expenseCategory === 0">
+                        ({{expense.dailyTaxRate | currency:'USD':'symbol'}})
+                      </span>
+                    </td>
+                    <!-- END DAILY -->
+
+                    <!-- MONTHLY -->
+                    <td>
+                      <span [matTooltip]="expense.monthlyRateFormula">
+                        {{expense.monthlyRate | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <!-- END MONTHLY -->
+
+                    <!-- YEARLY -->
+                    <td>
+                      <span [matTooltip]="expense.yearlyRateFormula">
+                        {{expense.yearlyRate | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <!-- END YEARLY -->
+
+                    <!-- OPTIONS -->
+                    <td>
+                      <div>
+                        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="updateExpense(expense)">
+                            <!-- <mat-icon>edit</mat-icon> -->
+                            <span>Edit</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="delete"
+                            (click)="deleteExpense(expense.id)" *ngIf="!readOnly">
+                            <!-- <mat-icon>delete</mat-icon> -->
+                            <span>Delete</span>
+                          </button>
+                        </mat-menu>
+
+                      </div>
+                    </td>
+                    <!-- END OPTIONS -->
+                  </tr>
+
+                  <tr *ngIf="estimatedSuppliesExpenses.length > 0" class="primary-50-bg">
+                    <td colspan="9">
+                      Supplies
+                    </td>
+                  </tr>
+                  <tr *ngFor="let expense of estimatedSuppliesExpenses">
+                    <!-- DESCRIPTION -->
+                    <td>
+                      <mat-icon class="s-16 mr-4" *ngIf="expense.defaultType > 0" matTooltip="Pre Populated">bookmark
+                      </mat-icon>
+                      <span>{{expense.description}}</span>
+                    </td>
+                    <!-- END DESCRIPTION -->
+
+                    <!-- QUANTITY -->
+                    <td>
+                      <span>
+                        {{ expense.rateType==3 || expense.rateType==4 ? expense.value : expense.quantity | number: '1.2-4'}}
+                      </span>
+                    </td>
+                    <!-- END QUANTITY -->
+
+                    <!-- RATE -->
+                    <td>
+                      <p class="m-0"> {{expense.rate | currency:'USD':'symbol':'1.4'}}</p>
+                      <p class="m-0 font-size-12 secondary-text">{{expense.ratePeriodicity}}</p>
+                    </td>
+                    <!-- END RATE -->
+
+                    <!-- TAXES -->
+                    <td>
+                      <span>
+                        {{expense.taxesAndInsurance | currency:'USD':'symbol'}} ({{expense.overheadPercent}}%)
+                      </span>
+                    </td>
+                    <!-- END TAXES -->
+
+                    <!-- TYPE -->
+                    <td>
+                      <p class="text-truncate">
+                        {{expense.expenseSubcategoryName}}
+                      </p>
+                    </td>
+                    <!-- END TYPE -->
+
+                    <!-- DAILY -->
+                    <td>
+                      <span [matTooltip]="expense.dailyRateFormula">
+                        {{expense.dailyRate | currency:'USD':'symbol'}}
+                      </span>
+                      <span matTooltip="tax-free daily rate" *ngIf="expense.expenseCategory === 0">
+                        ({{expense.dailyTaxRate | currency:'USD':'symbol'}})
+                      </span>
+                    </td>
+                    <!-- END DAILY -->
+
+                    <!-- MONTHLY -->
+                    <td>
+                      <span [matTooltip]="expense.monthlyRateFormula">
+                        {{expense.monthlyRate | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <!-- END MONTHLY -->
+
+                    <!-- YEARLY -->
+                    <td>
+                      <span [matTooltip]="expense.yearlyRateFormula">
+                        {{expense.yearlyRate | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <!-- END YEARLY -->
+
+                    <!-- OPTIONS -->
+                    <td>
+                      <div>
+                        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="updateExpense(expense)">
+                            <!-- <mat-icon>edit</mat-icon> -->
+                            <span>Edit</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="delete"
+                            (click)="deleteExpense(expense.id)" *ngIf="!readOnly">
+                            <!-- <mat-icon>delete</mat-icon> -->
+                            <span>Delete</span>
+                          </button>
+                        </mat-menu>
+
+                      </div>
+                    </td>
+                    <!-- END OPTIONS -->
+                  </tr>
+
+                  <tr *ngIf="estimatedOtherExpenses.length > 0" class="primary-50-bg">
+                    <td colspan="9">
+                      Other
+                    </td>
+                  </tr>
+                  <tr *ngFor="let expense of estimatedOtherExpenses">
+                    <!-- DESCRIPTION -->
+                    <td>
+                      <mat-icon class="s-16 mr-4" *ngIf="expense.defaultType > 0" matTooltip="Pre Populated">bookmark
+                      </mat-icon>
+                      <span>{{expense.description}}</span>
+                    </td>
+                    <!-- END DESCRIPTION -->
+
+                    <!-- QUANTITY -->
+                    <td>
+                      <span>
+                        {{ expense.rateType==3 || expense.rateType==4 ? expense.value : expense.quantity | number: '1.2-4'}}
+                      </span>
+                    </td>
+                    <!-- END QUANTITY -->
+
+                    <!-- RATE -->
+                    <td>
+                      <p class="m-0"> {{expense.rate | currency:'USD':'symbol':'1.4'}}</p>
+                      <p class="m-0 font-size-12 secondary-text">{{expense.ratePeriodicity}}</p>
+                    </td>
+                    <!-- END RATE -->
+
+                    <!-- TAXES -->
+                    <td>
+                      <span>
+                        {{expense.taxesAndInsurance | currency:'USD':'symbol'}} ({{expense.overheadPercent}}%)
+                      </span>
+                    </td>
+                    <!-- END TAXES -->
+
+                    <!-- TYPE -->
+                    <td>
+                      <p class="text-truncate">
+                        {{expense.expenseSubcategoryName}}
+                      </p>
+                    </td>
+                    <!-- END TYPE -->
+
+                    <!-- DAILY -->
+                    <td>
+                      <span [matTooltip]="expense.dailyRateFormula">
+                        {{expense.dailyRate | currency:'USD':'symbol'}}
+                      </span>
+                      <span matTooltip="tax-free daily rate" *ngIf="expense.expenseCategory === 0">
+                        ({{expense.dailyTaxRate | currency:'USD':'symbol'}})
+                      </span>
+                    </td>
+                    <!-- END DAILY -->
+
+                    <!-- MONTHLY -->
+                    <td>
+                      <span [matTooltip]="expense.monthlyRateFormula">
+                        {{expense.monthlyRate | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <!-- END MONTHLY -->
+
+                    <!-- YEARLY -->
+                    <td>
+                      <span [matTooltip]="expense.yearlyRateFormula">
+                        {{expense.yearlyRate | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <!-- END YEARLY -->
+
+                    <!-- OPTIONS -->
+                    <td>
+                      <div>
+                        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+                        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="updateExpense(expense)">
+                            <!-- <mat-icon>edit</mat-icon> -->
+                            <span>Edit</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="delete"
+                            (click)="deleteExpense(expense.id)" *ngIf="!readOnly">
+                            <!-- <mat-icon>delete</mat-icon> -->
+                            <span>Delete</span>
+                          </button>
+
+                        </mat-menu>
+                      </div>
+                    </td>
+                    <!-- END OPTIONS -->
+                  </tr>
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <td colspan="5" class="text-right">
+                      <span class="mat-subheading-1"
+                        matTooltip="Applies to All Labor in This Building">Overhead(14%)</span>
+                    </td>
+                    <td>
+                      <span [matTooltip]="totalExpensesOverheadDailyFormula">
+                        {{totalDailyOverheadExpense | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <td>
+                      <span [matTooltip]="totalExpensesOverheadMonthlyFormula">
+                        {{totalMonthlyOverheadExpense | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <td>
+                      <span [matTooltip]="totalExpensesOverheadYearlyFormula">
+                        {{totalYearlyOverheadExpense | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td colspan="5" class="text-right">
+                      <span class="mat-subheading-1">Total</span>
+                    </td>
+                    <td>
+                      <span>
+                        {{totalDailyExpense | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <td>
+                      <span>
+                        {{totalMonthlyExpense | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <td>
+                      <span>
+                        {{totalYearlyExpense | currency:'USD':'symbol'}}
+                      </span>
+                    </td>
+                    <td></td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+            <!-- END CONTENT -->
+          </div>
+          <!-- EXPENSES -->
+
+          <!-- TOTAL -->
+          <div fxLayout="row" fxLayoutAlign="space-between center">
+            <div fxLayout="column" fxLayoutAlign="center start">
+              <span class="mat-title">Net Profit</span>
+              <span class="mat-title">Profit Ratio</span>
+            </div>
+
+            <div fxLayout="column" fxLayoutAlign="center center">
+              <span class="mat-title" [matTooltip]="dailyProfitFormula"
+                [ngClass]="{'mat-title': true,'red-fg':  dailyProfit < 0 }">
+                {{dailyProfit | currency:'USD':'symbol'}} </span>
+              <span class="mat-title" [matTooltip]="dailyProfitRatioFormula"
+                [ngClass]="{'mat-title': true, 'green-fg': (dailyProfitRatio * 100) > profitMargin, 'red-fg': (dailyProfitRatio * 100) <= profitMargin}">
+                {{dailyProfitRatio * 100 | number:'1.2-2'}}%
+              </span>
+            </div>
+
+            <div fxLayout="column" fxLayoutAlign="center center">
+              <span class="mat-title" [matTooltip]="monthlyProfitFormula"
+                [ngClass]="{'mat-title': true,'red-fg':  monthlyProfit < 0 }">
+                {{monthlyProfit | currency:'USD':'symbol'}}
+              </span>
+              <span class="mat-title" [matTooltip]="monthlyProfitRatioFormula"
+                [ngClass]="{'mat-title': true, 'green-fg': (monthlyProfitRatio * 100) > profitMargin, 'red-fg': (monthlyProfitRatio * 100) <= profitMargin}">
+                {{monthlyProfitRatio * 100 | number:'1.2-2'}}%
+              </span>
+            </div>
+
+            <div fxLayout="column" fxLayoutAlign="center center" class="mr-24">
+              <span class="mat-title" [matTooltip]="yearlyProfitFormula"
+                [ngClass]="{'mat-title': true,'red-fg':  yearlyProfit < 0 }">
+                {{yearlyProfit | currency:'USD':'symbol'}} </span>
+              <span class="mat-title" [matTooltip]="yearlyProfitRatioFormula"
+                [ngClass]="{'mat-title': true, 'green-fg': (yearlyProfitRatio * 100) > profitMargin, 'red-fg': (yearlyProfitRatio * 100) <= profitMargin}">
+                {{yearlyProfitRatio * 100 | number:'1.2-2'}}%
+              </span>
+            </div>
+          </div>
+          <!-- END TOTAL -->
+        </mat-card>
+
+        <!-- ACTIVITY LOG -->
+        <mat-card class="report fuse-white-bg p-0 mt-20">
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <div fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="mr-4">list_alt</mat-icon>
+                    Activity Log
+                  </div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div class="activity-log-section">
+                <table>
+                  <thead>
+                    <tr class="primary-600-bg">
+                      <th class="fuse-white-fg">DATE</th>
+                      <th class="fuse-white-fg">USER</th>
+                      <th class="fuse-white-fg">CHANGES</th>
+                      <th class="fuse-white-fg w-200">NOTE</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr *ngFor="let log of activityLog">
+                      <td>
+                        {{log.epochCreatedDate | fromEpoch}}
+                      </td>
+                      <td>
+                        {{ log.employeeFullName }} <span class="font-weight-500">({{ log.activityTypeName }})</span>
+                      </td>
+                      <td>
+                        <div [ngSwitch]="log.activityType" class="summary-table">
+                          <table *ngSwitchCase="0" style="width:100%;">
+                            <thead>
+                              <tr>
+                                <th> FIELD </th>
+                                <th> ORIGINAL VALUE</th>
+                                <th> CURRENT VALUE </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let logItem of log.changeLogEntries">
+                                <td class="mat-cell">
+                                  {{ logItem.propertyName }}
+                                </td>
+                                <td class="mat-cell">
+                                  {{ logItem.originalValue }}
+                                </td>
+                                <td class="mat-cell">
+                                  {{ logItem.currentValue }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <table *ngSwitchCase="1" style="width:100%;">
+                            <thead>
+                              <tr>
+                                <th>ITEM TYPE</th>
+                                <th>ACTION</th>
+                                <th>DESCRIPTION</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let logItem of log.itemLogEntries">
+                                <td>
+                                  {{ itemTypeName(logItem.itemType) }}
+                                </td>
+                                <td>
+                                  {{ logItem.activityType }}
+                                </td>
+                                <td>
+                                  {{ logItem.value }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <table *ngSwitchCase="2" style="width:100%;">
+                            <thead>
+                              <tr>
+                                <th> PROPERTY </th>
+                                <th> ORIGINAL VALUE</th>
+                                <th> CURRENT VALUE </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let logItem of log.changeLogEntries">
+                                <td class="mat-cell">
+                                  {{ logItem.propertyName }}
+                                </td>
+                                <td class="mat-cell">
+                                  {{ logItem.originalValue }}
+                                </td>
+                                <td class="mat-cell">
+                                  {{ logItem.currentValue }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                      <td class="p-0">
+                        <div fxLayout="row" fxFlexLayout="space-between center">
+                          <div fxFlex class="pl-8">
+                            <div *ngIf="log.epochNoteUpdatedDate > 0">
+                              <p class="font-weight-500 m-0"> {{log.noteEmployeeFullName}} -
+                                {{log.epochNoteUpdatedDate | fromEpoch | date:'shortDate'}} </p>
+                              <span> {{log.note}} </span>
+                            </div>
+                          </div>
+                          <button mat-icon-button color="warning" fxFlex="40px" (click)="displayActivityLogNotes(log.id)">
+                            <mat-icon class="s-16">edit</mat-icon>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-card>
+        <!-- END ACTIVITY LOG -->
+
+        <mat-card class="report fuse-white-bg p-0 mt-20">
+          <mat-accordion>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <div fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="mr-4">speaker_notes</mat-icon>
+                    Notes
+                  </div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+
+              <div class="notes-section">
+                <div fxLayout="column" fxLayoutAlign="space-between none">
+                  <div fxLayout="row" fxLayoutAlign="space-between center">
+                    <img class="comment-member-avatar" src="assets/images/avatars/profile.jpg">
+
+                    <mat-form-field fxFlex class="mx-8">
+                      <input matInput placeholder="Note" [(ngModel)]="note">
+                    </mat-form-field>
+
+                    <button mat-raised-button color="accent" (click)="addNote()">Add Note</button>
+                  </div>
+
+                  <div fxLayout="row" fxLayoutAlign="space-between center" *ngFor="let userNote of notes" class="mb-8">
+                    <span *ngIf="userNote.me"></span>
+                    <div class="note-container">
+                      <div fxLayout="row" fxLayoutAlign="space-between center">
+                        <img class="comment-member-avatar" src="assets/images/avatars/profile.jpg" *ngIf="!userNote.me">
+                        <div [ngClass]="{'text-right mr-12':userNote.me}">
+                          <h5 class="m-0 mb-8 font-weight-500"> {{userNote.employeeFullName}} </h5>
+                          <span class="note-bubble">
+                            {{userNote.note}}
+                          </span>
+                          <h6 class="m-0 mt-8"> {{userNote.epochCreatedDate | fromEpoch | date:'short'}} </h6>
+                        </div>
+                        <img class="comment-member-avatar" src="assets/images/avatars/profile.jpg" *ngIf="userNote.me">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </mat-expansion-panel>
+          </mat-accordion>
+        </mat-card>
+      </div>
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CENTER -->
+
+    <div class="sidenav-buttons-container">
+      <div fxLayout="column" fxLayoutAlign="space-around center">
+        <!--SHARE DOCUMENT BUTTON-->
+        <button mat-fab class="mg-accent-bg" (click)="getDocumentUrl()" *fuseIfOnDom matTooltip="Download PDF document"
+          matTooltipPosition="left" [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+          <mat-icon>picture_as_pdf</mat-icon>
+        </button>
+        <!--END SHARE DOCUMENT BUTTON-->
+
+        <!--SHARE DOCUMENT BUTTON-->
+        <button mat-fab class="mg-accent-bg my-8" (click)="shareBudgetDocument()" *fuseIfOnDom
+          matTooltip="Shared document url" matTooltipPosition="left"
+          [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+          <mat-icon>insert_link</mat-icon>
+        </button>
+        <!--END SHARE DOCUMENT BUTTON-->
+
+        <!--OPEN REPORT VIEW BUTTON-->
+        <button mat-fab class="mg-accent-bg" (click)="openPublicBudgetViewNewTab()" *fuseIfOnDom
+          matTooltip="Show shared document view" matTooltipPosition="left"
+          [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+          <mat-icon>pageview</mat-icon>
+        </button>
+        <!--END OPEN REPORT VIEW BUTTON-->
+      </div>
+    </div>
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

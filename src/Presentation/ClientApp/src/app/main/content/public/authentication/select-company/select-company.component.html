@@ -1,0 +1,40 @@
+<div id="select-company" fxLayout="column" fusePerfectScrollbar>
+
+  <div id="select-company-form-wrapper" fxLayout="column" fxLayoutAlign="center center">
+
+    <div id="select-company-form" *fuseIfOnDom [@animate]="{value:'*',params:{duration:'300ms',y:'100px'}}">
+
+      <div class="logo">
+        <img src="assets/images/logos/MGCapitalIcon.svg">
+      </div>
+
+      <div class="title">SELECT COMPANY</div>
+
+      <div class="spinner-container" *ngIf="isLoading$ | async">
+        <mat-spinner></mat-spinner>
+      </div>
+
+      <div class="options-wrapper" *ngIf="!(isLoading$ | async)">
+        <section>
+          <mat-radio-group [(ngModel)]="selectedEmployee">
+            <mat-radio-button *ngFor="let employee of employees; index as i" [value]="i">
+              {{employee.companyName}}
+            </mat-radio-button>
+          </mat-radio-group>
+        </section>
+
+        <div class="actions">
+          <button mat-raised-button class="submit-button" (click)="logout()">
+            Logout
+          </button>
+
+          <button mat-raised-button color="accent" class="submit-button" aria-label="CONTINUE" [disabled]="selectedEmployee === null || !employees"
+            (click)="changeCompany()">
+            CONTINUE
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

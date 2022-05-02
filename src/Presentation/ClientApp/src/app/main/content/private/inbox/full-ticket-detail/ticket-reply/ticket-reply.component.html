@@ -1,0 +1,130 @@
+<mat-card class="p-0" id="ticket-reply-action-container">
+  <mat-card-content>
+    <div fxLayout="column">
+      <!-- FROM -->
+      <div class="px-16 py-8 from-email">
+        <span class="pr-4 secondary-text">From:</span>
+        <span class="font-weight-500"> {{company}} </span>
+      </div>
+      <!-- END FROM -->
+
+      <!-- TO -->
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="px-16 to-email">
+        <div>
+          <span class="pr-4 secondary-text">To:</span>
+          <input type="email" class="email-text" [(ngModel)]="toEmail" *ngIf="!replyToData.to">
+          <span class="font-weight-500" *ngIf="replyToData.to"> {{replyToData.to}} </span>
+        </div>
+
+        <div>
+          <button mat-button [ngClass]="{'p-0 w-28':true, 'blue-fg':addCc, 'secondary-text':!addCc}"
+            (click)="changeCcOption()">
+            Cc
+          </button>
+          <button mat-button [ngClass]="{'p-0 w-36':true, 'blue-fg':abbBcc, 'secondary-text':!abbBcc}"
+            (click)="changeBccOption()">
+            Bcc
+          </button>
+        </div>
+      </div>
+      <!-- TO -->
+
+      <!-- CC -->
+      <div fxLayout="row" fxLayoutAlign="start start" class="px-16 cc-email-container mb-8" *ngIf="addCc">
+        <div>
+          <span class="pr-12 secondary-text">CC:</span>
+        </div>
+
+        <div class="email-list" fxFlex>
+          <div *ngFor="let email of emailCc">
+            {{email}}
+
+            <button mat-icon-button (click)="revomeCcEmail(email)" class="w-28 h-28 no-line-h">
+              <mat-icon class="s-16">close</mat-icon>
+            </button>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="new-email">
+            <input type="email" fxFlex class="new-email-text" [(ngModel)]="ccEmailText">
+
+            <button mat-icon-button class="new-email-button" (click)="addCcEmail()">
+              <mat-icon class="s-16">add</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- CC -->
+
+      <!-- BCC -->
+      <div fxLayout="row" fxLayoutAlign="start start" class="px-16 bcc-email-container mb-8" *ngIf="abbBcc">
+        <div>
+          <span class="pr-4 secondary-text">BCC:</span>
+        </div>
+
+        <div class="email-list" fxFlex>
+          <div *ngFor="let email of emailBcc">
+            {{email}}
+
+            <button mat-icon-button (click)="revomeBccEmail(email)" class="w-28 h-28 no-line-h">
+              <mat-icon class="s-16">close</mat-icon>
+            </button>
+          </div>
+
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="new-email">
+            <input type="email" fxFlex class="new-email-text" [(ngModel)]="bccEmailText">
+
+            <button mat-icon-button class="new-email-button" (click)="addBccEmail()">
+              <mat-icon class="s-16">add</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- BCC -->
+
+      <!-- CONTENT -->
+      <div class="px-4">
+        <kendo-editor [(ngModel)]="emailBody"></kendo-editor>
+      </div>
+      <!-- CONTENT -->
+
+      <!-- FILES -->
+      <div class="reply-files px-8 pt-8" *ngIf="attachments.length>0">
+        <p class="m-0 font-weight-500">
+          Attachments ({{attachments.length}})
+        </p>
+
+        <div fxLayout="row" fxLayoutAlign="start none" fxLayout="row wrap" class="file-container">
+          <div *ngFor="let file of attachments; let i = index" class="file-detail" fxLayout="row"
+            fxLayoutAlign="space-between center">
+            <div class="text-container" [matTooltip]="file.name">
+              <span class="pl-12 file-name text-truncate">
+                {{file.name}}
+              </span>
+            </div>
+
+            <button mat-icon-button matTooltip="Remove File" (click)="removeFile(i)">
+              <mat-icon class="s-16">close</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- FILES -->
+
+      <!-- ACTIONS -->
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="px-16 py-12">
+        <input hidden type="file" #fileInput multiple accept="image/*" (change)="fileChange($event.target.files)" />
+        <div>
+          <button mat-icon-button (click)="fileInput.click()">
+            <mat-icon class="s-20">attach_file</mat-icon>
+          </button>
+        </div>
+
+        <div>
+          <button mat-button (click)="replyMessage()" class="blue-bg fuse-white-fg">Send</button>
+          <button mat-button (click)="closeReply()">Close</button>
+        </div>
+      </div>
+      <!-- ACTIONS -->
+    </div>
+  </mat-card-content>
+</mat-card>

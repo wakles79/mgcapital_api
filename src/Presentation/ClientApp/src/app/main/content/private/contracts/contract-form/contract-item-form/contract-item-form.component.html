@@ -1,0 +1,167 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar matDialogTitle class="mat-accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <div mat-dialog-content class="p-16 m-0" fusePerfectScrollbar>
+    <!--FORM-->
+    <form [formGroup]="contractItemForm">
+
+      <!--TYPE-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-8 mt-16 s-20 secondary-text" style="cursor:pointer;" matTooltip="New Office Service Type"
+          (click)="newOfficeServiceType()">add</mat-icon>
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">apps</mat-icon>
+          <mat-select #osType placeholder="Contract Services" formControlName="officeServiceTypeId"
+            (selectionChange)="selectChangedOfficeServiceType(osType.value)">
+            <mat-option *ngFor="let officeType of officeServiceTypes" [value]="officeType.id">
+              {{ officeType.name }}
+            </mat-option>
+          </mat-select>
+          <!-- <mat-hint align="end"> Type: {{ officeTypeService?.rateTypeName }}, Frequency:
+            {{ officeTypeService?.periodicity }}</mat-hint> -->
+        </mat-form-field>
+      </div>
+      <!--END TYPE-->
+
+
+      <div fxLayout="row" fxLayoutGap="15px" *ngIf="officeTypeService">
+        <!-- TYPE -->
+        <mat-form-field fxFlex="50">
+          <mat-label>Type</mat-label>
+          <mat-select [(value)]="officeTypeService.rateType">
+            <mat-option *ngFor="let serviceType of serviceTypes" [value]="serviceType.id">
+              {{serviceType.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!-- END TYPE -->
+
+        <!--FREQUENCY-->
+        <mat-form-field fxFlex="50">
+          <mat-label>Frequency of the rate</mat-label>
+          <mat-select [(value)]="officeTypeService.periodicity">
+            <mat-option *ngFor="let periodicity of periodicities" [value]="periodicity">
+              {{periodicity}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        <!--END FREQUENCY-->
+      </div>
+
+      <!--NAME-->
+      <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+        <mat-form-field fxFlex="{{officeTypeService?.rateType==3 ? '0':'35'}}" class="pr-4"
+          *ngIf="officeTypeService?.rateType!=3">
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">equalizer</mat-icon>
+          <input matInput name="quantity" placeholder="Quantity" formControlName="quantity" required>
+        </mat-form-field>
+        <mat-form-field fxFlex="{{officeTypeService?.rateType==3 ? '100':'65'}}" class="pl-4">
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">account_circle</mat-icon>
+          <input matInput name="description" placeholder="Description" formControlName="description" maxlength="128"
+            required>
+        </mat-form-field>
+      </div>
+      <!--END NAME-->
+
+      <!--RATE-->
+      <div fxLayout="row" fxLayoutAlign="start start">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">attach_money</mat-icon>
+          <input matInput type="number" formControlName="rate" placeholder="Rate">
+          <button mat-button matSuffix aria-label="Calculate" *ngIf="officeTypeService?.rateType===1"
+            (click)="calculateTotals(1)">
+            CALCULATE
+          </button>
+        </mat-form-field>
+      </div>
+      <!--END RATE-->
+
+      <!--ROOM-->
+      <div fxLayout="row" fxLayoutAlign="start start" *ngIf="officeTypeService?.rateType===2">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">business</mat-icon>
+          <input matInput type="number" #rooms formControlName="rooms" placeholder="Rest room">
+          <button mat-button matSuffix aria-label="Clear" (click)="calculateTotals(rooms.value)">
+            CALCULATE
+          </button>
+        </mat-form-field>
+      </div>
+      <!--END ROOM-->
+
+      <!--HOUR-->
+      <div fxLayout="row" fxLayoutAlign="start start" *ngIf="officeTypeService?.rateType===0">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">access_time</mat-icon>
+          <input matInput type="number" #hours formControlName="hours" placeholder="Hours">
+          <button mat-button matSuffix aria-label="Calculate" tooltip="Calcular" (click)="calculateTotals(hours.value)">
+            CALCULATE
+          </button>
+        </mat-form-field>
+      </div>
+      <!--END HOUR-->
+
+      <!--Square Feet-->
+      <div fxLayout="row" fxLayoutAlign="start start" *ngIf="officeTypeService?.rateType===3">
+        <mat-form-field fxFlex>
+          <mat-icon matPrefix class="mr-4 s-20 secondary-text">crop</mat-icon>
+          <input matInput type="number" #squareFeet formControlName="squareFeet" placeholder="Square Feet">
+          <button mat-button matSuffix aria-label="Clear" (click)="calculateTotals(squareFeet.value)">
+            CALCULATE
+          </button>
+        </mat-form-field>
+      </div>
+      <!--END Square Feet-->
+
+      <!--PERIODS-->
+      <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+        <mat-form-field fxFlex="33">
+          <mat-icon matPrefix class="s-20 mr-4 secondary-text">attach_money</mat-icon>
+          <input matInput type="text" formControlName="dailyRate" placeholder="Daily">
+        </mat-form-field>
+        <mat-form-field fxFlex="34" class="pl-8 pr-8">
+          <mat-icon matPrefix class="s-20 mr-4 secondary-text">attach_money</mat-icon>
+          <input matInput type="text" formControlName="monthlyRate" placeholder="Monthly">
+        </mat-form-field>
+        <mat-form-field fxFlex="33">
+          <mat-icon matPrefix class="s-20 mr-4 secondary-text">attach_money</mat-icon>
+          <input matInput type="text" formControlName="yearlyRate" placeholder="Yearly">
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+        <mat-form-field fxFlex="33">
+          <mat-icon matPrefix class="s-20 mr-4 secondary-text">attach_money</mat-icon>
+          <input matInput type="text" formControlName="biMonthlyRate" placeholder="Bi-Monthly">
+        </mat-form-field>
+        <mat-form-field fxFlex="34" class="pl-8 pr-8">
+          <mat-icon matPrefix class="s-20 mr-4 secondary-text">attach_money</mat-icon>
+          <input matInput type="text" formControlName="quarterly" placeholder="Quarterly">
+        </mat-form-field>
+        <mat-form-field fxFlex="33">
+          <mat-icon matPrefix class="s-20 mr-4 secondary-text">attach_money</mat-icon>
+          <input matInput type="text" formControlName="biAnnually" placeholder="Bi-annually">
+        </mat-form-field>
+      </div>
+      <!--END PERIODS-->
+
+      <div *ngIf="officeTypeService?.rateType === 3" fxLayout="row" fxLayoutAlign="start start"
+        style="border-top: 1px solid #eee;" class="py-16">
+        <mat-checkbox formControlName="updatePrepopulatedItems">Update pre populated items? </mat-checkbox>
+      </div>
+    </form>
+    <!--END FORM-->
+
+  </div>
+
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between end">
+    <button mat-raised-button color="accent" (click)="submit()" [disabled]="contractItemForm.invalid" aria-label="SAVE">
+      SAVE
+    </button>
+  </div>
+</div>

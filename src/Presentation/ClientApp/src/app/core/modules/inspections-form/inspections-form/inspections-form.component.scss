@@ -1,0 +1,69 @@
+@import "src/@fuse/scss/fuse";
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+
+.inspection-form-dialog {
+  @include media-breakpoint('xs') {
+    width: 100%;
+  }
+
+  @include media-breakpoint('lt-xs') {
+    width: 600px;
+  }
+
+  .mat-dialog-container {
+    padding: 0;
+    overflow: hidden;
+
+    .mat-toolbar {
+      min-height: initial;
+      background: #049546 !important;
+    }
+
+    .toolbar-bottom {
+      height: auto;
+    }
+
+    .mat-radio-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mat-radio-button {
+      margin-bottom: 5px;
+    }
+
+    .rating-list li {
+      float: right;
+      cursor: pointer;
+      margin-left: 12px;
+    }
+
+    .rating-list {
+      display: inline-block;
+      list-style: none;
+    }
+  }
+
+  .dialog-content-wrapper {
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+owl-date-time-container {
+  font-size: 13px !important;
+  width: 280px !important;
+
+  .owl-dt-calendar-table .owl-dt-calendar-cell-content {
+    font-size: 13px !important;
+  }
+
+  .owl-dt-calendar-table .owl-dt-calendar-header .owl-dt-weekdays th {
+    font-size: 12px !important;
+  }
+
+  .owl-dt-timer-content .owl-dt-timer-input {
+    font-size: 16px !important;
+  }
+}

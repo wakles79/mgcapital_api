@@ -1,0 +1,26 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/custom-theme";
+
+#inspections {
+
+  .content {
+      overflow: hidden;
+  }
+
+  .breadcrumb {
+    margin-top:10px;
+    margin-bottom: 20px;
+  }
+  fuse-sidebar {
+    min-width: 250px !important;
+  }
+
+}
+
+#add-inspection-button {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}

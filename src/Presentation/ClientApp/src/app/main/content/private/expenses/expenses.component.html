@@ -1,0 +1,99 @@
+<div id="expenses" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayoutAlign="space-between center" fxLayout.gt-xs="row"
+    fxLayoutAlign.gt-xs="space-between center">
+
+    <!--TITLE-->
+    <div fxLayout="column" fxLayoutAlign="center start">
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Expenses</span>
+      </div>
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+
+        <button mat-button class="sidebar-toggle mr-8" (click)="toggleSidebar('simple-left-sidebar-4')">
+          <mat-icon>filter_list</mat-icon>
+          <span class="logo-text">FILTER</span>
+        </button>
+
+        <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+          <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Expenses
+            List</span>
+        </div>
+
+      </div>
+    </div>
+    <!--END TITLE-->
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- SELECTED BAR -->
+  <app-selected-bar class="accent-600" *ngIf="hasSelectedExpenses" [@slideInTop]></app-selected-bar>
+  <!-- / SELECTED BAR -->
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- SIDEBAR -->
+    <fuse-sidebar class="sidebar" name="simple-left-sidebar-4" position="left">
+
+      <!-- SIDEBAR CONTENT -->
+      <div class="content" fusePerfectScrollbar>
+        <app-main *fuseIfOnDom [@animate]="{value:'*'}"></app-main>
+      </div>
+      <!-- / SIDEBAR CONTENT -->
+
+    </fuse-sidebar>
+    <!-- / SIDEBAR -->
+
+    <!-- CENTER -->
+    <div class="center p-24 pb-56 pr-sm-92" fusePerfectScrollbar>
+
+      <!-- CONTENT -->
+      <div class="content fuse-white-bg mat-elevation-z4">
+        <app-expense-list [readOnly]="readOnly">
+        </app-expense-list>
+      </div>
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CENTER -->
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>
+
+
+<div id="sidenav-buttons">
+  <div fxLayout="column">
+
+    <!-- ADD EXPENSE BUTTON -->
+    <button mat-fab class="mg-accent-bg mt-8" id="add-expense-button" (click)="newExpense()" aria-label="add expense"
+      [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}" *ngIf="!readOnly">
+      <mat-icon>note_add</mat-icon>
+    </button>
+    <!-- ADD EXPENSE BUTTON -->
+
+    <!--BUTTON-->
+    <!-- <button id="read-from-csv-button" mat-fab class="mat-accent-bg mt-8" (click)="importCsvExpenses()"
+      aria-label="upload csv file" [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+      <mat-icon>filter_none</mat-icon>
+    </button> -->
+    <!--BUTTON-->
+
+    <!--IMPORT CSV BUTTON-->
+    <!-- <button mat-fab class="mat-accent-bg mt-8" (click)="importCsv()" *fuseIfOnDom
+      matTooltip="Import Revenue and Expenses from CSV" matTooltipPosition="left"
+      [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+      <mat-icon>move_to_inbox</mat-icon>
+    </button> -->
+    <!--END IMPORT CSV BUTTON-->
+
+  </div>
+</div>

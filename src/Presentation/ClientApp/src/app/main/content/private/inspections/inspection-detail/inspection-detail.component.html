@@ -1,0 +1,595 @@
+<div id="inspection-detail" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent p-16 p-sm-24" fxLayout="column" fxLayoutAlign="space-between center" fxLayout.gt-xs="row"
+    fxLayoutAlign.gt-xs="space-between center">
+
+    <!-- APP TITLE -->
+    <div fxLayout="column" fxLayoutAlign="center start">
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Inspection Detail</span>
+      </div>
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <button class="mr-0 mr-sm-16" mat-icon-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+          <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Inspection
+            Details</span>
+        </div>
+      </div>
+
+    </div>
+    <!-- / APP TITLE -->
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content primary-50-bg">
+
+    <!-- CENTER -->
+
+    <!--LOADER-->
+    <div class="spinner-container" *ngIf="loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
+    <!--END LOADER-->
+
+    <!--CENTER CONTENT-->
+    <div class="center p-24 pb-56 pr-sm-92" fusePerfectScrollbar>
+      <div class="content p-40 fuse-white-bg mat-elevation-z4">
+        <div class="report">
+          <!--TITLE-->
+          <div class="title-document" fxLayoutAlign="center center">
+            <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="center center">
+              <span class="mat-headline fuse-black-fg">MG Capital Inspection Detail #{{inspectionDetail.number}}</span>
+            </div>
+          </div>
+          <!--END TITLE-->
+          <!--HEADER-->
+          <div class="ml-8 m-sm-0 " fxLayoutAlign="space-between stretch">
+            <div class="invoice-number" fxLayout="row" fxFlex="50" fxLayoutAlign="start center">
+              <div fxLayout="column" fxLayoutAlign="none">
+
+                <!--BUILDING-->
+                <div fxLayout="row">
+                  <span class="title"> PUBLIC VIEW </span>
+                  <mat-slide-toggle class="ml-16" [checked]="inspectionDetail.allowPublicView"
+                    (change)="changeView($event)" [disabled]="readOnly"></mat-slide-toggle>
+                </div>
+                <!--END BUILDING-->
+
+                <!--BUILDING-->
+                <div fxLayout="row">
+                  <span class="title"> BUILDING </span>
+                  <span class="number number-text"> {{inspectionDetail.buildingName}} </span>
+                </div>
+                <!--END BUILDING-->
+
+                <!--STATUS-->
+                <div fxLayout="row">
+                  <span class="title"> STATUS </span>
+                  <span class="number number-text"> {{inspectionDetail.statusName | uppercase}} </span>
+                </div>
+                <!--END STATUS-->
+
+                <!--EMPLOYEE-->
+                <div fxLayout="row">
+                  <span class="title"> EMPLOYEE </span>
+                  <span class="number number-text"> {{inspectionDetail.employeeName}} </span>
+                </div>
+                <!--END EMPLOYEE-->
+
+                <!--DUE DATE-->
+                <div fxLayout="row">
+                  <span class="title"> DUE DATE </span>
+                  <span class="number number-text"> {{inspectionDetail.dueDate | date: 'MM/dd/yyyy'}} </span>
+                </div>
+                <!--END DUE DATE-->
+
+                <!--CLOSE DATE-->
+                <div fxLayout="row" *ngIf="inspectionDetail.status === 4">
+                  <div>
+                    <span class="title"> CLOSE DATE </span>
+                    <span class="number number-text"> {{inspectionDetail.closeDate | date: 'MM/dd/yyyy'}} </span>
+                  </div>
+                </div>
+                <!--END CLOSE DATE-->
+
+                <!--STARS-->
+                <div fxLayout="row" *ngIf="inspectionDetail.stars!=0" fxLayoutAlign="start center">
+                  <span class="title"> SCORE </span>
+                  <ul style="display: inline-block" class="rating-list m-0 pl-8">
+                    <li *ngFor="let star of stars" class="p-0">
+                      <mat-icon class="yellow-600-fg font-size-24 pt-4">
+                        {{ star <= inspectionDetail.stars ? "star" : "star_border" }}</mat-icon>
+                    </li>
+                  </ul>
+                </div>
+                <!--END STARS-->
+
+              </div>
+            </div>
+
+            <div class="invoice-number" fxLayout="row" fxFlex="50" fxLayoutAlign="space-between">
+              <div class="issuer" fxLayout="row" fxLayoutAlign="start center">
+                <div class="logo">
+                  <img src="assets/images/logos/MG Logo Black Text.png">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ml-8 m-sm-0 " fxLayoutAlign="space-between stretch">
+            <div class="invoice-number" fxLayout="row" fxLayoutAlign="start center">
+              <div fxLayout="column" fxLayoutAlign="none">
+                <!--STARTING NOTES-->
+                <div fxLayout="row">
+                  <div fxLayout="column">
+                    <span class="title notes"> STARTING NOTES </span>
+                    <span class="padding number-text">
+                      {{inspectionDetail.beginNotes}}
+                    </span>
+                  </div>
+
+                </div>
+                <!--END STARTING NOTES-->
+
+                <!--CLOSING NOTES-->
+                <div fxLayout="row" *ngIf="inspectionDetail.status >= 3">
+                  <div fxLayout="column">
+                    <span class="title notes"> CLOSING NOTES </span>
+                    <span class="padding number-text">
+                      {{inspectionDetail.closingNotes}}
+                    </span>
+                  </div>
+
+                </div>
+                <!--END CLOSING NOTES-->
+              </div>
+            </div>
+          </div>
+          <!--END HEADER-->
+
+          <!--INSPECTION ITEMS-->
+          <div class="mt-24">
+            <!--TITLE-->
+            <div class="sub-title-document green-400" fxLayoutAlign="center center">
+              <div class="pt-16" fxFill fxLayout="row" fxLayoutAlign="space-between center">
+                <span class="mat-headline pl-16">Inspection Items</span>
+                <div class="fuse-white-fg breadcrumb pr-16" fxFlex="0 1 auto">
+                  <button mat-icon-button matTooltip="Add Items" (click)="newInspectionItemService()"
+                    *ngIf="(inspectionDetail.status === 1 || inspectionDetail.status === 2) && !readOnly">
+                    <mat-icon>add_box</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!--END TITLE-->
+
+            <!--ITEMS-->
+            <!-- <div fxLayout="row" fxLayout="row wrap" fxLayoutAlign="start start">
+              <div *ngFor="let item of inspectionDetail.inspectionItem" fxFlex.xs="100" fxFlex.sm="100" fxFlex.md="50"
+                fxFlex.lg="50" fxFlex.xl="50" class="p-8">
+
+              </div>
+            </div> -->
+
+            <mat-card *ngFor="let item of inspectionDetail.inspectionItem" class="inspection-item-box mb-16 p-0">
+              <!--HEADER-->
+              <div class=" p-12 item-box-header" fxLayout="row" fxLayoutAlign="space-between center">
+                <!--TITLE-->
+                <div class="item-box-header-title">
+                  <div fxLayout="row" fxLayoutAlign="start center">
+                    <span class="font-size-16 font-weight-500">
+                      Item Number {{item.number}}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span class="text-boxed ml-0 p-4 fuse-white-fg fuse-black-bg"> {{item.typeName}} </span>
+                    <span class="text-boxed ml-0 p-4 priority-{{item.priority}}"> {{item.priorityName}} </span>
+                    <span class="text-boxed ml-0 p-4 {{ item.statusName | lowercase }}"> {{item.statusName}}</span>
+                  </div>
+                </div>
+                <!--END TITLE-->
+
+                <!--BUTTONS-->
+                <div class="item-box-header-actions">
+                  <mat-icon
+                    *ngIf="inspectionDetail.status === 2 && (currentUserId === inspectionDetail.employeeId || currentLevelUser === 10)"
+                    (click)="editInspectionItem(item.id)" matTooltip="Edit" class="item-action edit mr-8">
+                    edit
+                  </mat-icon>
+
+                  <mat-icon
+                    *ngIf="(inspectionDetail.status === 3 || inspectionDetail.status === 4) && item.statusName === 'Open' && !readOnly"
+                    (click)="addTicket(item)" matTooltip="Add Ticket" class="item-action add-ticket mr-8">
+                    note_add
+                  </mat-icon>
+
+                  <mat-icon
+                    *ngIf="inspectionDetail.status === 2 && (currentUserId === inspectionDetail.employeeId || currentLevelUser === 10) && !readOnly"
+                    (click)="removeElement(item)" matTooltip="Remove" class="item-action remove mr-8">
+                    delete
+                  </mat-icon>
+
+                  <mat-icon
+                    *ngIf="(inspectionDetail.status === 3 || inspectionDetail.status === 4) && item.statusName === 'Open' && !readOnly"
+                    (click)="closeInspectionItem(item)" matTooltip="Close" class="item-action close">
+                    close
+                  </mat-icon>
+                </div>
+                <!--END BUTTONS-->
+              </div>
+              <!--END HEADER-->
+
+              <!--CONTENT-->
+              <div fxLayout="column" fxLayoutAlign="start none" class="p-12 item-box-content">
+                <!--DESCRIPTION-->
+                <div fxLayout="column" fxLayoutAlign="start start">
+                  <div class="font-weight-500 mb-8" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="s-20 mr-8">location_on</mat-icon>
+                    Location
+                  </div>
+                  <p class="mt-0 ml-16">{{item.position}}</p>
+
+                  <div class="font-weight-500 mb-8" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="s-20 mr-8">description</mat-icon>
+                    Description
+                  </div>
+                  <pre>{{item.description}}</pre>
+                </div>
+                <!--END DESCRIPTION-->
+
+                <!--TASKS AND ATTACHMENTS-->
+                <div *ngIf="item.tasks.length > 0">
+                  <div class="mb-8" fxLayout="row" fxLayoutAlign="space-between center">
+                    <div fxLayout="row" fxLayoutAlign="start center" class="font-weight-500 pr-8">
+                      <mat-icon class="s-20  mr-8">format_list_bulleted</mat-icon>
+                      Tasks
+                    </div>
+
+                    <div fxFlex>
+                      <hr>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="center center">
+                      <button mat-icon-button matTooltip="Close Tasks" (click)="enableToCloseTasks(item.id)"
+                        *ngIf="!item.enableToCheckTasks && !readOnly">
+                        <mat-icon class="fuse-black-fg">edit</mat-icon>
+                      </button>
+                      <button mat-icon-button matTooltip="Save Changes" (click)="saveTaskChanges(item.id)"
+                        *ngIf="item.enableToCheckTasks">
+                        <mat-icon class="fuse-black-fg">check</mat-icon>
+                      </button>
+                      <button mat-icon-button matTooltip="Cancel" (click)="disableToCloseTasks(item.id)"
+                        *ngIf="item.enableToCheckTasks">
+                        <mat-icon class="fuse-black-fg">close</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="start center">
+                    <span class="font-weight-500 mr-8">
+                      {{ completedTasks(item.id) }} / {{item.tasks.length}}
+                    </span>
+                    <div fxFlex class="pr-12">
+                      <mat-progress-bar mode="determinate" [value]="countTasksCheck(item.id)"></mat-progress-bar>
+                    </div>
+                  </div>
+                  <ul style="list-style: none;">
+                    <li *ngFor="let task of item.tasks" class="mb-12">
+                      <mat-checkbox [disabled]="!item.enableToCheckTasks || !readOnly" class="mr-8"
+                        [(ngModel)]="task.isComplete">
+                      </mat-checkbox>
+                      {{task.description}}
+                    </li>
+                  </ul>
+                </div>
+
+                <div *ngIf="item.notes.length > 0">
+                  <div class="font-weight-500 mb-8" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="s-20  mr-8">speaker_notes</mat-icon>
+                    Notes
+                  </div>
+                  <ul>
+                    <li *ngFor="let note of item.notes">
+                      {{note.note}}
+                    </li>
+                  </ul>
+                </div>
+
+                <div *ngIf="item.attachments.length > 0">
+                  <div class="font-weight-500 mb-8" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="s-20 mr-8">attach_file</mat-icon>
+                    Attachments ( {{item.attachments.length}} )
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="start none" fxLayout="row wrap">
+                    <div *ngFor="let att of item.attachments" class="item-box-attachment text-center" fxFlex.xs="100"
+                      fxFlex.sm="33" fxFlex.md="25" fxFlex.lg="20" fxFlex.xl="20">
+                      <img [src]="att.fullUrl" alt="" class="item-image" (click)="open(att.id)">
+                      <p class="mt-0"> {{att.title}} </p>
+                    </div>
+                  </div>
+                </div>
+                <!--END TASKS AND ATTACHMENTS-->
+              </div>
+              <!--END CONTENT-->
+
+            </mat-card>
+
+            <!--END ITEMS-->
+
+          </div>
+          <!--END INSPECTION ITEMS-->
+        </div>
+      </div>
+
+      <div class="m-8">
+        <!--PADDIN TO ADD SPACE ON BOTTOM-->
+      </div>
+
+      <!-- NOTES-->
+      <div class="content p-40 fuse-white-bg mat-elevation-z4">
+        <div class="report">
+          <!--ACCORDION-->
+          <mat-accordion>
+            <!--EXPANSION PANEL-->
+            <mat-expansion-panel>
+              <!--PANEL HEADER-->
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  <div class="section-header" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="s-20">comment</mat-icon>
+                    <span fxFlex class="section-title">Notes</span>
+                  </div>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <!--END PANEL HEADER-->
+
+              <!--LOG-->
+              <div class="comments">
+
+                <div name="cardCommentForm" class="comment new-comment" fxLayout="column" fxLayoutAlign="start">
+                  <div fxLayout="row">
+                    <img class="comment-member-avatar" src="assets/images/avatars/profile.jpg">
+                    <div fxFlex>
+                      <mat-form-field fxFlex>
+                        <input name="textNote" matInput placeholder="Write a note.." [(ngModel)]="textNote"
+                          [ngModelOptions]="{standalone: true}">
+                      </mat-form-field>
+                    </div>
+                  </div>
+
+                  <div fxLayout="row" fxLayoutAlign="end center">
+                    <button mat-raised-button class="mat-accent" aria-label="Add" (click)="addNote(textNote)"
+                      *ngIf="!readOnly">
+                      <span>Add Note</span>
+                    </button>
+                  </div>
+                </div>
+
+
+                <div class="section-content"
+                  *ngFor="let item of inspectionNotes; let i = index; let lst = last; let fst = first;">
+                  <div>
+
+                    <div class="comment" fxLayout="row" fxLayoutAlign="start">
+
+                      <img class="comment-member-avatar" src="assets/images/avatars/profile.jpg">
+                      <div fxLayout="column">
+                        <div class="comment-member-name">
+                          {{ item.employeeFullName }}
+                        </div>
+                        <div class="comment-bubble">
+                          {{ item.note }}
+                        </div>
+                        <div class="comment-time secondary-text">
+                          {{ item.epochCreatedDate | fromEpoch | date: 'medium' }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <!--END LOG-->
+            </mat-expansion-panel>
+            <!--END EXPANSION PANEL-->
+          </mat-accordion>
+          <!--END ACCORDION-->
+        </div>
+      </div>
+      <!--END  NOTES-->
+
+      <div class="m-8">
+        <!--PADDIN TO ADD SPACE ON BOTTOM-->
+
+      </div>
+
+      <!--ACTIVITY LOG-->
+      <div class="content p-40 fuse-white-bg mat-elevation-z4">
+        <div class="report">
+          <!--ACCORDION-->
+          <mat-accordion>
+            <!--EXPANSION PANEL-->
+            <mat-expansion-panel>
+              <!--PANEL HEADER-->
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Activity Log
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <!--END PANEL HEADER-->
+
+              <!--LOG-->
+              <div class="log">
+                <!--TABLE-->
+                <table style="width:100%;">
+                  <thead>
+                    <tr class="mat-header-row primary-600-bg">
+                      <th class="mat-header-cell fuse-white-fg" style="max-width:180px;">DATE</th>
+                      <th class="mat-header-cell fuse-white-fg" style="max-width:230px;">USER</th>
+                      <th class="mat-header-cell fuse-white-fg">CHANGES</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let log of inspectionActivityLog" class="mat-row">
+                      <td class="mat-cell" style="max-width:180px;">
+                        {{ log.epochCreatedDate | fromEpoch  }}
+                      </td>
+                      <td class="mat-cell" style="max-width:230px;">
+                        {{ log.employeeFullName }} <span class="font-weight-500">({{ log.activityTypeName }})</span>
+                      </td>
+                      <td class="mat-cell">
+                        <div [ngSwitch]="log.activityType" class="summary-table">
+                          <table *ngSwitchCase="0" style="width:100%;">
+                            <thead>
+                              <tr class="mat-header-row">
+                                <th class="mat-header-cell fuse-black-fg"> FIELD </th>
+                                <th class="mat-header-cell fuse-black-fg"> ORIGINAL VALUE</th>
+                                <th class="mat-header-cell fuse-black-fg"> CURRENT VALUE </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let logItem of log.changeLogEntries" class="mat-row">
+                                <td class="mat-cell">
+                                  {{ logItem.propertyName }}
+                                </td>
+                                <td class="mat-cell">
+                                  {{ logItem.originalValue }}
+                                </td>
+                                <td class="mat-cell">
+                                  {{ logItem.currentValue }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <table *ngSwitchCase="1" style="width:100%;">
+                            <thead>
+                              <tr class="mat-header-row">
+                                <th class="mat-header-cell fuse-black-fg">ITEM TYPE</th>
+                                <th class="mat-header-cell fuse-black-fg">ACTION</th>
+                                <th class="mat-header-cell fuse-black-fg">DESCRIPTION</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let logItem of log.itemLogEntries" class="mat-row">
+                                <td class="mat-cell">
+                                  {{ logItem.itemType === 0 ? 'Inspection Item' : 'Undefined' }}
+                                </td>
+                                <td class="mat-cell">
+                                  {{ logItem.activityType }}
+                                </td>
+                                <td class="mat-cell">
+                                  {{ logItem.value }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                          <table *ngSwitchCase="2" style="width:100%;">
+                            <thead>
+                              <tr class="mat-header-row">
+                                <th class="mat-header-cell fuse-black-fg">
+                                  NAME
+                                </th>
+                                <th class="mat-header-cell fuse-black-fg">
+                                  EMAIL
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr *ngFor="let logItem of log.emailLogEntries" class="mat-row">
+                                <td class="mat-cell">
+                                  {{ logItem.name }}
+                                </td>
+                                <td class="mat-cell">
+                                  {{ logItem.email }}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <!--END TABLE-->
+              </div>
+              <!--END LOG-->
+            </mat-expansion-panel>
+            <!--END EXPANSION PANEL-->
+          </mat-accordion>
+          <!--END ACCORDION-->
+        </div>
+      </div>
+      <!--END ACTIVITY LOG-->
+    </div>
+    <!--END CENTER CONTENT-->
+
+    <!-- / CENTER -->
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>
+
+<div id="sidenav-buttons">
+  <div fxLayout="column">
+
+    <!--EVALUATE INSPECTION BUTTON-->
+    <button mat-fab class="mg-accent-bg mb-4" (click)="evaluateInspection()"
+      *ngIf="inspectionDetail.status === 3 &&  inspectionDetail.stars === 0" matTooltip="Evaluate Inspection"
+      matTooltipPosition="left" [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+      <mat-icon>playlist_add_check</mat-icon>
+    </button>
+    <!--END EVALUATE INSPECTION BUTTON-->
+
+    <!--CLOSE INSPECTION BUTTON-->
+    <button mat-fab class="mg-accent-bg mb-16" (click)="closeInspection()" *ngIf="inspectionDetail.status === 2"
+      matTooltip="Complete Walkthrough" matTooltipPosition="left" [@animate]="{params:{delay:'300ms',scale:'.2'}}">
+      <mat-icon>close</mat-icon>
+    </button>
+    <!--END CLOSE INSPECTION BUTTON-->
+
+    <!--DOWNLOAD PDF-->
+    <button mat-fab class="mg-accent-bg mb-4" aria-label="download document pdf" *fuseIfOnDom
+      matTooltip="Download document as PDF" matTooltipPosition="left"
+      [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}" (click)="displayPdf()">
+      <mat-icon>cloud_download</mat-icon>
+    </button>
+    <!--END DOWNLOAD PDF-->
+
+    <!-- SEND BY EMAIL DOCUMENT BUTTON -->
+    <div *ngIf="currentLevelUser <= 20">
+      <button mat-fab class="mg-accent-bg mb-4" aria-label="send by email the link of public document view" *fuseIfOnDom
+        matTooltip="Send by email the document url" matTooltipPosition="left"
+        [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}" (click)="sendUrlByEmail()">
+        <mat-icon>email</mat-icon>
+      </button>
+    </div>
+    <!-- / SEND BY EMAIL DOCUMENT BUTTON -->
+
+    <!-- SHARE DOCUMENT BUTTON -->
+    <button mat-fab class="mg-accent-bg mb-4" aria-label="show shared document view" *fuseIfOnDom
+      matTooltip="Shared document url" matTooltipPosition="left"
+      [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}" (click)="shareDocument()">
+      <mat-icon>insert_link</mat-icon>
+    </button>
+    <!-- / SHARE DOCUMENT BUTTON -->
+
+    <!-- OPEN REPORT VIEW BUTTON -->
+    <button mat-fab class="mg-accent-bg mb-4" aria-label="show shared document view" *fuseIfOnDom
+      matTooltip="Show shared document view" matTooltipPosition="left"
+      [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}" (click)="openPublicDocumentViewNewTap()">
+      <mat-icon>pageview</mat-icon>
+    </button>
+    <!-- / OPEN REPORT VIEW  BUTTON -->
+  </div>
+</div>

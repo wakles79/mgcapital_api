@@ -1,0 +1,208 @@
+<div id="invoice" class="compact page-layout blank inner-scroll" fusePerfectScrollbar>
+
+  <div class="invoice-container" fxLayout="row">
+    <div fxFlex="33"></div>
+
+    <!-- INVOICE -->
+    <div class="card" fxFlex="33">
+
+      <div class="content">
+        <div class="report-list">
+          <!-- HEADER -->
+          <div class="title-document" fxLayoutAlign="center center">
+            <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="center center">
+              <span class="mat-headline">MG Capital Daily Work Order Report</span>
+            </div>
+          </div>
+          <div class="mt-16 ml-32 m-sm-0 " fxLayoutAlign="space-between stretch">
+            <div class="invoice-number pl-32 pt-24" fxLayout="row" fxFlex="50" fxLayoutAlign="start center">
+              <div fxLayout="column">
+
+                <div fxLayout="row">
+                  <span class="title">TO </span>
+                  <span class="number number-date">{{ selectedOperationsManager.fullName }}</span>
+                </div>
+                <div fxLayout="row">
+                  <span class="title"> FROM </span>
+                  <span class="number number-date">{{ loggedUser.fullName }}</span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title">DATE FROM </span>
+                  <span class="number">{{ dateFromStringFormat | date }} </span>
+                </div>
+                <div fxLayout="row">
+                  <span class="title"> DATE TO </span>
+                  <span class="number">{{ dateToStringFormat | date }}</span>
+                </div>
+
+                <div fxLayout="row" class="pt-12">
+                  <mat-form-field fxFlex>
+                    <mat-select [formControl]="filterStatus" placeholder="Work Order Status"
+                      (selectionChange)="onStatusChange($event)" [multiple]="true">
+                      <mat-option>All</mat-option>
+                      <mat-option *ngFor="let status of statusToFilter" [value]="status.id">
+                        {{ status.value | uppercase}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="invoice-number" fxLayout="row" fxFlex="50" fxLayoutAlign="start center">
+              <div class="issuer" fxLayout="row" fxLayoutAlign="start center">
+                <div class="logo">
+                  <img src="assets/images/logos/MG Logo Black Text.png">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- / HEADER -->
+          <div class="card-table m-32">
+            <div class="card-table">
+              <mat-table #table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+                <!-- WO Number -->
+                <ng-container cdkColumnDef="number">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">No.</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrder">
+                    <div fxLayout="column" fxFlex="100">
+                      <p *ngIf="workOrder.originWorkOrderId" class="font-weight-600">
+                        {{workOrder.clonePath}}
+                      </p>
+                      <p *ngIf="!workOrder.originWorkOrderId" class="font-weight-600">
+                        {{workOrder.number}}
+                      </p>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Location Name -->
+                <ng-container cdkColumnDef="locationName">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Location</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrder">
+                    <p class="">
+                      {{workOrder.buildingName}}
+                      <br /> {{workOrder.location}}
+                    </p>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Description -->
+                <ng-container cdkColumnDef="description">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Description</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrder">
+                    <div fxLayout="column" fxFlex="100">
+                      <p class="">
+                        {{workOrder.description}}
+                      </p>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Date Submited Column -->
+                <ng-container cdkColumnDef="dateSubmitted">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Submited</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrder">
+                    <p class="">
+                      {{workOrder.epochDateSubmitted | fromEpoch |date: 'MMMM dd' }}
+                    </p>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Due Date Column -->
+                <ng-container cdkColumnDef="dueDate">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Due Date</mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrder">
+                    <p class="" [ngClass]="{'is-expired': workOrder.isExpired === 1}">
+                      {{ workOrder.epochDueDate | fromEpoch | date: 'MMM dd h:mm a' }}
+                    </p>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container cdkColumnDef="statusName">
+                  <mat-header-cell *cdkHeaderCellDef fxFlex="120px" class="font-weight-600 text-center">Status
+                  </mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrder" fxFlex="120px">
+                    <span class="badge" [ngClass]="ngClassWorkOrderStatus(workOrder.statusId)">
+                      {{ getWorkOrderStatus(workOrder.statusId) | uppercase }}
+                    </span>
+                    <small class="small-margin"> {{workOrder.tasksDoneCount}} / {{workOrder.tasksCount}}</small>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Has Images Column -->
+                <ng-container cdkColumnDef="hasImages">
+                  <mat-header-cell *cdkHeaderCellDef fxFlex="120px" class="font-weight-600 text-center">Images
+                  </mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrder" fxFlex="120px" class="text-center">
+                    <span class="text-center">
+                      {{ hasImages(workOrder.attachmentsCount) | uppercase }}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Buttons Column -->
+                <ng-container cdkColumnDef="buttons">
+                  <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+                  <mat-cell *cdkCellDef="let workOrder">
+                    <div fxFlex="row" fxLayoutAlign="end center">
+
+                      <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                        (click)="$event.stopPropagation();">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+
+                      <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                        <button mat-menu-item aria-label="show public view"
+                          (click)="openNewTapPublicWorkOrder(workOrder) ">
+                          <!-- <mat-icon>pageview</mat-icon> -->
+                          <span>View</span>
+                        </button>
+
+                      </mat-menu>
+                    </div>
+
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *cdkRowDef="let workOrder; columns: displayedColumns;" class="workOrder" matRipple
+                  [@animate]="{value:'*',params:{y:'100%'}}">
+                </mat-row>
+              </mat-table>
+              <mat-paginator [length]="workOrdersCount" [pageSize]="20" [pageSizeOptions]="[20, 100, 200, 300, 400]">
+              </mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer pt-64 pb-32">
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <div class="logo">
+            <img src="assets/images/logos/MGCapitalIcon.svg">
+          </div>
+          <div class="small-note">
+            MG Capital Maintenance - 110 Pheasant Wood Ct Suite D Morrisville, N.C. 27560 O: 9194618573
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- / INVOICE -->
+
+    <div fxFlex="33"></div>
+  </div>
+
+</div>
+
+<!-- ADD ELEMENT BUTTON -->
+<a href="http://mgcapitalmain.com/wordpress/index.php/workorder/" target="_blank" mat-fab class="mg-accent-bg"
+  id="external-link-button" aria-label="Add work order" *fuseIfOnDom
+  [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+  <mat-icon>note_add</mat-icon>
+</a>
+<!-- / ADD ELEMENT BUTTON -->

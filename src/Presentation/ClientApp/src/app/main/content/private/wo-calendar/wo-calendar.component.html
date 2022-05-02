@@ -1,0 +1,663 @@
+<div id="calendar-page" class="page-layout simple fullwidth inner-scroll">
+  <!--LOADER-->
+  <div class="spinner-container" *ngIf="loadingList$ | async">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div class="spinner-container" *ngIf="loading$ | async">
+    <mat-spinner></mat-spinner>
+  </div>
+  <!--END LOADER-->
+
+  <!--HEADER-->
+  <div class="header p-16 p-sm-24 {{ viewDate | date:'LLL' }}">
+    <!--CONTENT-->
+    <div class="header-content" fxLayout="column" fxLayoutAlign="space-between none">
+      <!--TOP CONTENT-->
+      <div class="header-top" fxLayout="row" fxLayoutAlign="space-between center">
+        <!--TITLE-->
+        <div fxLayout="row" fxLayoutAlign="center center">
+          <mat-icon class="fuse-white-fg">calendar_today</mat-icon>
+          <span class="mat-headline m-0 pl-12">Calendar</span>
+        </div>
+        <!--END TITLE-->
+
+        <!--ACTIONS-->
+        <div>
+          <button mat-icon-button (click)="changeCalendarView('day')" matTooltip="Day" matTooltipPosition="below">
+            <mat-icon class="fuse-white-fg">view_day</mat-icon>
+          </button>
+          <button mat-icon-button (click)="changeCalendarView('week')" matTooltip="Week" matTooltipPosition="below">
+            <mat-icon class="fuse-white-fg">view_week</mat-icon>
+          </button>
+          <button mat-icon-button (click)="changeCalendarView('month')" matTooltip="Month" matTooltipPosition="below">
+            <mat-icon class="fuse-white-fg">view_module</mat-icon>
+          </button>
+          <button mat-icon-button (click)="changeCalendarView('year')" matTooltip="Year" matTooltipPosition="below">
+            <mat-icon class="fuse-white-fg">calendar_today</mat-icon>
+          </button>
+        </div>
+        <!--END ACTIONS-->
+      </div>
+      <!--END TOP CONTENT-->
+
+      <!--BOTTOM CONTENT-->
+      <div class="header-bottom" fxLayout="column">
+
+        <div>
+          <button mat-button (click)="displayFilters()" class="sidenav-toggle mr-8" matTooltip="Filter">
+            <mat-icon class="fuse-white-fg">filter_list</mat-icon>
+            <span class="logo-text fuse-white-fg">FILTER</span>
+          </button>
+        </div>
+
+        <div fxLayout="row" fxLayoutAlign="center center" class="mb-4">
+          <button mat-icon-button (click)="lastDate()" class="mr-12">
+            <mat-icon class="fuse-white-fg">chevron_left</mat-icon>
+          </button>
+
+          <span class="m-0 mat-subheading-2" *ngIf="calendarView != 'year'">
+            {{ viewDate |  calendarDate:(calendarView + 'ViewTitle'):'en' }}
+          </span>
+
+          <span class="m-0 mat-subheading-2" *ngIf="calendarView == 'year'">
+            {{ viewDate | date:'yyyy' }}
+          </span>
+
+          <button mat-icon-button (click)="nextDate()" class="ml-12">
+            <mat-icon class="fuse-white-fg">chevron_right</mat-icon>
+          </button>
+        </div>
+      </div>
+      <!--END BOTTOM CONTENT-->
+    </div>
+    <!--END CONTENT-->
+
+    <!--NEW ITEM BUTTON-->
+    <button mat-fab class="btn-add-calendar-item" (click)="newItem()" *ngIf="!readOnly">
+      <mat-icon class="fuse-white-fg">add</mat-icon>
+    </button>
+    <!--END NEW ITEM BUTTON-->
+  </div>
+  <!--END HEADER-->
+
+  <!--SIDENAV CONTAINER-->
+  <mat-sidenav-container>
+
+    <!--SIDENAV-->
+    <mat-sidenav [(opened)]="viewFilters" class="p-12 primary-50-bg" fusePerfectScrollbar>
+      <app-main></app-main>
+      <!--wo-calendar-sidenav-->
+    </mat-sidenav>
+    <!--END SIDENAV-->
+
+    <!--CONTENT-->
+    <mat-sidenav-content>
+      <div class="center">
+        <div class="content" fusePerfectScrollbar>
+          <div fxLayout="column" fxLayoutAlign="space-around none">
+            <!--CALENDAR-->
+            <div fxLayout="row" fxLayoutAlign="space-between start" class="p-16 w-100-p h-580">
+              <mat-card [ngSwitch]="calendarView" fxFlex="69" fusePerfectScrollbar class="h-100-p">
+                <mwl-calendar-day-view *ngSwitchCase="'day'" [events]="events" [viewDate]="viewDate"
+                  [refresh]="refresh">
+                </mwl-calendar-day-view>
+
+                <mwl-calendar-week-view *ngSwitchCase="'week'" [events]="events" [viewDate]="viewDate"
+                  [refresh]="refresh">
+                </mwl-calendar-week-view>
+
+                <mwl-calendar-month-view *ngSwitchCase="'month'" activeDayIsOpen="true" [events]="events"
+                  [viewDate]="viewDate" [refresh]="refresh" (dayClicked)="dayClicked($event.day)">
+                </mwl-calendar-month-view>
+
+                <div *ngSwitchCase="'year'" fxLayout="row wrap" fxLayoutAlign="start none">
+                  <div *ngFor="let month of months" fxFlex="25" class="p-8 h-140">
+                    <div class="y-month-card w-100-p h-100-p">
+                      <div class="y-month-name">
+                        {{month.name}}
+                      </div>
+                      <div fxLayout="row" fxLayoutAlign="center center">
+                        <mat-chip-list class="mt-32">
+                          <button mat-mini-fab color="accent" (click)="monthClicked(month.month)">
+                            {{month.events}}
+                          </button>
+                        </mat-chip-list>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </mat-card>
+
+              <mat-card fxLayout="column" fxFlex="30" fusePerfectScrollbar class="h-100-p">
+
+                <h4> {{selectedDateSummaryText}} ({{workOrdersOfDay.length}}) </h4>
+
+                <div fxLayout="column">
+                  <mat-card *ngFor="let wo of workOrdersOfDay" class="p-8 mb-12 cal-item-summary"
+                    [ngStyle]="{'border-left': '6px solid '+wo.colorName}" [routerLink]="'/app/work-orders/detail/'"
+                    [queryParams]="{action:'edit', workorder:wo.id, source:'calendar'}">
+                    <div fxLayout="row" fxLayoutAlign="start center">
+                      <div class="icon-status w-20">
+                        <span [ngClass]="['badge' ,ngClassWorkOrderStatus(wo.statusId,wo.isExpired)]"
+                          [matTooltip]="workOrderStatus(wo.statusId)">
+                        </span>
+                      </div>
+
+                      <div fxLayout="column" fxLayoutAlign="space-around start" class="w-100-p">
+                        <div fxLayout="row" fxLayoutAlign="space-between center" class="w-100-p">
+                          <p class="font-weight-500 m-0">#{{ wo.originWorkOrderId ? wo.clonePath : wo.number }} </p>
+                          <span class="text-italic font-size-12"> {{ workOrderType(wo.type) }} </span>
+                        </div>
+
+                        <div class="w-100-p" fxLayout="row">
+                          <div fxFlex>
+                            <div fxLayout="row" fxLayoutAlign="start center">
+                              <p class="font-weight-500 m-0">Building: </p>
+                              <span class="font-size-12"> &nbsp; {{ wo.buildingName }} </span>
+                            </div>
+
+                            <div fxLayout="row" fxLayoutAlign="start center" class="w-100-p">
+                              <p class="font-weight-500 m-0">Suite/Location: </p>
+                              <span class="font-size-12"> &nbsp; {{ wo.location }} </span>
+                            </div>
+                            <div fxLayout="row" fxLayoutAlign="start center" class="w-100-p">
+                              <p class="font-weight-500 m-0">Category: </p>
+                              <div fxLayout="row">
+                                <span class="font-size-12"> &nbsp; {{ wo.scheduleCategoryName }} </span>
+                                <span class="font-size-12" *ngIf="wo.scheduleSubCategoryName !== null">,
+                                  {{ wo.scheduleSubCategoryName }} </span>
+                              </div>
+                            </div>
+
+
+                            <div fxLayout="row" fxLayoutAlign="start center" class="w-100-p"
+                              *ngIf="wo.dueDate !== null">
+                              <p class="font-weight-500 m-0">Due Date: </p>
+
+                              <span class="font-size-12"> &nbsp;
+                                {{ wo.epochDueDate | fromEpoch | date: 'MMM dd h:mm a' }}
+                              </span>
+                            </div>
+
+                            <div fxLayout="row" fxLayoutAlign="start center" class="w-100-p"
+                              *ngIf="wo.dueDate === null">
+                              <p class="font-weight-500 m-0">Due Date: </p>
+                              <span class="font-size-12"> &nbsp; Flexible </span>
+                            </div>
+
+                          </div>
+                          <div fxFlex="10" fxLayout="row" fxLayoutAlign="end center">
+                            <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                              (click)="$event.stopPropagation();">
+                              <mat-icon>more_vert</mat-icon>
+                            </button>
+
+                            <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                              <button id="mat-menu-item" mat-menu-item aria-label="edit" [routerLink]="'/app/work-orders/detail/'"
+                                [queryParams]="{action:'edit', workorder:wo.id, source:'calendar'}">
+                                <span>Edit</span>
+                              </button>
+
+                              <button id="mat-menu-item" mat-menu-item aria-label="edit sequence"
+                                *ngIf="wo.workOrderScheduleSettingId>0 && wo.elementsInSequence>1"
+                                (click)="editWorkOrderSequence(wo.workOrderScheduleSettingId)">
+                                <span>Edit Sequence</span>
+                              </button>
+
+                              <button id="mat-menu-item" mat-menu-item aria-label="clone" (click)="cloneWorkOrder(wo.id)"
+                                *ngIf="!readOnly">
+                                <span>Clone</span>
+                              </button>
+
+                              <button id="mat-menu-item" mat-menu-item aria-label="show public view"
+                                (click)="viewWorkOrderPublicDetails(wo)">
+                                <span>View</span>
+                              </button>
+
+                              <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="removeWorkOrder(wo.id)"
+                                *ngIf="!readOnly">
+                                <span>Remove</span>
+                              </button>
+
+                              <button id="mat-menu-item" mat-menu-item aria-label="activity log" (click)="viewWorkOrderActivity(wo)">
+                                <span>Activity</span>
+                              </button>
+
+                            </mat-menu>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </mat-card>
+                </div>
+              </mat-card>
+            </div>
+            <!--END CALENDAR-->
+
+            <!--Work Order-->
+            <div fxLayout="row" fxLayoutAlign="start start" class="p-16 w-100-p">
+              <mat-card fxLayout="column" fxFlex fusePerfectScrollbar class="wo-container px-24 pt-12 pb-24">
+                <div fxFlex="row" fxLayoutAlign="space-between center">
+                  <h4>Unscheduled Work Orders</h4>
+                </div>
+
+                <!-- Unscheduled WORK ORDERS-->
+                <mat-table [dataSource]="unscheduledDataSource">
+                  <!--NUMBER-->
+                  <ng-container matColumnDef="number">
+                    <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      <div fxLayout="column" fxFlex="100">
+                        <span
+                          [ngClass]="{'red-fg m-0': row.sequencePosition == 0 && row.calendarItemFrequencyId>0, 'yellow-fg': row.sequencePosition == 1}">
+                          {{ row.originWorkOrderId ? row.clonePath : row.number }}
+                        </span>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END NUMBER-->
+
+                  <!--LOCATION-->
+                  <ng-container matColumnDef="location">
+                    <mat-header-cell *matHeaderCellDef> Location </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      <div fxLayout="column" fxFlex="100" fxLayoutAlign="start start">
+                        <p class="m-0">
+                          {{row.buildingName}}
+                        </p>
+                        <small>{{row.location}}</small>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END LOCATION-->
+
+                  <!--DESCRIPTION-->
+                  <ng-container matColumnDef="description">
+                    <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      {{row.description}}
+                    </mat-cell>
+                  </ng-container>
+                  <!--END DESCRIPTION-->
+
+                  <!--CATEGORY-->
+                  <ng-container cdkColumnDef="category">
+                    <mat-header-cell *cdkHeaderCellDef>Category</mat-header-cell>
+                    <mat-cell *cdkCellDef="let row">
+                      <div fxLayout="column" class="ml-8">
+                        <span>
+                          {{row.scheduleCategoryName}}
+                        </span>
+                        <span>
+                          {{row.scheduleSubCategoryName}}
+                        </span>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END CATEGORY-->
+
+                  <!--CLIENT APPROVED-->
+                  <ng-container cdkColumnDef="clientApproved">
+                    <mat-header-cell *cdkHeaderCellDef>Schedule Date</mat-header-cell>
+                    <mat-cell *cdkCellDef="let row">
+                      <div fxLayout="column">
+                        <span *ngIf="row.epochScheduleDate > 0 && !row.unscheduled"
+                          [ngClass]=" row.scheduleDateConfirmed  === true ?'green-fg' : 'red-fg'">
+                          {{ row.epochScheduleDate | fromEpoch | date: 'MMM dd h:mm a' }}
+                        </span>
+                        <span *ngIf="row.epochScheduleDate > 0 && row.unscheduled">
+                          {{ row.epochScheduleDate | fromEpoch | date: 'MMM yyyy' }}
+                        </span>
+                        <span class="green-fg" *ngIf="row.clientApproved">
+                          Approved by Client
+                        </span>
+                        <span class="red-fg" *ngIf="!row.clientApproved">
+                          Pending Approval
+                        </span>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END CLIENT APPROVED-->
+
+                  <!--BILL-->
+                  <ng-container cdkColumnDef="dateSubmitted">
+                    <mat-header-cell *cdkHeaderCellDef>
+                      Bill to</mat-header-cell>
+                    <mat-cell *cdkCellDef="let row">
+                      <div fxLayout="column">
+                        <span>
+                          {{row.billingDateTypeName }}
+                        </span>
+                        <span>
+                          {{row.totalBill | currency:'USD':'symbol'}}
+                        </span>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END BILL-->
+
+                  <!--DUE DATE-->
+                  <ng-container cdkColumnDef="dueDate">
+                    <mat-header-cell fxFlex="100px" *cdkHeaderCellDef>Due Date</mat-header-cell>
+                    <mat-cell fxFlex="100px" *cdkCellDef="let row">
+                      <span [ngClass]="{'red-fg': row.isExpired === 1}" *ngIf="row.epochDueDate > 0">
+                        {{ row.epochDueDate | fromEpoch | date: 'MMM dd h:mm a' }}
+                      </span>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END DUE DATE-->
+
+                  <!--STATUS-->
+                  <ng-container cdkColumnDef="status">
+                    <mat-header-cell fxFlex="150px" *cdkHeaderCellDef>Status</mat-header-cell>
+                    <mat-cell fxFlex="150px" *cdkCellDef="let row">
+
+                      <div fxLayout="column" fxLayoutAlign="space-around">
+                        <div fxLayout="row" fxLayoutAlign="space-around center">
+                          <span [ngClass]="['badge w-88' ,ngClassWorkOrderStatus(row.statusId,row.isExpired)]">
+                            {{ workOrderStatus(row.statusId) | uppercase }}
+                          </span>
+                          <small class="small-margin"> {{row.tasksDoneCount}} / {{row.tasksCount}}</small>
+
+                          <span class="quantity-indicator text-truncate span-margin"
+                            [ngClass]="{'green-600':row.tasksBillableCount > 0}">
+                          </span>
+                        </div>
+
+                        <div class="mt-4 w-88" fxLayout="row" fxLayoutAlign="space-around start">
+                          <span matTooltip="Notifications to Requester"
+                            class=" {{ row.sendRequesterNotifications ? 'badge-notification enabled' : 'badge-notification disabled' }} ">
+                            <mat-icon class="fuse-white-fg s-16">person</mat-icon>
+                          </span>
+                          <span matTooltip="Notifications to Management Company"
+                            class=" {{ row.sendPropertyManagersNotifications ? 'badge-notification enabled' : 'badge-notification disabled' }} ">
+                            <mat-icon class="fuse-white-fg s-16">supervisor_account</mat-icon>
+                          </span>
+                          <span matTooltip="Active Comments"
+                            class=" {{ row.notesCount===0 ? 'badge-notification disabled' : 'badge-notification enabled' }} ">
+                            <mat-icon class="fuse-white-fg s-16">comment</mat-icon>
+                          </span>
+                          <span matTooltip="Work Order sequence"
+                            [ngClass]="{'badge-notification':true,'disabled': row.workOrderScheduleSettingId===0 || row.elementsInSequence===1, 'enabled': row.workOrderScheduleSettingId>0 && row.elementsInSequence>1, 'last-one':row.sequencePosition===0 && row.elementsInSequence>1}">
+                            <mat-icon class="fuse-white-fg s-16">calendar_today</mat-icon>
+                          </span>
+                        </div>
+                      </div>
+
+                    </mat-cell>
+                  </ng-container>
+                  <!--END STATUS-->
+
+                  <!--BUTTONS-->
+                  <ng-container cdkColumnDef="buttons">
+                    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+                    <mat-cell *cdkCellDef="let row">
+                      <div fxFlex="row" fxLayoutAlign="end center">
+
+                        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                          (click)="$event.stopPropagation();">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+
+                        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="edit" [routerLink]="'/app/work-orders/detail/'"
+                            [queryParams]="{action:'edit', workorder:row.id, source:'calendar'}">
+                            <span>Edit</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="edit sequence"
+                            *ngIf="row.workOrderScheduleSettingId>0 && row.elementsInSequence>1"
+                            (click)="editWorkOrderSequence(row.workOrderScheduleSettingId)">
+                            <span>Edit Sequence</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="clone" (click)="cloneWorkOrder(row.id)" *ngIf="!readOnly">
+                            <span>Clone</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="show public view" (click)="viewWorkOrderPublicDetails(row)">
+                            <span>View</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="removeWorkOrder(row.id)" *ngIf="!readOnly">
+                            <span>Remove</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="activity log" (click)="viewWorkOrderActivity(row)">
+                            <span>Activity</span>
+                          </button>
+
+                        </mat-menu>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END BUTTONS-->
+
+                  <mat-header-row *matHeaderRowDef="unscheduledDisplayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: unscheduledDisplayedColumns;"></mat-row>
+                </mat-table>
+
+                <mat-paginator #unscheduledPaginator [pageSize]="5" [pageSizeOptions]="[5,15, 25, 50, 75]">
+                </mat-paginator>
+                <!--END WORK ORDERS-->
+              </mat-card>
+            </div>
+            <!--END Unscheduled Work Order-->
+
+            <!--Work Order-->
+            <div fxLayout="row" fxLayoutAlign="start start" class="p-16 w-100-p">
+              <mat-card fxLayout="column" fxFlex fusePerfectScrollbar class="wo-container px-24 pt-12 pb-24">
+                <div fxFlex="row" fxLayoutAlign="space-between center">
+                  <h4>Work Orders</h4>
+                </div>
+
+                <!--WORK ORDERS-->
+                <mat-table [dataSource]="dataSource">
+                  <!--NUMBER-->
+                  <ng-container matColumnDef="number">
+                    <mat-header-cell *matHeaderCellDef> No. </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      <div fxLayout="column" fxFlex="100">
+                        <span
+                          [ngClass]="{'red-fg m-0': row.sequencePosition == 0 && row.calendarItemFrequencyId>0, 'yellow-fg': row.sequencePosition == 1}">
+                          {{ row.originWorkOrderId ? row.clonePath : row.number }}
+                        </span>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END NUMBER-->
+
+                  <!--LOCATION-->
+                  <ng-container matColumnDef="location">
+                    <mat-header-cell *matHeaderCellDef> Location </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      <div fxLayout="column" fxFlex="100" fxLayoutAlign="start start">
+                        <p class="m-0">
+                          {{row.buildingName}}
+                        </p>
+                        <small>{{row.location}}</small>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END LOCATION-->
+
+                  <!--DESCRIPTION-->
+                  <ng-container matColumnDef="description">
+                    <mat-header-cell *matHeaderCellDef> Description </mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      {{row.description}}
+                    </mat-cell>
+                  </ng-container>
+                  <!--END DESCRIPTION-->
+
+                  <!--CATEGORY-->
+                  <ng-container cdkColumnDef="category">
+                    <mat-header-cell *cdkHeaderCellDef>Category</mat-header-cell>
+                    <mat-cell *cdkCellDef="let row">
+                      <div fxLayout="column" class="ml-8">
+                        <span>
+                          {{row.scheduleCategoryName}}
+                        </span>
+                        <span>
+                          {{row.scheduleSubCategoryName}}
+                        </span>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END CATEGORY-->
+
+                  <!--CLIENT APPROVED-->
+                  <ng-container cdkColumnDef="clientApproved">
+                    <mat-header-cell *cdkHeaderCellDef>Schedule Date</mat-header-cell>
+                    <mat-cell *cdkCellDef="let row">
+                      <div fxLayout="column">
+                        <span *ngIf="row.epochScheduleDate > 0"
+                          [ngClass]=" row.scheduleDateConfirmed  === true ?'green-fg' : 'red-fg'">
+                          {{ row.epochScheduleDate | fromEpoch | date: 'MMM dd h:mm a' }}
+                        </span>
+                        <span class="green-fg" *ngIf="row.clientApproved">
+                          Approved by Client
+                        </span>
+                        <span class="red-fg" *ngIf="!row.clientApproved">
+                          Pending Approval
+                        </span>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END CLIENT APPROVED-->
+
+                  <!--BILL-->
+                  <ng-container cdkColumnDef="dateSubmitted">
+                    <mat-header-cell *cdkHeaderCellDef>
+                      Bill to</mat-header-cell>
+                    <mat-cell *cdkCellDef="let row">
+                      <div fxLayout="column">
+                        <span>
+                          {{row.billingDateTypeName }}
+                        </span>
+                        <span>
+                          {{row.totalBill | currency:'USD':'symbol'}}
+                        </span>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END BILL-->
+
+                  <!--DUE DATE-->
+                  <ng-container cdkColumnDef="dueDate">
+                    <mat-header-cell fxFlex="100px" *cdkHeaderCellDef>Due Date</mat-header-cell>
+                    <mat-cell fxFlex="100px" *cdkCellDef="let row">
+                      <span [ngClass]="{'red-fg': row.isExpired === 1}" *ngIf="row.epochDueDate > 0">
+                        {{ row.epochDueDate | fromEpoch | date: 'MMM dd h:mm a' }}
+                      </span>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END DUE DATE-->
+
+                  <!--STATUS-->
+                  <ng-container cdkColumnDef="status">
+                    <mat-header-cell fxFlex="150px" *cdkHeaderCellDef>Status</mat-header-cell>
+                    <mat-cell fxFlex="150px" *cdkCellDef="let row">
+                      <div fxLayout="column" fxLayoutAlign="space-around">
+                        <div fxLayout="row" fxLayoutAlign="space-around center">
+                          <span [ngClass]="['badge w-88' ,ngClassWorkOrderStatus(row.statusId,row.isExpired)]">
+                            {{ workOrderStatus(row.statusId) | uppercase }}
+                          </span>
+                          <small class="small-margin"> {{row.tasksDoneCount}} / {{row.tasksCount}}</small>
+
+                          <span class="quantity-indicator text-truncate span-margin"
+                            [ngClass]="{'green-600':row.tasksBillableCount > 0}">
+                          </span>
+                        </div>
+
+                        <div class="mt-4 w-88" fxLayout="row" fxLayoutAlign="space-around start">
+                          <span matTooltip="Notifications to Requester"
+                            class=" {{ row.sendRequesterNotifications ? 'badge-notification enabled' : 'badge-notification disabled' }} ">
+                            <mat-icon class="fuse-white-fg s-16">person</mat-icon>
+                          </span>
+                          <span matTooltip="Notifications to Management Company"
+                            class=" {{ row.sendPropertyManagersNotifications ? 'badge-notification enabled' : 'badge-notification disabled' }} ">
+                            <mat-icon class="fuse-white-fg s-16">supervisor_account</mat-icon>
+                          </span>
+                          <span matTooltip="Active Comments"
+                            class=" {{ row.notesCount===0 ? 'badge-notification disabled' : 'badge-notification enabled' }} ">
+                            <mat-icon class="fuse-white-fg s-16">comment</mat-icon>
+                          </span>
+                          <span matTooltip="Work Order sequence"
+                            [ngClass]="{'badge-notification':true,'disabled': row.workOrderScheduleSettingId===0 || row.elementsInSequence===1, 'enabled': row.workOrderScheduleSettingId>0 && row.elementsInSequence>1, 'last-one':row.sequencePosition===0 && row.elementsInSequence>1}">
+                            <mat-icon class="fuse-white-fg s-16">calendar_today</mat-icon>
+                          </span>
+                        </div>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END STATUS-->
+
+                  <!--BUTTONS-->
+                  <ng-container cdkColumnDef="buttons">
+                    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+                    <mat-cell *cdkCellDef="let row">
+                      <div fxFlex="row" fxLayoutAlign="end center">
+
+                        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                          (click)="$event.stopPropagation();">
+                          <mat-icon>more_vert</mat-icon>
+                        </button>
+
+                        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="edit" [routerLink]="'/app/work-orders/detail/'"
+                            [queryParams]="{action:'edit', workorder:row.id, source:'calendar'}">
+                            <span>Edit</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="edit sequence"
+                            *ngIf="row.workOrderScheduleSettingId>0 && row.elementsInSequence>1"
+                            (click)="editWorkOrderSequence(row.workOrderScheduleSettingId)">
+                            <span>Edit Sequence</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="clone" (click)="cloneWorkOrder(row.id)" *ngIf="!readOnly">
+                            <span>Clone</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="show public view" (click)="viewWorkOrderPublicDetails(row)">
+                            <span>View</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="removeWorkOrder(row.id)" *ngIf="!readOnly">
+                            <span>Remove</span>
+                          </button>
+
+                          <button id="mat-menu-item" mat-menu-item aria-label="activity log" (click)="viewWorkOrderActivity(row)">
+                            <span>Activity</span>
+                          </button>
+
+                        </mat-menu>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <!--END BUTTONS-->
+
+                  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+
+                <mat-paginator #woPaginator [pageSize]="5" [pageSizeOptions]="[5,15, 25, 50, 75]">
+                </mat-paginator>
+                <!--END WORK ORDERS-->
+              </mat-card>
+            </div>
+            <!--END Work Order-->
+          </div>
+        </div>
+      </div>
+    </mat-sidenav-content>
+    <!--END CONTENT-->
+  </mat-sidenav-container>
+  <!--END SIDENAV CONTAINER-->
+</div>

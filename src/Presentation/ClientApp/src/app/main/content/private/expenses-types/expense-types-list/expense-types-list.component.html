@@ -1,0 +1,71 @@
+<!-- LOADER -->
+<div class="spinner-container" *ngIf="loading$ | async">
+  <mat-spinner></mat-spinner>
+</div>
+<!-- END LOADER -->
+
+<mat-table #table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+  <!-- Name Column -->
+  <ng-container cdkColumnDef="description">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header>Description</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <p class="text-truncate">{{row.description}}</p>
+    </mat-cell>
+  </ng-container>
+  <!-- End Name Column -->
+
+  <!-- Subcategories Column -->
+  <ng-container cdkColumnDef="subcategories">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header>Subcategories</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <p class="text-truncate">{{row.subcategories}}</p>
+    </mat-cell>
+  </ng-container>
+  <!-- End Subcategories Column-->
+
+  <!--Status Column-->
+  <ng-container cdkColumnDef="status">
+    <mat-header-cell *cdkHeaderCellDef mat-sort-header>Status</mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <p [className]="row.status ? 'badge available' : 'badge not-available'">
+        {{ activeStatus(row.status) | uppercase }}
+      </p>
+    </mat-cell>
+  </ng-container>
+  <!--End Status Column-->
+
+  <!-- Buttons Column -->
+  <ng-container cdkColumnDef="buttons">
+    <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+    <mat-cell *cdkCellDef="let row">
+      <div fxFlex="row" fxLayoutAlign="end center">
+
+        <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More" (click)="$event.stopPropagation();">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+
+        <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+          <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="editExpenseType(row.id)">
+            <!-- <mat-icon>edit</mat-icon> -->
+            <span>Edit</span>
+          </button>
+
+          <button id="mat-menu-item" mat-menu-item aria-label="remove" (click)="changeStatusExpenseType(row)" *ngIf="!readOnly">
+            <!-- <mat-icon>autorenew</mat-icon> -->
+            <span>{{ activeOptions(row.status) }}</span>
+          </button>
+
+        </mat-menu>
+      </div>
+    </mat-cell>
+  </ng-container>
+  <!-- End Buttons Column -->
+
+  <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *cdkRowDef="let expenseType; columns: displayedColumns;" class="officeType" matRipple
+    [@animate]="{value:'*',params:{y:'100%'}}" (click)="editExpenseType(expenseType.id)">
+  </mat-row>
+</mat-table>
+<mat-paginator [length]="listCount" [pageSize]="25" [pageSizeOptions]="[15, 25, 50, 75]">
+</mat-paginator>

@@ -1,0 +1,32 @@
+@import "src/@fuse/scss/fuse";
+app-inbox-main-sidenav {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  height: 100%;
+
+  .header {
+    @include media-breakpoint('lt-md') {
+      background-color: #049546 !important;
+    }
+
+  }
+
+  .content {
+    background-color: red;
+    .compose-dialog-button {
+      // background-color: #049546 !important;
+    }
+
+    .nav {
+      .nav-item {
+        .nav-link {
+          &.active,
+          &.accent {
+            background-color: #049546 !important;
+          }
+        }
+      }
+    }
+  }
+}

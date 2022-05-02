@@ -1,0 +1,274 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar matDialogTitle class="mg-accent-bg m-0">
+    <div fxFlex fxLayout="row" fxLayoutAlign="space-between center">
+
+      <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+
+        <mat-icon>note_add</mat-icon>
+        <span class="title dialog-title">{{dialogTitle}}</span>
+
+      </div>
+
+      <!-- CLOSE DIALOG BUTTON -->
+      <button mat-icon-button (click)="dialogRef.close()" aria-label="Close Dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+      <!-- / CLOSE DIALOG BUTTON -->
+    </div>
+  </mat-toolbar>
+
+  <div mat-dialog-content class="p-24 m-0" fusePerfectScrollbar>
+
+    <form [formGroup]="buildingForm">
+      <div fxLayout="column" fxLayoutAlign="start start">
+
+        <!-- Code -->
+        <mat-form-field fxFill class="mb-4">
+          <mat-icon matPrefix class="mr-12 s-20 secondary-text">vpn_key</mat-icon>
+          <input matInput placeholder="Building Code" formControlName="code" required>
+          <mat-hint align="start" *ngIf="invalidCode" class="red-400-fg">
+            The code has already been taken
+          </mat-hint>
+        </mat-form-field>
+        <!-- Code -->
+
+        <!-- Name -->
+        <mat-form-field fxFill>
+          <mat-icon matPrefix class="mr-12 s-20 secondary-text">account_circle</mat-icon>
+          <input matInput placeholder="Name" formControlName="name" required>
+        </mat-form-field>
+        <!-- Name -->
+
+        <!-- Address -->
+        <mat-form-field *ngIf="action !=='edit'" fxFill class="example-full-width">
+          <mat-icon matPrefix class="mr-12 s-20 secondary-text" (click)="addAddress()">location_on</mat-icon>
+          <input matInput name="buildingAddress" [(ngModel)]="buildingAddress" [ngModelOptions]="{standalone: true}"
+            placeholder="Address" (click)="addAddress()" readonly>
+          <mat-icon matSuffix (click)="addAddress()">mode_edit</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field *ngIf="action ==='edit'" fxFill class="example-full-width">
+          <mat-icon matPrefix class="mr-12 s-20 secondary-text">edit_location</mat-icon>
+          <input matInput name="buildingAddress" [(ngModel)]="buildingAddress" [ngModelOptions]="{standalone: true}"
+            placeholder="Address" (click)="editAddress()">
+          <mat-icon matSuffix>mode_edit</mat-icon>
+        </mat-form-field>
+
+        <ng-container *ngIf="action === 'edit'">
+          <!-- Customer -->
+          <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+            <mat-form-field fxFlex>
+              <mat-icon matPrefix class="mr-12 s-20 secondary-text">domain</mat-icon>
+              <mat-select placeholder="Management Co." formControlName="customerId">
+                <mat-option>
+                  <ngx-mat-select-search formControlName="customerIdCtrl" placeholderLabel="Search"
+                    noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer.id">
+                  {{customer.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <!-- Customer -->
+
+          <!-- Owner -->
+          <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+            <mat-icon class="mr-12 s-20 secondary-text">domain</mat-icon>
+            <div fxLayout="column">
+              <span class="">Management Co.</span>
+              <p class="mt-0"> {{ assignedCustomer ? assignedCustomer.name : 'Unassigned  Customer' }} </p>
+            </div>
+          </div>
+          <!--
+          <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+             <button mat-button class="mat-icon-button mr-12 mt-12" (click)="newCustomer()" aria-label="New" matTooltip="Add">
+                <mat-icon>add</mat-icon>
+              </button>
+            <mat-form-field fxFlex>
+              <mat-icon matPrefix class="mr-12 s-20 secondary-text">domain</mat-icon>
+              <mat-select placeholder="Management Co." formControlName="customerId" required>
+                <mat-option>
+    <ngx-mat-select-search formControlName="customerIdCtrl" placeholderLabel="Search"
+                  noEntriesFoundLabel="No results"></ngx-mat-select-search>
+</mat-option>
+                <mat-option *ngFor="let customer of filteredCustomers | async" [value]="customer.id">
+                  {{customer.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>-->
+
+          <!-- Operations Manager -->
+          <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+            <mat-form-field fxFlex>
+              <mat-icon matPrefix class="mr-12 s-20 secondary-text">account_circle</mat-icon>
+              <mat-select placeholder="Operation Manager" [(ngModel)]="selectedOperationsManagers"
+                formControlName="operationsManagers" [multiple]="true">
+                <mat-select-trigger>
+                  {{selectedOperationsManagers.length > 0 ? selectedOperationsManagers[0].name : ''}}
+                  <span *ngIf="selectedOperationsManagers.length > 1" class="example-additional-selection">
+                    (+{{selectedOperationsManagers.length - 1}}
+                    {{selectedOperationsManagers.length === 2 ? 'other' : 'others'}})
+                  </span>
+                </mat-select-trigger>
+                <mat-option>
+                  <ngx-mat-select-search formControlName="operationsManagerIdCtrl" placeholderLabel="Search"
+                    noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let operationsManger of filteredOperationsManagers | async"
+                  [value]="operationsManger">
+                  {{operationsManger.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Selected Operations Manager -->
+          <div fxLayout="row" fxLayoutAlign="start start" class="mb-24" fxFill>
+            <mat-accordion fxFlex>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>Selected Operation Managers</mat-expansion-panel-header>
+                <mat-nav-list dense>
+                  <mat-list-item *ngFor="let op of selectedOperationsManagers">
+                    {{op.name}}
+                  </mat-list-item>
+                </mat-nav-list>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+
+          <!-- Inspector -->
+          <div fxLayout="row" fxLayoutAlign="start start" fxFill>
+            <mat-form-field fxFlex>
+              <mat-icon matPrefix class="mr-12 s-20 secondary-text">account_circle</mat-icon>
+              <mat-select placeholder="Inspector" formControlName="inspectorId">
+                <mat-option>
+                  <ngx-mat-select-search formControlName="inspectorIdCtrl" placeholderLabel="Search"
+                    noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let inspector of filteredInspectors | async" [value]="inspector.id">
+                  {{inspector.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Supervisor -->
+          <div fxLayout="row" class="pb-12" fxLayoutAlign="start start" fxFill>
+            <mat-form-field fxFlex>
+              <mat-icon matPrefix class="mr-12 s-20 secondary-text">account_circle</mat-icon>
+              <mat-select placeholder="Supervisors (same as OM if left unselected)" [(ngModel)]="selectedSupervisors"
+                formControlName="supervisors" [multiple]="true">
+                <mat-select-trigger>
+                  {{selectedSupervisors.length > 0 ? selectedSupervisors[0].name : ''}}
+                  <span *ngIf="selectedSupervisors.length > 1" class="example-additional-selection">
+                    (+{{selectedSupervisors.length - 1}} {{selectedSupervisors.length === 2 ? 'other' : 'others'}})
+                  </span>
+                </mat-select-trigger>
+                <mat-option>
+                  <ngx-mat-select-search formControlName="supervisorsCtrl" placeholderLabel="Search"
+                    noEntriesFoundLabel="No results"></ngx-mat-select-search>
+                </mat-option>
+                <mat-option *ngFor="let supervisor of filteredSupervisors | async" [value]="supervisor">
+                  {{supervisor.name}} - {{supervisor.roleName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <!-- Selected Supervisors -->
+          <div fxLayout="row" fxLayoutAlign="start start" class="mb-24" fxFill>
+            <mat-accordion fxFlex>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>Selected Supervisors</mat-expansion-panel-header>
+                <mat-nav-list dense>
+                  <mat-list-item *ngFor="let supervisor of selectedSupervisors">
+                    {{supervisor.name}}
+                  </mat-list-item>
+                </mat-nav-list>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+
+          <!--Emergency Phone-->
+          <div fxLayout="row" class="pt-12" fxLayoutAlign="start start" fxFill>
+            <mat-form-field fxFlex="50">
+              <mat-icon matPrefix class="mr-12 s-20 secondary-text">phone</mat-icon>
+              <input matInput type="tel" maxlength="13" placeholder="Emergency Phone" formControlName="emergencyPhone">
+            </mat-form-field>
+
+            <mat-form-field fxFlex="50">
+              <mat-icon matPrefix class="mr-12 s-20 secondary-text">settings_phone</mat-icon>
+              <input matInput type="tel" maxlength="13" placeholder="Emergency Phone Ext"
+                formControlName="emergencyPhoneExt">
+            </mat-form-field>
+          </div>
+
+          <!--Emergency Notes-->
+          <div fxLayout="row" class="pb-12" fxLayoutAlign="start start" fxFill>
+            <mat-form-field fxFlex>
+              <mat-icon matPrefix class="mr-12 s-20 secondary-text">comment</mat-icon>
+              <input matInput type="text" maxlength="128" placeholder="Emergency Notes"
+                formControlName="emergencyNotes">
+            </mat-form-field>
+          </div>
+
+          <!-- Contacts -->
+          <div fxLayout="row" class="mb-24" fxLayoutAlign="start start" fxFill>
+            <button mat-button class="mat-icon-button mr-12 mt-12" (click)="searchContact()" aria-label="New"
+              *ngIf="!readOnly" matTooltip="Add">
+              <mat-icon>add</mat-icon>
+            </button>
+            <mat-accordion fxFlex>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>Contacts</mat-expansion-panel-header>
+                <mat-nav-list dense>
+                  <mat-list-item *ngFor="let contact of contacts">
+                    <a matLine (click)="editContact(building.id, contact.id)">{{contact.type}} |
+                      {{contact.fullName}}</a>
+                    <button mat-icon-button (click)="unassingContact(building.id, contact.id)" aria-label="Delete"
+                      *ngIf="!readOnly" matTooltip="Delete">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </mat-list-item>
+                </mat-nav-list>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+
+          <!-- Is Active -->
+          <mat-checkbox name="isActive" formControlName="isActive" class="pb-12">Active</mat-checkbox>
+
+        </ng-container>
+      </div>
+    </form>
+
+    <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center" *ngIf="!readOnly">
+
+      <button *ngIf="action !=='edit'" mat-raised-button (click)="dialogRef.close(buildingForm)" color="accent"
+        [disabled]="buildingForm.invalid" aria-label="SAVE">
+        SAVE
+      </button>
+
+      <button *ngIf="action ==='edit'" mat-raised-button (click)="submit()" color="accent"
+        [disabled]="buildingForm.invalid" aria-label="SAVE">
+        SAVE
+      </button>
+
+      <div class="">
+        <button *ngIf="action ==='edit'" mat-button class="mat-icon-button"
+          (click)="dialogRef.close(['delete',buildingForm])" aria-label="Delete" matTooltip="Delete">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <a *ngIf="fileUrl" mat-button class="mat-icon-button" aria-label="Download PDF"
+          matTooltip="Download to format PDF" [href]="fileUrl" download="Building.pdf">
+          <mat-icon>cloud_download</mat-icon>
+        </a>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

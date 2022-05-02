@@ -1,0 +1,117 @@
+<div class="dialog-content-wrapper">
+  <mat-toolbar matDialogTitle class="accent m-0">
+    <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+      <span class="title dialog-title">{{dialogTitle}}</span>
+      <button mat-button class="mat-icon-button" (click)="dialogRef.close()" aria-label="Close dialog">
+        <mat-icon>close</mat-icon>
+      </button>
+    </mat-toolbar-row>
+
+  </mat-toolbar>
+
+  <div mat-dialog-content class="p-24 m-0" fusePerfectScrollbar>
+
+    <form [formGroup]="searchContactForm">
+      <input type="hidden" formControlName="entityId">
+
+      <!-- Contacts -->
+      <div class="mb-24" fxLayout="column">
+        <div fxLayout="row" fxLayoutAlign="start start">
+          <button mat-button class="mat-icon-button mr-12 mt-12" aria-label="New" matTooltip="Add"
+            (click)="newContact()">
+            <mat-icon>add</mat-icon>
+          </button>
+          <mat-form-field fxFlex>
+            <mat-select name="selectedContactId" placeholder="Search for name or email contact" #contactsSelect
+              formControlName="contactId" required (selectionChange)="contactsOnChange($event, contactsSelect.value)">
+              <mat-option>
+                <ngx-mat-select-search formControlName="contactCtrl" placeholderLabel="Search"
+                  noEntriesFoundLabel="No results"></ngx-mat-select-search>
+              </mat-option>
+              <mat-option [value]="null"> -- </mat-option>
+              <mat-option *ngFor="let contact of filteredContacts$ | async" [value]="contact.id">
+                {{contact.name}} - {{contact.email}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div *ngIf="preRequesterSelected === true" class="ml-12 fullAddress">
+          Ref:
+          {{ preRequesterSelectedData.firstName + ' ' + preRequesterSelectedData.lastName + ' - ' + preRequesterSelectedData.email}}
+        </div>
+      </div>
+
+      <!-- Type -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start">
+        <mat-icon class="mr-12 mt-12">label</mat-icon>
+        <mat-form-field fxFlex *ngIf="contactType === 'customer'">
+          <input name="type" formControlName="type" placeholder="Type" matInput required maxLength="80">
+        </mat-form-field>
+
+        <mat-form-field fxFlex *ngIf="contactType === 'building' && !contactTypeRequester">
+          <mat-select formControlName="type" placeholder="Type" matInput required>
+            <mat-option *ngFor="let type of contactTypes" [value]="type.name">
+              {{ type.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field fxFlex *ngIf="contactType === 'building' && contactTypeRequester">
+          <input placeholder="Type" formControlName="type" placeholder="Type" matInput readonly>
+        </mat-form-field>
+      </div>
+
+      <!-- From Date -->
+      <div class="mb-24" fxLayout="row" fxLayoutAlign="start start" *ngIf="showHistoryData">
+        <mat-icon class="mr-12 mt-12">label</mat-icon>
+        <mat-form-field fxFlex>
+          <input matInput formControlName="showHistoryFrom" [matDatepicker]="picker"
+            placeholder="Show History Data From Date">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </form>
+
+    <div class="sections">
+      <div class="section">
+        <div class="section-header" fxLayout="row" fxLayoutAlign="start center">
+          <mat-icon class="s-20">account_circle</mat-icon>
+          <span fxFlex class="section-title">Selected Contact Information</span>
+        </div>
+
+        <div class="section-content" fxLayout="column" fxLayoutAlign="start start">
+          <div class="mb-12" fxLayout="row">
+            <span class="h3 secondary-text pr-12">Name: </span>
+            <span *ngIf="selectedContactId!== 0"> {{ selectedContact.fullName }}</span>
+          </div>
+          <div class="mb-12" fxLayout="row">
+            <span class="h3 secondary-text pr-12">Email: </span>
+            <span *ngIf="selectedContactId!== 0"> {{ selectedContact.email }}</span>
+          </div>
+          <div class="mb-12" fxLayout="row">
+            <span class="h3 secondary-text pr-12">Phone: </span>
+            <span *ngIf="selectedContactId!== 0"> {{ selectedContact.phone }}</span>
+          </div>
+          <div class="mb-12" fxLayout="row">
+            <span class="h3 secondary-text pr-12">Address: </span>
+            <span *ngIf="selectedContactId!== 0"> {{ selectedContact.fullAddress }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="space-between center">
+
+    <button mat-raised-button (click)="dialogRef.close(searchContactForm)" color="accent"
+      [disabled]="searchContactForm.invalid" aria-label="LINK CONTACT" matTooltip="Link Contact">
+      ASSIGN CONTACT
+    </button>
+
+    <button mat-raised-button color="accent" (click)="dialogRef.close()" aria-label="CANCEL" matTooltip="Cancel">
+      CANCEL
+    </button>
+  </div>
+</div>

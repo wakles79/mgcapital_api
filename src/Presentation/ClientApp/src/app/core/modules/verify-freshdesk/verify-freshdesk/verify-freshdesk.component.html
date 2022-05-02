@@ -1,0 +1,17 @@
+<button mat-button
+  [ngClass]="{'fuse-white-fg': true, 'blue-bg':isValidated===false, 'green-bg':isValid, 'red-bg':isValid===false && isValidated}"
+  (click)="verify()" >
+  Verify
+</button>
+
+<small class="secondary-text" *ngIf="isLoading">
+  Loading...
+</small>
+
+<small class="secondary-text" *ngIf="isValid && isValidated">
+  The credentials entered are valid
+</small>
+
+<small class="secondary-text" *ngIf="isValid===false && isValidated">
+  The credentials entered are not valid
+</small>

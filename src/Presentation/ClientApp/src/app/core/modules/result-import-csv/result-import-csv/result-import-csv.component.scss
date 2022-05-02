@@ -1,0 +1,80 @@
+@import "src/@fuse/scss/fuse";
+
+.result-import-csv-form-dialog {
+  @include media-breakpoint('xs') {
+    width: 100%;
+  }
+
+  @include media-breakpoint('lt-xs') {
+    width: 600px;
+  }
+
+  .mat-dialog-container {
+    padding: 0;
+    overflow: hidden;
+
+    .mat-toolbar {
+      min-height: initial;
+      background: #049546 !important;
+    }
+
+    .toolbar-bottom {
+      height: auto;
+    }
+
+    .mat-radio-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mat-radio-button {
+      margin-bottom: 5px;
+    }
+
+    .rating-list li {
+      float: right;
+      cursor: pointer;
+      margin-left: 12px;
+    }
+
+    .rating-list {
+      display: inline-block;
+      list-style: none;
+    }
+  }
+
+  .dialog-content-wrapper {
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .item-summary-box {
+    padding: 2;
+    min-height: 150px;
+
+
+    &.estimated {
+      border-bottom: 4px solid #03a9f4;
+    }
+
+    &.real {
+      border-bottom: 4px solid #66bb6a;
+    }
+  }
+
+
+  .item-summary-box-down {
+    padding: 2;
+    min-height: 50px;
+
+
+    &.estimated {
+      border-bottom: 4px solid #03a9f4;
+    }
+
+    &.real {
+      border-bottom: 4px solid #66bb6a;
+    }
+  }
+}

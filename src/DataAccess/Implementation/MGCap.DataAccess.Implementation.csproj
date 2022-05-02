@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\..\_stylecop\StyleCopeRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Migrations\MGCapDb\20180620204528_AddedWorkOrderSourceEntity.cs" />
+    <Compile Remove="Migrations\MGCapDb\20180630183040_UpdateWOCodeAsKeyColumn.cs" />
+    <Compile Remove="Migrations\MGCapDb\20180711211818_ChangeIsExpiredWOEntity.cs" />
+    <Compile Remove="Migrations\MGCapDb\20180718174804_WorkOrderAttachments.cs" />
+    <Compile Remove="Migrations\MGCapDb\20180718180122_WorkOrderAttachments2.cs" />
+    <Compile Remove="Migrations\MGCapDb\20181008215909_Added_PushNotifications_Models.cs" />
+    <Compile Remove="Migrations\MGCapDb\20181108201611_ChangeDefaultValueIsActiveFieldToWorkOrderEntity.cs" />
+    <Compile Remove="Migrations\MGCapDb\20181109154329_RenamedOrigialValueFiedlWorkOrderActivityLogEntity.cs" />
+    <Compile Remove="Migrations\MGCapDb\20181114171011_added_Email_to_customers.cs" />
+    <Compile Remove="Migrations\MGCapDb\20181114210623_Added_CustomerUser_table.cs" />
+    <Compile Remove="Migrations\MGCapDb\20190201161511_remove_customerId_from_customerUser.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="$(SolutionDir)src\_stylecop\stylecop.json" Link="stylecop.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.50.5" />
+    <PackageReference Include="Dapper.SimpleCRUD" Version="2.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.1.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="2.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Domain\MGCap.Domain.csproj" />
+    <ProjectReference Include="..\Abstract\MGCap.DataAccess.Abstract.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
+    <Reference Include="Microsoft.EntityFrameworkCore" />
+    <Reference Include="Microsoft.EntityFrameworkCore.Relational" />
+  </ItemGroup>
+    <ItemGroup>
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.1" />
+  </ItemGroup>
+</Project>

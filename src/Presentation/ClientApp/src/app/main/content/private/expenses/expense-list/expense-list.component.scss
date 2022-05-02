@@ -1,0 +1,112 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/mat-table";
+
+app-expense-list {
+  flex: 1;
+
+  .mat-table {
+    background: transparent;
+    box-shadow: none;
+    max-height: 100%;
+
+    .mat-column-avatar {
+      flex: 0 1 64px;
+    }
+
+    .mat-column-checkbox {
+      flex: 0 1 48px;
+      padding-left: 0%;
+      .mat-checkbox-ripple {
+        display: none !important; //fix for broken rendering
+      }
+    }
+
+    .mat-column-buttons {
+      flex: 0 1 40px;
+    }
+
+    .mat-column-transactionNumber {
+      flex: 0 1 100px;
+      white-space: pre-wrap;
+    }
+
+    .mat-column-contract {
+      flex: 0 1 100px;
+      white-space: pre-wrap;
+      padding-left: 1%;
+    }
+
+    .mat-column-amount {
+      flex: 0 1 100px;
+      white-space: pre-wrap;
+    }
+
+    .mat-column-date {
+      flex: 0 1 100px;
+    }
+
+    .mat-column-building {
+      flex: 0 1 150px;
+      padding-left: 1%;
+      white-space: pre-wrap;
+    }
+
+    .mat-column-customer {
+      flex: 0 1 150px;
+      white-space: pre-wrap;
+    }
+
+    .mat-header-row {
+      font-weight: 500;
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .mat-row {
+      position: relative;
+      cursor: pointer;
+      padding: 8px 8px 8px 24px;
+      padding-left: 18px;
+      padding-right: 18px;
+
+      .mat-cell {
+        min-width: 0;
+
+        &.mat-column-detail-button {
+          flex: 0 1 auto;
+          padding: 0 24px 0 0;
+
+          @include media-breakpoint('gt-md') {
+            display: none;
+          }
+        }
+      }
+    }
+  }
+
+  /* Absolute Center Spinner */
+  .spinner-container {
+    position: fixed;
+    z-index: 999;
+    height: 2em;
+    width: 2em;
+    overflow: show;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+  }
+
+  /* Transparent Overlay */
+  .spinner-container:before {
+    content: "";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+}

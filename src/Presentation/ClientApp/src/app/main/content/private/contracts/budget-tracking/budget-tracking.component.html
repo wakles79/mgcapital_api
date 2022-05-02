@@ -1,0 +1,306 @@
+<div id="budget-tracking" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent p-16 p-sm-24">
+
+    <!--APP TITLE-->
+    <div fxLayout="column" fxLayoutAlign="center start">
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Budgets</span>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Budget Tracking</span>
+      </div>
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <button class="mr-0 mr-sm-16" mat-icon-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <button mat-button class="sidebar-toggle mr-8" (click)="toggleSidebar('simple-left-sidebar-4')">
+          <mat-icon>filter_list</mat-icon>
+          <span class="logo-text">FILTER</span>
+        </button>
+
+        <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+          <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Budget
+            Tracking</span>
+        </div>
+      </div>
+
+    </div>
+    <!--END APP TITLE-->
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content primary-50-bg">
+
+    <!--LOADER-->
+    <div class="spinner-container" *ngIf="loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
+    <!--END LOADER-->
+
+    <!-- SIDEBAR -->
+    <fuse-sidebar class="sidebar" name="simple-left-sidebar-4" position="left">
+
+      <!-- SIDEBAR CONTENT -->
+      <div class="content p-24" fusePerfectScrollbar>
+        <span class="mat-title">Filters</span>
+        <div fxLayout="column" fxLayoutAlign="center start">
+
+          <mat-form-field>
+            <input matInput [formControl]="dateFrom" [matDatepicker]="pFromDate" placeholder="From">
+            <mat-datepicker-toggle matSuffix [for]="pFromDate"></mat-datepicker-toggle>
+            <mat-datepicker #pFromDate></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput [formControl]="dateTo" [matDatepicker]="pToDate" placeholder="To">
+            <mat-datepicker-toggle matSuffix [for]="pToDate"></mat-datepicker-toggle>
+            <mat-datepicker #pToDate></mat-datepicker>
+          </mat-form-field>
+
+        </div>
+      </div>
+      <!-- / SIDEBAR CONTENT -->
+
+    </fuse-sidebar>
+    <!-- / SIDEBAR -->
+
+    <!-- CENTER -->
+    <div class="center p-24 pb-56 pr-sm-92" fusePerfectScrollbar>
+
+      <!-- CONTENT -->
+      <div class="content p-40 fuse-white-bg mat-elevation-z4">
+        <!--REPORT-->
+        <div class="report">
+
+          <div fxLayout="column">
+            <div fxFlex="100" class="p-8 mb-40">
+              <div fxLayout="row" fxLayoutAlign="space-between center">
+                <div>
+                  <h2 class="m-0">Yearly Budget Balance </h2>
+                  <div fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon style="color: #66bb6a;">linear_scale</mat-icon>
+                    Revenue
+
+                    <mat-icon style="color: #ef5350;" class="ml-12">linear_scale</mat-icon>
+                    Expenses
+                  </div>
+                </div>
+
+                <div>
+                  <button mat-flat-button *ngFor="let year of availabeYears" (click)="changeYear(year)"
+                    [ngClass]="{'accent':currentYear == year, 'fuse-white-bg fuse-black-fg':currentYear != year}">
+                    {{year}}
+                  </button>
+                </div>
+              </div>
+
+              <div style="width: 100%; height: 450px;">
+                <ngx-charts-line-chart [results]="data" [scheme]="expensePieColorScheme" [animations]="false"
+                  xAxis="true" yAxis="true" legendTitle="Balance" showXAxisLabel="true" showYAxisLabel="true"
+                  xAxisLabel="Months" yAxisLabel="Budget Balance">
+                </ngx-charts-line-chart>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--END REPORT-->
+      </div>
+
+      <div class="mt-16">
+        <div class="px-4" style="width: 100%;" fxLayout="row" fxLayoutAlign="space-between none" fxLayout="row wrap">
+          <mat-card *ngFor="let profit of yearlyProfits; let i = index" fxFlex.xs="48" fxFlex.sm="48" fxFlex.md="23"
+            fxFlex.lg="15" fxFlex.xl="15" class="mb-12"
+            [ngClass]="{'muted-text': (i < dateFromMonthFilter || i > dateToMonthFilter) }">
+            <span class="h2"> {{profit.month}} </span>
+            <div fxLayout="column" fxLayoutAlign="center center" class="mt-12">
+              <span class="black-500-fg font-size-24 line-height-24">
+                {{profit.netProfit | currency:'USD':'symbol'}}
+              </span>
+              <span class="h5 secondary-text font-weight-400">
+                Net Profit
+              </span>
+
+              <hr class="primary">
+
+              <span
+                [ngClass]="{'font-size-24 line-height-24': true,'green-fg': (profit.profitRatio * 100) > profitMargin, 'red-fg': (profit.profitRatio * 100) <= profitMargin}">
+                {{profit.profitRatio * 100 | number:'1.2-2'}}%
+              </span>
+              <span class="h5 secondary-text font-weight-400">
+                Profit Ratio
+              </span>
+            </div>
+          </mat-card>
+        </div>
+      </div>
+
+      <div class="content p-40 fuse-white-bg mat-elevation-z4 mt-14">
+        <div class="report">
+          <div fxLayout="column">
+            <h2 class="m-0"> Revenue and Expenses </h2>
+
+            <!--REVENUE-->
+            <div class="mat-elevation-z2 mt-24">
+              <!--TITLE-->
+              <div class="sub-title-document green-400-bg" fxLayoutAlign="space-between center">
+                <span class="mat-headline m-0 pl-16 fuse-white-fg">REVENUES</span>
+
+                <button mat-icon-button matTooltip="Add Revenue" (click)="addRevenue()" *ngIf="!readOnly">
+                  <mat-icon class="fuse-white-fg">add_box</mat-icon>
+                </button>
+              </div>
+              <!--END TITLE-->
+              <table style="width:100%;">
+                <thead>
+                  <tr class="mat-header-row">
+                    <th class="mat-header-cell">Transaction Number</th>
+                    <th class="mat-header-cell">Description</th>
+                    <th class="mat-header-cell">Reference</th>
+                    <th class="mat-header-cell">Date</th>
+                    <th class="mat-header-cell">Sub-Total</th>
+                    <th class="mat-header-cell">Tax</th>
+                    <th class="mat-header-cell">Total</th>
+                    <th class="mat-header-cell"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let cItem of budget.revenues" class="mat-row" style="cursor:pointer;">
+                    <td class="mat-cell"> {{cItem.transactionNumber}} </td>
+                    <td class="mat-cell"> {{cItem.description}} </td>
+                    <td class="mat-cell"> {{cItem.reference}} </td>
+                    <td class="mat-cell"> {{ cItem.date  | date: 'MMM dd, yyyy' }} </td>
+                    <td class="mat-cell"> {{cItem.subTotal | currency:'USD':'symbol'}} </td>
+                    <td class="mat-cell"> % {{cItem.tax}} </td>
+                    <td class="mat-cell"> {{cItem.total | currency:'USD':'symbol'}} </td>
+                    <td class="mat-cell" align="end">
+                      <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="editRevenue(cItem.id)">
+                          <!-- <mat-icon>edit</mat-icon> -->
+                          <span>Edit</span>
+                        </button>
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="delete" (click)="deleteRenenue(cItem.id)">
+                          <!-- <mat-icon>delete</mat-icon> -->
+                          <span>Delete</span>
+                        </button>
+
+                      </mat-menu>
+                    </td>
+                  </tr>
+                  <tr class="mat-row">
+                    <td class="mat-cell"></td>
+                    <td class="mat-cell"></td>
+                    <td class="mat-cell"></td>
+                    <td class="mat-cell"></td>
+                    <td class="mat-cell" align="right">Total</td>
+                    <td class="mat-cell" align="right">{{ totalRevenues | currency:'USD':'symbol' }}</td>
+                    <td class="mat-cell"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!--END REVENUE-->
+
+            <!--EXPENSES-->
+            <div class="mat-elevation-z2 mt-24">
+              <!--TITLE-->
+              <div class="sub-title-document red-400-bg" fxLayoutAlign="space-between center">
+                <span class="mat-headline m-0 pl-16 fuse-white-fg">EXPENSES</span>
+
+                <button mat-icon-button matTooltip="Add Expense" (click)="addExpense()" *ngIf="!readOnly">
+                  <mat-icon class="fuse-white-fg">add_box</mat-icon>
+                </button>
+
+              </div>
+              <!--END TITLE-->
+              <table style="width:100%;">
+                <thead>
+                  <tr class="mat-header-row">
+                    <th class="mat-header-cell">Transaction Number</th>
+                    <th class="mat-header-cell">Description</th>
+                    <th class="mat-header-cell">Reference</th>
+                    <th class="mat-header-cell">Date</th>
+                    <th class="mat-header-cell">Vendor</th>
+                    <th class="mat-header-cell">Amount</th>
+                    <th class="mat-header-cell"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let cItem of budget.expenses" class="mat-row" style="cursor:pointer;">
+                    <td class="mat-cell"> {{cItem.transactionNumber}} </td>
+                    <td class="mat-cell"> {{cItem.description}} </td>
+                    <td class="mat-cell"> {{cItem.reference}} </td>
+                    <td class="mat-cell"> {{cItem.date | date: 'MMM dd, yyyy'}} </td>
+                    <td class="mat-cell"> {{cItem.vendor}} </td>
+                    <td class="mat-cell"> {{cItem.amount | currency:'USD':'symbol'}} </td>
+                    <td class="mat-cell" align="end">
+                      <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+                      <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="edit" (click)="editExpense(cItem.id)">
+                          <!-- <mat-icon>edit</mat-icon> -->
+                          <span>Edit</span>
+                        </button>
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="delete" (click)="deleteExpense(cItem.id)">
+                          <!-- <mat-icon>delete</mat-icon> -->
+                          <span>Delete</span>
+                        </button>
+
+                      </mat-menu>
+                    </td>
+                  </tr>
+                  <tr class="mat-row">
+                    <td class="mat-cell"></td>
+                    <td class="mat-cell"></td>
+                    <td class="mat-cell"></td>
+                    <td class="mat-cell" align="right">Total</td>
+                    <td class="mat-cell" align="right"> {{ totalExpenses | currency:'USD':'symbol' }} </td>
+                    <td class="mat-cell"></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!--END EXPENSES-->
+
+            <!--PROFIT-->
+            <div class="mt-24" fxLayout="row" fxLayoutAlign="space-between center">
+              <span class="mat-title mb-8">Net Profit</span>
+              <span class="mat-title mb-8">
+                {{ totalProfit | currency:'USD':'symbol' }}
+              </span>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="space-between center">
+              <span class="mat-title">Profit Ratio</span>
+              <span class="mat-title">
+                {{ totalProfitRatio * 100 | number:'1.2-2' }}%
+              </span>
+            </div>
+            <!--END PROFIT-->
+          </div>
+        </div>
+      </div>
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CENTER -->
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

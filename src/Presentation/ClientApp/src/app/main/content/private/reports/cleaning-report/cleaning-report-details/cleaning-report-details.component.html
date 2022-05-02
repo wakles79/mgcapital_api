@@ -1,0 +1,628 @@
+<div id="cleaning-report-details" class="page-layout simple left-sidebar inner-sidebar inner-scroll">
+
+  <!-- HEADER -->
+  <div class="header accent p-16 p-sm-24" fxLayout="row" fxLayoutAlign="space-between center" fxLayout.gt-xs="row"
+    fxLayoutAlign.gt-xs="space-between center">
+
+    <!-- APP TITLE -->
+    <div fxLayout="column" fxLayoutAlign="center start">
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <mat-icon class="secondary-text s-16">home</mat-icon>
+        <mat-icon class="secondary-text s-16">chevron_right</mat-icon>
+        <span class="secondary-text">Cleaning Report Details</span>
+      </div>
+
+      <div class="fuse-white-fg breadcrumb" fxLayout="row" fxLayoutAlign="start center">
+        <button class="mr-0 mr-sm-16" mat-icon-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+
+        <div class="logo" fxLayout="row" fxLayoutAlign="start center">
+          <span class="logo-text h1" *fuseIfOnDom [@animate]="{value:'*',params:{delay:'100ms',x:'-25px'}}">Cleaning
+            Report Details</span>
+        </div>
+      </div>
+
+    </div>
+    <!-- / APP TITLE -->
+
+  </div>
+  <!-- / HEADER -->
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <div class="spinner-container" *ngIf="loading$ | async">
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <!-- CENTER -->
+    <div class="center p-24 pb-56 pr-sm-92" fusePerfectScrollbar>
+
+      <!-- CONTENT -->
+      <div class="content fuse-white-bg mat-elevation-z4">
+
+        <div class="report-list">
+          <!-- HEADER -->
+          <div class="title-document" fxLayoutAlign="center center">
+            <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="center center">
+              <span class="mat-headline">MG Capital Cleaning Report</span>
+            </div>
+          </div>
+          <div class="mt-16 ml-8 m-sm-0 " fxLayoutAlign="space-between stretch">
+            <div class="invoice-number pl-24 pt-24" fxLayout="row" fxFlex="50" fxLayoutAlign="start center">
+              <div fxLayout="column">
+
+                <div fxLayout="row">
+                  <span class="title">TO </span>
+                  <span class="number number-date">{{ reportDetails.to }}</span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> FROM </span>
+                  <span class="number number-date">{{ reportDetails.from }}</span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> LOCATION </span>
+                  <span class="number number-date">{{ reportDetails.location }}</span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title">DATE FORM </span>
+                  <span class="number number-date">{{ reportDetails.epochDateOfService | fromEpoch | date: 'MMMM dd,
+                    yyyy' }}</span>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="invoice-number" fxLayout="row" fxFlex="50" fxLayoutAlign="space-between">
+              <div class="issuer" fxLayout="row" fxLayoutAlign="start center">
+                <div class="logo">
+                  <img src="assets/images/logos/MG Logo Black Text.png">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- / HEADER -->
+
+          <!-- REPORT ITEMS -->
+          <div class="card m-12 mat-elevation-z8">
+            <div class="card">
+
+              <!-- TITLE -->
+              <div class="title-document" fxLayoutAlign="center center">
+                <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="space-between center">
+                  <span class="mat-headline pl-24">Cleaning Report</span>
+
+                  <div class="fuse-white-fg breadcrumb pr-24" fxFlex="0 1 auto"
+                    *ngIf="reportDetails.submitted === 0 && !readOnly">
+                    <button mat-icon-button (click)="addElement('cleaningItem')" matTooltip="Add Items">
+                      <mat-icon>add_box</mat-icon>
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+              <!-- /TITLE -->
+
+              <mat-table #table [dataSource]="cleaningItemsDataSource" [@animateStagger]="{value:'50'}" matSort
+                matSortDisableClear>
+
+                <!-- Building -->
+                <ng-container cdkColumnDef="building">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Building</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item">
+                    <div fxLayout="column" fxFlex="100">
+                      <p>
+                        {{ item.buildingName }}
+                      </p>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Location -->
+                <ng-container cdkColumnDef="location">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Suite/Location</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item">
+                    <div fxLayout="column" fxFlex="100">
+                      <p>
+                        {{ item.location }}
+                      </p>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Time -->
+                <ng-container cdkColumnDef="time">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Time</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item">
+                    <div fxLayout="column" fxFlex="100">
+                      <p>
+                        {{ item.time | uppercase }}
+                      </p>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Observances -->
+                <ng-container cdkColumnDef="observances">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600" fxFlex="40">Observances</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item;  let rowIndex = index;" fxFlex="40">
+                    <div fxLayout="column" fxLayoutAlign="start start">
+                      <p>
+                        {{ item.observances }}
+                      </p>
+                      <div class="attachments" *ngIf="item.attachments.length > 0">
+                        <mat-expansion-panel fxFlex="100">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title>
+                              <div class="section-header pb-12" fxLayout="row" fxLayoutAlign="start center"
+                                fxFlex="100">
+                                <mat-icon>attachment</mat-icon>
+                                <span fxFlex class="section-title">&nbsp;IMAGES ({{item.attachments.length}})</span>
+                              </div>
+                            </mat-panel-title>
+                          </mat-expansion-panel-header>
+
+                          <div class="attachment" *ngFor="let att of item.attachments; index as i">
+                            <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+                              <div fxLayout="row" fxLayoutAlign="start center" fxLayout="row"
+                                fxLayoutAlign="center start">
+                                <div class="attachment-preview mat-elevation-z2"
+                                  [ngStyle]="{'background-image': 'url('+att.fullUrl+')'}" (click)="open(att.id)">
+                                </div>
+                                <div class="attachment-content" fxLayout="column">
+                                  <span class="attachment-description">DESCRIPTION</span>
+                                  <div fxLayout="row" fxLayoutAlign="start center">
+                                    <span class="attachment-name">{{ att.title }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </mat-expansion-panel>
+                      </div>
+                    </div>
+
+                  </mat-cell>
+                </ng-container>
+
+
+                <ng-container cdkColumnDef="buttons">
+                  <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+                  <mat-cell *cdkCellDef="let item">
+                    <div fxFlex="row" fxLayoutAlign="end center" *ngIf="!readOnly">
+
+                      <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                        (click)="$event.stopPropagation();">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+
+                      <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="send_credentials"
+                          (click)="addElementForBuilding(item)" [disabled]="!isEditable">
+                          <!-- <mat-icon>add_box</mat-icon> -->
+                          <span>Add</span>
+                        </button>
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="send_credentials"
+                          (click)="editElement(item)" [disabled]="!isEditable">
+                          <!-- <mat-icon>edit</mat-icon> -->
+                          <span>Edit</span>
+                        </button>
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="send_credentials"
+                          (click)="viewElement(item)" *ngIf="!isEditable">
+                          <!-- <mat-icon>pageview</mat-icon> -->
+                          <span>View</span>
+                        </button>
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="remove"
+                          (click)="removeElement(item, 'cleaningItem')" [disabled]="!isEditable">
+                          <!-- <mat-icon>delete</mat-icon> -->
+                          <span>Remove</span>
+                        </button>
+
+                      </mat-menu>
+
+                    </div>
+
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *cdkHeaderRowDef="cleaningItemsDisplayedColumns"></mat-header-row>
+                <mat-row *cdkRowDef="let item; columns: cleaningItemsDisplayedColumns;" class="user" matRipple
+                  [@animate]="{value:'*',params:{y:'100%'}}">
+                </mat-row>
+              </mat-table>
+              <mat-paginator [length]="cleaningItemsCount" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]">
+              </mat-paginator>
+
+            </div>
+          </div>
+          <!-- /REPORT ITEMS -->
+
+          <!-- REPORT FINDING -->
+          <div class="card m-12 mat-elevation-z8 pt-32">
+            <div class="card">
+
+              <!-- TITLE -->
+              <div class="title-document" fxLayoutAlign="center center">
+                <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="space-between center">
+                  <span class="mat-headline pl-24">Findings</span>
+
+                  <div class="fuse-white-fg breadcrumb pr-24" fxFlex="0 1 auto"
+                    *ngIf="reportDetails.submitted === 0 && !readOnly">
+                    <button mat-icon-button (click)="addElement('findingItem')" matTooltip="Add Findings">
+                      <mat-icon>add_box</mat-icon>
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+              <!-- /TITLE -->
+
+
+              <mat-table #table [dataSource]="findingItemsDataSource" [@animateStagger]="{value:'50'}" matSort
+                matSortDisableClear>
+
+                <!-- Building -->
+                <ng-container cdkColumnDef="building">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Building</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item">
+                    <div fxLayout="column" fxFlex="100">
+                      <p>
+                        {{ item.buildingName }}
+                      </p>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Location -->
+                <ng-container cdkColumnDef="location">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Suite/Location</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item">
+                    <div fxLayout="column" fxFlex="100">
+                      <p>
+                        {{ item.location }}
+                      </p>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Observances -->
+                <ng-container cdkColumnDef="observances">
+                  <mat-header-cell *cdkHeaderCellDef class="font-weight-600" fxFlex="40">Observances</mat-header-cell>
+                  <mat-cell *cdkCellDef="let item; let rowIndex = index;" fxFlex="40">
+                    <div fxLayout="column" fxLayoutAlign="start start">
+                      <p>
+                        {{ item.observances }}
+                      </p>
+                      <div class="attachments" *ngIf="item.attachments.length > 0">
+                        <mat-expansion-panel fxFlex="100">
+                          <mat-expansion-panel-header>
+                            <mat-panel-title>
+                              <div class="section-header pb-12" fxLayout="row" fxLayoutAlign="start center"
+                                fxFlex="100">
+                                <mat-icon>attachment</mat-icon>
+                                <span fxFlex class="section-title">&nbsp;IMAGES ({{item.attachments.length}})</span>
+                              </div>
+                            </mat-panel-title>
+                          </mat-expansion-panel-header>
+
+                          <div class="attachment" *ngFor="let att of item.attachments; index as i">
+                            <div fxFlex fxLayout="row" fxLayoutAlign="start center">
+                              <div fxLayout="row" fxLayoutAlign="start center" fxLayout="row"
+                                fxLayoutAlign="center start">
+                                <div class="attachment-preview mat-elevation-z2"
+                                  [ngStyle]="{'background-image': 'url('+att.fullUrl+')'}" (click)="open(att.id)">
+                                </div>
+                                <div class="attachment-content" fxLayout="column">
+                                  <span class="attachment-description">DESCRIPTION</span>
+                                  <div fxLayout="row" fxLayoutAlign="start center">
+                                    <span class="attachment-name">{{ att.title }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </mat-expansion-panel>
+                      </div>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+
+                <ng-container cdkColumnDef="buttons">
+                  <mat-header-cell *cdkHeaderCellDef></mat-header-cell>
+                  <mat-cell *cdkCellDef="let item">
+                    <div fxFlex="row" fxLayoutAlign="end center" *ngIf="!readOnly">
+
+                      <button mat-icon-button [matMenuTriggerFor]="moreMenu" aria-label="More"
+                        (click)="$event.stopPropagation();">
+                        <mat-icon>more_vert</mat-icon>
+                      </button>
+
+                      <mat-menu #moreMenu="matMenu" id="mat-menu">
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="send_credentials"
+                          (click)="addElementForBuilding(item)" [disabled]="!isEditable">
+                          <!-- <mat-icon>add_box</mat-icon> -->
+                          <span>Add</span>
+                        </button>
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="send_credentials"
+                          (click)="editElement(item)" [disabled]="!isEditable">
+                          <!-- <mat-icon>edit</mat-icon> -->
+                          <span>Edit</span>
+                        </button>
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="send_credentials"
+                          (click)="viewElement(item)" *ngIf="!isEditable">
+                          <!-- <mat-icon>pageview</mat-icon> -->
+                          <span>View</span>
+                        </button>
+
+                        <button id="mat-menu-item" mat-menu-item aria-label="remove"
+                          (click)="removeElement(item, 'findingItem')" [disabled]="!isEditable">
+                          <!-- <mat-icon>delete</mat-icon> -->
+                          <span>Remove</span>
+                        </button>
+
+                      </mat-menu>
+                    </div>
+
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *cdkHeaderRowDef="findingItemsDisplayedColumns"></mat-header-row>
+                <mat-row *cdkRowDef="let item; columns: findingItemsDisplayedColumns;" class="user" matRipple
+                  [@animate]="{value:'*',params:{y:'100%'}}">
+                </mat-row>
+              </mat-table>
+              <mat-paginator [length]="findingItemsCount" [pageSize]="10" [pageSizeOptions]="[5, 10, 20, 50]">
+              </mat-paginator>
+            </div>
+          </div>
+          <!-- /REPORT FINDINGS -->
+
+
+          <!-- NOTES -->
+          <div class="card m-12 mat-elevation-z8 pt-32" *ngIf="reportDetails.submitted !== 0">
+            <div class="card" fxLayout="column">
+
+              <!-- TITLE -->
+              <div class="title-document" fxLayoutAlign="center center">
+                <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="space-between center">
+                  <span class="mat-headline pl-24">Comments</span>
+                </div>
+              </div>
+              <!-- /TITLE -->
+
+              <div class="" fxLayout="column" fxFlex="100">
+
+                <div class="scroll-table" fxFlex="70">
+                  <mat-table #table [dataSource]="notesDataSource" [@animateStagger]="{value:'50'}" matSort
+                    matSortDisableClear>
+
+                    <!-- Message -->
+                    <ng-container cdkColumnDef="message">
+                      <mat-header-cell *cdkHeaderCellDef class="font-weight-600">Message</mat-header-cell>
+                      <mat-cell *cdkCellDef="let item">
+                        <div class="comment-row" [ngClass]="messageAlign(item.direction)" fxFlex="100"
+                          FlexLayout="column">
+                          <div class="comment-sender-name" fxLayout="row">
+                            {{ item.senderName }}
+                          </div>
+                          <div class="comment-bubble" [ngClass]="messageBg(item.direction)" fxLayout="row">
+                            {{ item.message }}
+                          </div>
+                          <div class="comment-time" fxLayout="row">
+                            {{ item.epochCreatedDate | fromEpoch | date: 'MMM dd hh:mm a' }}
+                          </div>
+                        </div>
+                      </mat-cell>
+                    </ng-container>
+
+                    <!-- <mat-header-row *cdkHeaderRowDef="notesDisplayedColums"></mat-header-row> -->
+                    <mat-row *cdkRowDef="let item; columns: notesDisplayedColums;" class="user" matRipple
+                      [@animate]="{value:'*',params:{y:'100%'}}">
+                    </mat-row>
+
+                  </mat-table>
+                </div>
+
+                <div class="separator mt-4 mb-4 ml-20 mr-32" fxLayoutAlign="center center"></div>
+
+                <div class="mt-16 ml-8 m-sm-0 pr-20 pl-20 pt-20 pb-20" fxLayout="row"
+                  fxLayoutAlign="space-between stretch" fxFlex="30">
+
+                  <form [formGroup]="noteForm" fxFlex="95">
+                    <textarea matInput name="message" formControlName="message" placeholder="Add a comment" rows="3"
+                      required></textarea>
+                  </form>
+
+                  <button mat-raised-button class="mat-accent-bg fuse-white-fg ml-16 mr-12" aria-label="SEND"
+                    (click)="addNote()" [disabled]="noteForm.invalid" fxLayoutAlign="center center" fxFlex="5"
+                    *ngIf="!readOnly">
+                    <mat-icon>send</mat-icon>
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+          <!-- /NOTES -->
+
+        </div>
+
+      </div>
+
+      <div class="content fuse-white-bg mat-elevation-z4 mt-24">
+
+        <div class="report-list">
+          <!--LOG-->
+          <div class="card m-12 mat-elevation-z8">
+            <mat-accordion>
+              <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                  <mat-panel-title>
+                    Activity Log
+                  </mat-panel-title>
+                </mat-expansion-panel-header>
+                <div class="log">
+                  <table style="width:100%;">
+                    <thead>
+                      <tr class="mat-header-row primary-600-bg">
+                        <th class="mat-header-cell fuse-white-fg" style="max-width:180px;">DATE</th>
+                        <th class="mat-header-cell fuse-white-fg" style="max-width:230px;">USER</th>
+                        <th class="mat-header-cell fuse-white-fg">CHANGES</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let log of activityLog" class="mat-row">
+                        <td class="mat-cell" style="max-width:180px;">
+                          {{ log.epochCreatedDate | fromEpoch }}
+                        </td>
+                        <td class="mat-cell" style="max-width:230px;">
+                          {{ log.employeeFullName }} <span class="font-weight-500">({{ activityType(log.activityType)
+                            }})</span>
+                        </td>
+                        <td class="mat-cell">
+                          <div [ngSwitch]="log.activityType" class="summary-table">
+                            <table *ngSwitchCase="0" style="width:100%;">
+                              <thead>
+                                <tr class="mat-header-row">
+                                  <th class="mat-header-cell black-fg"> FIELD </th>
+                                  <th class="mat-header-cell black-fg"> ORIGINAL VALUE</th>
+                                  <th class="mat-header-cell black-fg"> CURRENT VALUE </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let logItem of log.changeLogEntries" class="mat-row">
+                                  <td class="mat-cell">
+                                    {{ logItem.propertyName }}
+                                  </td>
+                                  <td class="mat-cell">
+                                    {{ logItem.originalValue }}
+                                  </td>
+                                  <td class="mat-cell">
+                                    {{ logItem.currentValue }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <table *ngSwitchCase="1" style="width:100%;">
+                              <thead>
+                                <tr class="mat-header-row">
+                                  <th class="mat-header-cell black-fg">ITEM TYPE</th>
+                                  <th class="mat-header-cell black-fg">ACTION</th>
+                                  <th class="mat-header-cell black-fg">DESCRIPTION</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let logItem of log.itemLogEntries" class="mat-row">
+                                  <td class="mat-cell">
+                                    {{ cleaningReportItemType(logItem.itemType) }}
+                                  </td>
+                                  <td class="mat-cell">
+                                    {{ logItem.activityType }}
+                                  </td>
+                                  <td class="mat-cell">
+                                    {{ logItem.value }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <table *ngSwitchCase="2" style="width:100%;">
+                              <thead>
+                                <tr class="mat-header-row">
+                                  <th class="mat-header-cell black-fg">
+                                    NAME
+                                  </th>
+                                  <th class="mat-header-cell black-fg">
+                                    EMAIL
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let logItem of log.emailLogEntries" class="mat-row">
+                                  <td class="mat-cell">
+                                    {{ logItem.name }}
+                                  </td>
+                                  <td class="mat-cell">
+                                    {{ logItem.email }}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </mat-expansion-panel>
+            </mat-accordion>
+          </div>
+          <!--END LOG-->
+        </div>
+
+      </div>
+
+      <!-- <div class="content fuse-white-bg mt-24">
+        <div class="report-list" style="height: 20px;">
+
+        </div>
+      </div> -->
+      <!-- / CONTENT -->
+
+    </div>
+    <!-- / CENTER -->
+
+    <!--DOWNLOAD PDF-->
+    <a *ngIf="downloadAvailable" mat-fab class="mat-accent-bg" id="download-pdf-button"
+      matTooltip="Download document as PDF" matTooltipPosition="left"
+      [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}" [href]="fileUrl" [download]="documentName">
+      <mat-icon>cloud_download</mat-icon>
+    </a>
+    <!--END DOWNLOAD PDF-->
+
+    <!-- SEND BY EMAIL DOCUMENT BUTTON -->
+    <div>
+      <button mat-fab class="mat-accent-bg" id="send-by-email-button"
+        aria-label="send by email the link of public document view" *fuseIfOnDom
+        matTooltip="Send by email the document url" matTooltipPosition="left" (click)="sendByEmailCleaningReportLink()"
+        [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+        <mat-icon>email</mat-icon>
+      </button>
+    </div>
+    <!-- / SEND BY EMAIL DOCUMENT BUTTON -->
+
+    <!-- SHARE DOCUMENT BUTTON -->
+    <button mat-fab class="mat-accent-bg" id="copy-url-button" aria-label="show shared document view" *fuseIfOnDom
+      matTooltip="Shared document url" matTooltipPosition="left" (click)="shareDocument()"
+      [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+      <mat-icon>insert_link</mat-icon>
+    </button>
+    <!-- / SHARE DOCUMENT BUTTON -->
+
+    <!-- OPEN REPORT VIEW BUTTON -->
+    <button mat-fab class="mat-accent-bg" id="show-shared-view-button" aria-label="show shared document view"
+      *fuseIfOnDom matTooltip="Show shared document view" matTooltipPosition="left"
+      (click)="openPublicDocumentViewNewTap()" [@animate]="{value:'*', params:{delay:'300ms',scale:'.2'}}">
+      <mat-icon>pageview</mat-icon>
+    </button>
+    <!-- / OPEN REPORT VIEW  BUTTON -->
+
+  </div>
+  <!-- / CONTENT -->
+
+</div>

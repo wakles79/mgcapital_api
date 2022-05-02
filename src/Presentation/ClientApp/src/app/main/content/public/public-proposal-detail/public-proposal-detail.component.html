@@ -1,0 +1,224 @@
+<div id="invoice" class="compact page-layout blank" fusePerfectScrollbar>
+  <div class="invoice-container" fxLayout="row">
+    <div class="no-print" fxHide.lt-lg fxFlex="20"></div>
+
+    <!--PROPOSAL-->
+    <div class="card" fxFlex="100" fxFlex.gt-lg="60" *ngIf="proposalDetail">
+      <div class="content">
+        <div class="report-list">
+          <!--HEADER-->
+          <div class="title-document" fxLayoutAlign="center center">
+            <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="center center">
+              <span class="mat-headline">MG Capital Proposal Detail</span>
+            </div>
+          </div>
+
+          <div class="print-no-margin print-no-padding mt-16 ml-32 m-sm-0 p-24" fxLayoutAlign="space-between stretch">
+            <div class="invoice-number print-no-padding pt-8" fxLayout="row" fxFlex="50" fxLayoutAlign="start center">
+              <div fxLayout="column">
+
+                <div fxLayout="row">
+                  <span class="title"> TO </span>
+                  <span class="number number-date"> {{proposalDetail.customerName}}
+                    ({{ proposalDetail.customerEmail }})</span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> FROM </span>
+                  <span class="number number-date"> {{proposalDetail.contactName}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> LOCATION </span>
+                  <span class="number number-date"> {{proposalDetail.location}} </span>
+                </div>
+
+                <div fxLayout="row">
+                  <span class="title"> DATE FROM </span>
+                  <span class="number number-date"> {{proposalDetail.createdDate | date }} </span>
+                </div>
+
+                <div fxLayout="row" *ngIf="proposalDetail.status > 0">
+                  <span class="title"> STATUS </span>
+                  <span class="number number-date">
+                    {{ status }} - {{proposalDetail.statusChangedDate | date}} </span>
+                </div>
+
+                <div fxLayout="row" *ngIf="proposalDetail.status === 1">
+                  <span class="title"> BILL TO </span>
+                  <span class="number number-date">
+                    {{ billToValue }} - {{proposalDetail.billToName}} ({{proposalDetail.billToEmail}})</span>
+                </div>
+
+                <!--<div fxLayout="row">
+                  <span class="title"> TOTAL </span>
+                  <span class="number number-date font-weight-600"> {{ total | currency:'USD':'symbol'}} </span>
+                </div>-->
+
+              </div>
+            </div>
+
+            <div class="invoice-number print-no-padding pl-24 pt-8 " fxLayout="row" fxFlex="50"
+              fxLayoutAlign="center center">
+              <div class="issuer" fxLayout="row" fxLayoutAlign="start center">
+                <div class="logo">
+                  <img src="assets/images/logos/MG Logo Black Text.png">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--END HEADER-->
+
+          <!--CONTENT-->
+          <div class="print-no-margin card-table m-24">
+            <!-- TITLE -->
+            <div class="sub-title-document green-400-bg" fxLayoutAlign="center center">
+              <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="start center">
+                <span class="mat-headline print-no-padding pl-8">Service Items</span>
+              </div>
+            </div>
+            <!-- /TITLE -->
+
+            <mat-table [dataSource]="dataSource" [@animateStagger]="{value:'50'}" matSort matSortDisableClear>
+
+              <!-- Quantity Column -->
+              <ng-container cdkColumnDef="quantity">
+                <mat-header-cell *cdkHeaderCellDef>Quantity</mat-header-cell>
+                <mat-cell *cdkCellDef="let row">
+                  <div fxLayout="column" fxFlex="100">
+                    {{ row.quantity }}
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Quantity Column -->
+
+              <!-- Description Column -->
+              <ng-container cdkColumnDef="description">
+                <mat-header-cell *cdkHeaderCellDef>Description</mat-header-cell>
+                <mat-cell *cdkCellDef="let row">
+                  <div fxLayout="column" fxFlex="100">
+                    <p class="m-0 font-weight-500">
+                      {{ row.officeServiceTypeName }}
+                    </p>
+                    <p class="m-0">
+                      {{ row.description }}
+                    </p>
+                    <p class="m-0">
+                      {{ row.dateToDelivery | date }}
+                    </p>
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Description Column -->
+
+              <!-- Building Column -->
+              <ng-container cdkColumnDef="building">
+                <mat-header-cell *cdkHeaderCellDef>Building</mat-header-cell>
+                <mat-cell *cdkCellDef="let row">
+                  <div fxLayout="column" fxFlex="100">
+                    {{ row.buildingName }}
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Building Column -->
+
+              <!-- Location Column -->
+              <ng-container cdkColumnDef="location">
+                <mat-header-cell *cdkHeaderCellDef>Location</mat-header-cell>
+                <mat-cell *cdkCellDef="let row">
+                  <div fxLayout="column" fxFlex="100">
+                    {{ row.location }}
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Location Column -->
+
+              <!-- Rate Column -->
+              <ng-container cdkColumnDef="rate">
+                <mat-header-cell *cdkHeaderCellDef>Rate</mat-header-cell>
+                <mat-cell *cdkCellDef="let row">
+                  <div fxLayout="column" fxFlex="100">
+                    {{ row.rate | currency:'USD':'symbol' }}
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Rate Column -->
+
+              <!-- Total Column -->
+              <ng-container cdkColumnDef="total">
+                <mat-header-cell *cdkHeaderCellDef>Total</mat-header-cell>
+                <mat-cell *cdkCellDef="let row">
+                  <div fxLayout="column" fxFlex="100">
+                    {{ row.rate * row.quantity | currency:'USD':'symbol' }}
+                  </div>
+                </mat-cell>
+              </ng-container>
+              <!-- End Total Column -->
+
+              <mat-header-row *cdkHeaderRowDef="columnsToDisplay"></mat-header-row>
+              <mat-row *cdkRowDef="let proposal; columns: columnsToDisplay;" class="proposal"
+                [@animate]="{value:'*',params:{y:'100%'}}">
+              </mat-row>
+            </mat-table>
+
+            <div fxLayout="row" fxLayoutAlign="end center" class="p-8">
+              <span class="pr-8">Total</span>
+              <span class="font-weight-600 font-size-16 pr-60"> {{ total | currency:'USD':'symbol'}} </span>
+            </div>
+          </div>
+          <!--END CONTENT-->
+
+          <!--FOOTER-->
+          <div class="print-no-margin card-table m-24" *ngIf="proposalDetail.status === 0">
+
+            <div class="row mt-8 pl-20 pr-20">
+              <form [formGroup]="billToForm">
+                <span class="text-bold">If you want to <strong>approve</strong> the proposal please select, to whom
+                  this proposal should
+                  be billed?</span>
+                <div class="row">
+                  <mat-radio-group formControlName="billTo">
+                    <mat-radio-button value="1">Tenant</mat-radio-button>
+                    <mat-radio-button class="m-r" value="2">Management Company</mat-radio-button>
+                  </mat-radio-group>
+                </div>
+
+                <div fxLayout="row">
+                  <mat-form-field fxFlex="50" class="pr-4">
+                    <mat-icon matPrefix class="s-20">person</mat-icon>
+                    <input matInput placeholder="Name" formControlName="billToName" required>
+                  </mat-form-field>
+
+                  <mat-form-field fxFlex="50" class="pl-4">
+                    <mat-icon matPrefix class="s-20">alternate_email</mat-icon>
+                    <input matInput placeholder="Email" formControlName="billToEmail" required email>
+                  </mat-form-field>
+                </div>
+              </form>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="start center" class="pl-20 pr-20 pt-4">
+              <mat-slide-toggle class="example-margin" [(ngModel)]="isChecked">
+              </mat-slide-toggle>
+              <small class="ml-8">
+                By clicking the following Approve Button I understand that I am authorizing MG Capital to perform
+                the
+                above described task(s).
+              </small>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="space-around center" class="mt-16 mb-8">
+              <button mat-stroked-button (click)="approveProposal()"
+                [ngClass]="{'green-bg fuse-white-fg': billToForm.valid && isChecked, 'primary-100-bg black-fg': billToForm.invalid || !isChecked}">Approve</button>
+              <button mat-stroked-button (click)="declineProposal()" class="red-bg fuse-white-fg">Decline</button>
+            </div>
+          </div>
+          <!--END FOOTER-->
+        </div>
+      </div>
+    </div>
+    <!--END PROPOSAL-->
+
+    <div class="no-print" fxHide.lt-lg fxFlex="20"></div>
+  </div>
+</div>

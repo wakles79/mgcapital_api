@@ -1,0 +1,89 @@
+<div class="sidenav-content">
+  <!--CARD-->
+  <div class="card fuse-white-bg">
+    <!--CONTENT-->
+    <div class="content py-16" fusePerfectScrollbar>
+      <!--NAV-->
+      <div class="nav" fxLayout="column" fxLayoutAlign="start start">
+
+        <!--SIDENAV HEADER-->
+        <div class="header p-24 title" fxFlexFill fxLayout="row" fxLayoutAlign="start center">
+          <span class="h5">FILTERS</span>
+        </div>
+        <!--END SIDENAV HEADER-->
+
+        <div class="nav-item pl-12 pr-8" aria-label="before snooze date" fxFlexFill>
+          <span>Before Snooze Date</span>
+          <div fxLayout="row">
+            <mat-form-field fxFlex class="date-picker-form">
+              <input matInput [formControl]="beforeSnoozeDate" [matDatepicker]="pBeforeSnoozeDate" placeholder="Date">
+              <mat-datepicker-toggle matSuffix [for]="pBeforeSnoozeDate"></mat-datepicker-toggle>
+              <mat-datepicker #pBeforeSnoozeDate></mat-datepicker>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="nav-item pl-12 pr-8" aria-label="buildings" fxFlexFill *ngIf="roleLevelLoggedUser<=20">
+          <span>By Building</span>
+          <div fxLayout="row">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Building" #sBuilding (selectionChange)="changeBuilding(sBuilding.value)">
+                <mat-option *ngFor="let building of filteredBuildings$ | async" [value]="building.id">
+                  {{building.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="nav-item pl-12 pr-8" aria-label="employees" fxFlexFill *ngIf="roleLevelLoggedUser<=20">
+          <span class="font-size-12">By Employee</span>
+          <div fxLayout="row">
+            <mat-form-field fxFlex>
+              <mat-select placeholder="Employee" #sEmployee (selectionChange)="changeEmployee(sEmployee.value)">
+                <mat-option *ngFor="let employee of filteredEmployees$ | async" [value]="employee.id">
+                  {{employee.name}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="nav-item" aria-label="all" fxFlexFill>
+          <span class="ml-12">By Status</span>
+          <a class="nav-link" matRipple (click)="changeFilter('all')" [ngClass]="{'active mg-accent-bg':filterActive ==='all'}">
+            <span class="title">All Inspections</span>
+          </a>
+          <a class="nav-link" matRipple (click)="changeFilter('pending')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='pending'}">
+            <span class="title">Pending</span>
+          </a>
+
+          <a class="nav-link" matRipple (click)="changeFilter('scheduled')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='scheduled'}">
+            <span class="title">Scheduled</span>
+          </a>
+          <a class="nav-link" matRipple (click)="changeFilter('walkthrough')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='walkthrough'}">
+            <span class="title">Walkthrough</span>
+          </a>
+          <a class="nav-link" matRipple (click)="changeFilter('walkthroughComplete')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='walkthroughComplete'}">
+            <span class="title">Walkthrough Complete</span>
+          </a>
+          <a class="nav-link" matRipple (click)="changeFilter('active')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='active'}">
+            <span class="title">Active</span>
+          </a>
+          <a class="nav-link" matRipple (click)="changeFilter('closed')"
+            [ngClass]="{'active mg-accent-bg':filterActive ==='closed'}">
+            <span class="title">Closed</span>
+          </a>
+        </div>
+      </div>
+      <!--END NAV-->
+    </div>
+    <!--END CONTENT-->
+  </div>
+  <!--END CARD-->
+</div>

@@ -1,0 +1,149 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/mat-table";
+@import "src/app/core/scss/custom/custom-theme";
+
+#wo-billable-report {
+  .content {
+    overflow: hidden;
+  }
+
+  .breadcrumb {
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
+
+  mat-sidenav-container .sidenav {
+    min-width: 280px !important;
+  }
+
+  [disabled].mat-accent-bg,
+  [disabled].mat-light-blue-600-bg {
+    background-color: rgba(0, 0, 0, 0.12) !important;
+    box-shadow: none !important;
+    color: rgba(0, 0, 0, 0.26) !important;
+  }
+
+  .report-list {
+    flex: 1;
+
+    .mat-table {
+      background: transparent;
+      box-shadow: none;
+      max-height: 100%;
+
+      .mat-column-number {
+        max-width: 48px;
+        padding-left: 0;
+        white-space: pre-wrap;
+      }
+
+      .mat-column-description {
+        // word-wrap: break-word !important;
+        // white-space: unset !important;
+        // flex: 0 0 200px !important;
+        // width: 200px !important;
+        // overflow-wrap: break-word;
+        // word-wrap: break-word;
+
+        flex: 0 0 200px !important;
+        width: 200px !important;
+        word-wrap: break-word !important;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        display: inline-block;
+        padding: 18px 20px 18px 20px;
+      }
+
+      .mat-column-notes {
+        flex: 0 1 64px;
+      }
+
+      .mat-column-serviceTotal {
+        padding-left: 1%;
+      }
+
+      .mat-column-buildingNoteToBilling {
+        padding-left: 1%;
+      }
+
+      .mat-column-buttons {
+        max-width: 40px;
+        padding-right: 4%;
+      }
+
+      .mat-header-row {
+        font-weight: 500;
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .mat-row {
+        position: relative;
+        cursor: pointer;
+        padding: 8px 8px 8px 24px;
+        padding-left: 18px;
+        padding-right: 18px;
+
+        .mat-cell {
+          min-width: 0;
+
+          .is-expired {
+            color: #f44336 !important;
+          }
+
+          &.mat-column-detail-button {
+            flex: 0 1 auto;
+            padding: 0 24px 0 0;
+
+            @include media-breakpoint('gt-md') {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+#export-to-pdf-button {
+  position: absolute;
+  bottom: 74px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}
+
+#export-to-csv-button {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}
+
+/* Absolute Center Spinner */
+.spinner-container {
+  position: fixed;
+  z-index: 999;
+  height: 2em;
+  width: 2em;
+  overflow: show;
+  margin: auto;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+}
+
+/* Transparent Overlay */
+.spinner-container:before {
+  content: "";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.3);
+}

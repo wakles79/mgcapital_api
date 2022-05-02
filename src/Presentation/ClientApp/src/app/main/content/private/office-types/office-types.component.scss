@@ -1,0 +1,15 @@
+@import "src/app/core/scss/custom/custom-theme";
+
+#officetypes {
+  .content {
+    overflow: hidden;
+  }
+}
+
+#add-office-type-button {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  padding: 0;
+  z-index: 99;
+}

@@ -1,0 +1,217 @@
+@import "src/@fuse/scss/fuse";
+@import "src/app/core/scss/custom/lightbox";
+@import "~ng-pick-datetime/assets/style/picker.min.css";
+
+.ticket-form-dialog {
+  @include media-breakpoint('xs') {
+    width: 100%;
+  }
+
+  @include media-breakpoint('lt-xs') {
+    width: 740px;
+  }
+
+  .mat-dialog-container {
+    padding: 0;
+    overflow: hidden;
+
+    .mat-toolbar {
+      background: #049546 !important;
+      min-height: initial;
+    }
+
+    .toolbar-bottom {
+      height: auto;
+    }
+
+    .section {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+      margin-bottom: 32px;
+
+      &:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+
+        .section-content {
+          padding-bottom: 0;
+        }
+      }
+
+      .client-notification {
+        margin-top: 20px;
+      }
+
+      .section-header {
+        &.number-work-order {
+          margin-top: 10px !important;
+
+          .section-title {
+            border-bottom: none !important;
+          }
+        }
+
+        margin-top: 30px;
+        font-size: 16px;
+
+        mat-icon {
+          margin-right: 8px;
+          color: rgba(0, 0, 0, 0.6);
+        }
+
+        .section-title {
+          font-weight: 500;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+          margin-bottom: 32px;
+        }
+      }
+
+      .section-content {
+        padding: 24px 0 32px 0;
+      }
+
+      .attachments {
+
+        .attachment {
+          margin-bottom: 16px;
+
+          .attachment-preview {
+            background-color: #EEF0F2;
+            width: 160px;
+            height: 128px;
+            background-size: contain;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.6);
+
+            @include media-breakpoint('xs') {
+              margin-bottom: 24px;
+            }
+
+            @include media-breakpoint('lt-xs') {
+              margin-right: 24px;
+            }
+          }
+
+          .attachment-content {
+
+            .attachment-url,
+            .attachment-name {
+              font-weight: 500;
+              font-size: 16px;
+            }
+
+            .attachment-is-cover {
+              margin-left: 6px;
+            }
+
+            .attachment-time {
+              color: rgba(0, 0, 0, 0.6);
+            }
+
+            .attachment-actions-button {
+              background-color: white;
+              text-transform: capitalize;
+              margin: 12px 0 0 0;
+              padding-left: 12px;
+
+              mat-icon {
+                margin-left: 8px;
+                color: rgba(0, 0, 0, 0.6);
+              }
+            }
+          }
+        }
+
+        .add-attachment-button {
+          margin: 0;
+
+          mat-icon {
+            color: rgba(0, 0, 0, 0.6);
+            margin-right: 8px;
+          }
+
+          span {
+            font-weight: 500;
+            text-transform: capitalize;
+          }
+        }
+      }
+
+      .checklist {
+        .checklist-progress {
+          margin-bottom: 16px;
+
+          .checklist-progress-value {
+            margin-right: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            font-size: 14px;
+          }
+
+          .checklist-progressbar {
+          }
+        }
+
+        .editable-wrap {
+          flex: 1;
+        }
+
+        .check-items {
+          .check-item {
+            mat-checkbox {
+              margin-bottom: 0;
+
+              .mat-label {
+                font-size: 14px;
+              }
+
+              &.mat-checked {
+                .mat-label {
+                  text-decoration: line-through;
+                  color: rgba(0, 0, 0, 0.6);
+                }
+              }
+            }
+          }
+        }
+
+        .new-check-item-form {
+          padding-top: 16px;
+
+          mat-form-field {
+            margin: 0;
+          }
+
+          .mat-button {
+            margin: 0 0 0 16px;
+          }
+        }
+      }
+
+    }
+  }
+
+  .dialog-content-wrapper {
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+owl-date-time-container {
+  font-size: 13px !important;
+  width: 280px !important;
+
+  .owl-dt-calendar-table .owl-dt-calendar-cell-content {
+    font-size: 13px !important;
+  }
+
+  .owl-dt-calendar-table .owl-dt-calendar-header .owl-dt-weekdays th {
+    font-size: 12px !important;
+  }
+
+  .owl-dt-timer-content .owl-dt-timer-input {
+    font-size: 16px !important;
+  }
+}

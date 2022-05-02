@@ -1,0 +1,226 @@
+<div id="invoice" class="compact page-layout blank" fusePerfectScrollbar>
+  <div class="invoice-container" fxLayout="row">
+    <div class="no-print" fxHide.lt-lg fxFlex="20"></div>
+    <!--INSPECTION-->
+    <div class="card" fxFlex="100" fxFlex.gt-lg="60" *ngIf="inspectionDetail">
+      <div class="content">
+        <div class="report-list">
+          <!--HEADER-->
+          <div class="title-document" fxLayoutAlign="center center">
+            <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="center center">
+              <span class="mat-headline">MG Capital Inspection Detail</span>
+            </div>
+          </div>
+
+          <div class="issuer" fxLayout="row" fxLayoutAlign="center center" fxHide fxShow.xs>
+            <div class="logo mt-20 mb-16" fxFlex="60">
+              <img src="assets/images/logos/MG Logo Black Text.png">
+            </div>
+          </div>
+
+          <div class="print-no-margin print-no-padding sm-no-padding ml-32 m-sm-0 pl-24 pt-24 pr-24"
+            fxLayoutAlign="space-between stretch">
+            <div class="invoice-number print-no-padding pt-8" fxLayout="row" fxFlex.xs="100" fxFlex.sm="50"
+              fxLayoutAlign="start center">
+              <div fxLayout="column">
+                <!--BUILDING-->
+                <div fxLayout="row">
+                  <span class="title"> BUILDING </span>
+                  <span class="number number-text"> {{inspectionDetail.buildingName}} </span>
+                </div>
+                <!--END BUILDING-->
+
+                <!--STATUS-->
+                <div fxLayout="row">
+                  <span class="title"> STATUS </span>
+                  <span class="number number-text"> {{inspectionDetail.statusName | uppercase}} </span>
+                </div>
+                <!--END STATUS-->
+
+                <!--EMPLOYEE-->
+                <div fxLayout="row">
+                  <span class="title"> EMPLOYEE </span>
+                  <span class="number number-text"> {{inspectionDetail.employeeName}} </span>
+                </div>
+                <!--END EMPLOYEE-->
+
+                <!--DUE DATE-->
+                <div fxLayout="row">
+                  <span class="title"> DUE DATE </span>
+                  <span class="number number-text"> {{inspectionDetail.dueDate | date: 'MM/dd/yyyy'}} </span>
+                </div>
+                <!--END DUE DATE-->
+
+                <!--CLOSE DATE-->
+                <div fxLayout="row" *ngIf="inspectionDetail.status === 4">
+                  <div>
+                    <span class="title"> CLOSE DATE </span>
+                    <span class="number number-text"> {{inspectionDetail.closeDate | date: 'MM/dd/yyyy'}} </span>
+                  </div>
+                </div>
+                <!--END CLOSE DATE-->
+
+                <!--STARS-->
+                <div fxLayout="row" *ngIf="inspectionDetail.stars!=0" fxLayoutAlign="start center">
+                  <span class="title"> SCORE </span>
+                  <ul style="display: inline-block; margin: 0; padding: 0 0 0 8px;">
+                    <li *ngFor="let star of [1,2,3,4,5]" style="display: inline-block; list-style: none;">
+                      <mat-icon class="yellow-600-fg font-size-24">
+                        {{ star <= inspectionDetail.stars ? "star" : "star_border" }}</mat-icon>
+                    </li>
+                  </ul>
+                </div>
+                <!--END STARS-->
+              </div>
+            </div>
+
+            <div class="invoice-number print-no-padding pl-24 pt-8" fxLayout="row" fxFlex="50"
+              fxLayoutAlign="center center" fxShow fxHide.xs>
+              <div class="issuer" fxLayout="row" fxLayoutAlign="start center">
+                <div class="logo">
+                  <img src="assets/images/logos/MG Logo Black Text.png">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="print-no-margin print-no-padding sm-no-padding ml-32 m-sm-0 pl-24 pr-24"
+            fxLayoutAlign="space-between stretch">
+            <div class="invoice-number print-no-padding" fxLayout="row" fxLayoutAlign="start center">
+              <div fxLayout="column">
+
+                <!--BEGIN NOTES-->
+                <div fxLayout="row">
+                  <div fxLayout="column">
+                    <span class="title"> STARTING NOTES </span>
+                    <span class="padding number-text">
+                      {{inspectionDetail.beginNotes}}
+                    </span>
+                  </div>
+                </div>
+                <!--END BEGIN NOTES-->
+
+                <!--CLOSING NOTES-->
+                <div fxLayout="row" *ngIf="inspectionDetail.status === 4">
+                  <div fxLayout="column">
+                    <span class="title"> CLOSING NOTES </span>
+                    <span class="padding number-text">
+                      {{inspectionDetail.closingNotes}}
+                    </span>
+                  </div>
+                </div>
+                <!--END CLOSING NOTES-->
+
+              </div>
+            </div>
+          </div>
+          <!--END HEADER-->
+
+          <!--CONTENT-->
+          <div class="print-no-margin card-table m-24">
+            <!-- TITLE -->
+            <div class="sub-title-document green-400" fxLayoutAlign="center center">
+              <div class="pt-12" fxFill fxLayout="row" fxLayoutAlign="start center">
+                <span class="mat-headline print-no-padding pl-8">Inspection Items</span>
+              </div>
+            </div>
+            <!-- /TITLE -->
+
+            <mat-card *ngFor="let item of inspectionDetail.inspectionItem" class="mb-16 p-0 inspection-item-box ">
+              <!--HEADER-->
+              <div fxLayout="column" fxLayoutAlign="center none" class="p-12 item-box-header">
+                <div fxLayout="row" fxLayoutAlign="start center" class="item-box-title">
+                  <span class="font-size-14 font-weight-500 text-title-break">
+                    Item Number {{item.number}}
+                  </span>
+                </div>
+
+                <div class="item-box-title">
+                  <span class="text-boxed ml-0 p-4 fuse-white-fg fuse-black-bg text-sm-break"> {{item.typeName}} </span>
+                  <span class="text-boxed ml-0 p-4 priority-{{item.priority}} text-sm-break"> {{item.priorityName}}
+                  </span>
+                  <span
+                    class="text-boxed ml-0 p-4 {{ item.statusName | lowercase }} text-sm-break">{{item.statusName}}</span>
+                </div>
+              </div>
+              <!--END HEADER-->
+
+              <!--CONTENT-->
+              <div fxLayout="column" fxLayoutAlign="start none" class="p-12 item-box-content">
+                <!--DESCRIPTION-->
+                <div fxLayout="column" fxLayoutAlign="start start">
+                  <div fxLayout="row" fxLayoutAlign="start center"
+                    class="font-weight-500 text-subtitle-break mb-8 print-no-margin print-no-padding">
+                    <mat-icon class="s-20 mr-8 ">location_on</mat-icon>
+                    Location
+                  </div>
+                  <p class="mt-0 ml-16 text-sm-break">{{item.position}}</p>
+
+                  <div fxLayout="row" fxLayoutAlign="start center"
+                    class="font-weight-500 text-subtitle-break mb-8 print-no-margin print-no-padding">
+                    <mat-icon class="s-20 mr-8 ">description</mat-icon>
+                    Description
+                  </div>
+                  <pre class="text-sm-break">{{item.description}}</pre>
+                </div>
+                <!--END DESCRIPTION-->
+
+                <!--TASKS-->
+                <div *ngIf="item.tasks.length > 0">
+                  <div class="font-weight-500 text-subtitle-break mb-8 print-no-margin print-no-padding" fxLayout="row"
+                    fxLayoutAlign="start center">
+                    <mat-icon class="s-20  mr-8">format_list_bulleted</mat-icon>
+                    Tasks
+                  </div>
+                  <ul style="list-style: none;">
+                    <li *ngFor="let task of item.tasks" class="mb-12">
+                      <mat-checkbox class="mr-8" [(ngModel)]="task.isComplete" disabled>
+                      </mat-checkbox>
+                      {{task.description}}
+                    </li>
+                  </ul>
+                </div>
+                <!--END TASKS-->
+
+                <!--NOTES-->
+                <div *ngIf="item.notes.length > 0">
+                  <div class="font-weight-500 mb-8" fxLayout="row" fxLayoutAlign="start center">
+                    <mat-icon class="s-20  mr-8">speaker_notes</mat-icon>
+                    Notes
+                  </div>
+                  <ul>
+                    <li *ngFor="let note of item.notes">
+                      {{note.note}}
+                    </li>
+                  </ul>
+                </div>
+                <!--END NOTES-->
+
+                <!--ATTACHMENTS-->
+                <div *ngIf="item.attachments.length > 0" class="item-box-attachment">
+                  <div class="font-weight-500 mb-8 text-subtitle-break print-no-margin print-no-padding" fxLayout="row"
+                    fxLayoutAlign="start center">
+                    <mat-icon class="s-20 mr-8">attach_file</mat-icon>
+                    Attachments ( {{item.attachments.length}} )
+                  </div>
+                  <div fxLayout="row" fxLayoutAlign="start none" fxLayout="row wrap" class="attachment-container">
+                    <div *ngFor="let att of item.attachments" class="text-center attach_file" fxFlex.xs="100"
+                      fxFlex.sm="33" fxFlex.md="25" fxFlex.lg="20" fxFlex.xl="20">
+                      <img [src]="att.fullUrl" (click)="open(att.id)" class="item-image">
+                      <p class="mt-0 text-sm-break"> {{att.title}} </p>
+                    </div>
+                  </div>
+                </div>
+                <!--END ATTACHMENTS-->
+              </div>
+              <!--END CONTENT-->
+            </mat-card>
+          </div>
+          <!--END CONTENT-->
+        </div>
+      </div>
+    </div>
+    <!--END INSPECTION-->
+    <div class="no-print" fxHide.lt-lg fxFlex="20"></div>
+  </div>
+</div>

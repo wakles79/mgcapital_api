@@ -1,0 +1,44 @@
+.page-layout {
+  &.simple {
+    .header {
+      background-color: #049546 !important;
+      color: #fff !important;
+      background-image: url(/assets/images/backgrounds/header-bg.png);
+      background-size: cover;
+      height: 120px;
+      min-height: 120px;
+      max-height: 120px;
+
+      .breadcrumb {
+        span {
+          color: #fff;
+        }
+        .mat-icon {
+          color: #fff;
+        }
+      }
+    }
+  }
+
+  &.carded {
+    .top-bg {
+      background-image: url(/assets/images/backgrounds/header-bg.png);
+      background-size: cover;
+    }
+  }
+
+  .mat-sidenav-container {
+    height: 100%;
+  }
+}
+
+.mg-accent-bg {
+  background-color: #049546 !important;
+  color: #fff !important;
+}
+
+[disabled].mg-accent-bg {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+  box-shadow: none !important;
+  color: rgba(0, 0, 0, 0.26) !important;
+}
